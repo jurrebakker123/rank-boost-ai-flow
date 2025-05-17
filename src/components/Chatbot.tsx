@@ -6,7 +6,7 @@ import { MessageSquare, Send, X } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { useMediaQuery } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface Message {
   text: string;
@@ -37,7 +37,7 @@ const Chatbot = () => {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = !useIsMobile();
   const [open, setOpen] = useState(false);
 
   const scrollToBottom = () => {
