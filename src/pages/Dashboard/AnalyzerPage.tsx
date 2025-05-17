@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -525,7 +526,12 @@ const AnalyzerPage = () => {
   const [recommendations, setRecommendations] = useState<{title: string, description: string}[]>([]);
   const [technicalIssues, setTechnicalIssues] = useState<{severity: 'high' | 'medium' | 'low', issue: string, solution: string}[]>([]);
   const [apiResponse, setApiResponse] = useState('');
+  const [activeTipCategory, setActiveTipCategory] = useState<'content' | 'technical' | 'onPage' | 'links'>('content');
   const navigate = useNavigate();
+
+  const navigateToContentTools = () => {
+    navigate('/dashboard/content-tools');
+  };
 
   const handleAnalysis = async (e: React.FormEvent) => {
     e.preventDefault();
