@@ -145,17 +145,20 @@ const DashboardPage = () => {
                   keywords: { label: "Keywords", color: "#8b5cf6" }
                 }}
               >
-                <Line 
-                  data={keywordData}
-                  dataKey="value"
-                  name="keywords"
-                  stroke="#8b5cf6"
-                  strokeWidth={2}
-                  dot={{ strokeWidth: 2, r: 4 }}
-                />
-                <ChartTooltip
-                  content={<ChartTooltipContent />}
-                />
+                {/* Wrap the chart components in a React Fragment */}
+                <>
+                  <Line 
+                    data={keywordData}
+                    dataKey="value"
+                    name="keywords"
+                    stroke="#8b5cf6"
+                    strokeWidth={2}
+                    dot={{ strokeWidth: 2, r: 4 }}
+                  />
+                  <ChartTooltip
+                    content={<ChartTooltipContent />}
+                  />
+                </>
               </ChartContainer>
             </div>
             <div className="mt-4 text-right">
@@ -182,16 +185,19 @@ const DashboardPage = () => {
                   traffic: { label: "Traffic", color: "#22c55e" }
                 }}
               >
-                <Bar 
-                  data={trafficData}
-                  dataKey="traffic"
-                  name="traffic"
-                  fill="#22c55e"
-                  radius={[4, 4, 0, 0]}
-                />
-                <ChartTooltip
-                  content={<ChartTooltipContent />}
-                />
+                {/* Wrap the chart components in a React Fragment */}
+                <>
+                  <Bar 
+                    data={trafficData}
+                    dataKey="traffic"
+                    name="traffic"
+                    fill="#22c55e"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <ChartTooltip
+                    content={<ChartTooltipContent />}
+                  />
+                </>
               </ChartContainer>
             </div>
             <div className="mt-4 text-right">
