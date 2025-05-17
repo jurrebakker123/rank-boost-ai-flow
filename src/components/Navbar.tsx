@@ -50,6 +50,12 @@ const Navbar = () => {
           >
             Demo
           </Link>
+          <Link 
+            to="/login"
+            className="text-gray-700 hover:text-brand-purple transition-colors"
+          >
+            Login
+          </Link>
           <Link to="/pricing">
             <Button 
               className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity"
@@ -109,6 +115,13 @@ const Navbar = () => {
               onClick={closeMobileMenu}
             >
               Demo
+            </Link>
+            <Link 
+              to="/login"
+              className="text-gray-700 hover:text-brand-purple transition-colors py-2"
+              onClick={closeMobileMenu}
+            >
+              Login
             </Link>
             <Link to="/pricing" onClick={closeMobileMenu}>
               <Button 

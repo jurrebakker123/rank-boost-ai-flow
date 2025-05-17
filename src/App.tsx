@@ -12,6 +12,12 @@ import DemoPage from "./pages/DemoPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 import FAQPage from "./pages/FAQPage";
 import NotFound from "./pages/NotFound";
+import AuthPage from "./pages/AuthPage";
+
+// Dashboard
+import DashboardLayout from "./components/layouts/DashboardLayout";
+import DashboardPage from "./pages/Dashboard/DashboardPage";
+import AnalyzerPage from "./pages/Dashboard/AnalyzerPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +35,16 @@ const App = () => (
           <Route path="/demo" element={<DemoPage />} />
           <Route path="/testimonials" element={<TestimonialsPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/login" element={<AuthPage />} />
+          
+          {/* Dashboard Routes */}
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="analyzer" element={<AnalyzerPage />} />
+            {/* Add more dashboard routes here */}
+            <Route path="*" element={<div>Coming Soon</div>} />
+          </Route>
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
