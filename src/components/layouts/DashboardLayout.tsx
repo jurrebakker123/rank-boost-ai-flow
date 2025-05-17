@@ -5,6 +5,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import DashboardSidebar from '@/components/DashboardSidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import { toast } from '@/hooks/use-toast';
+import Chatbot from '@/components/Chatbot';
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ const DashboardLayout = () => {
               <Outlet />
             </main>
           </div>
+          <Chatbot />
         </div>
       </SidebarProvider>
     </div>
