@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,9 +8,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import RegistrationForm from '@/components/RegistrationForm';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialiseer Supabase client
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL || '',
+  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+);
 
 const AuthPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   
   // Login form state
@@ -19,39 +27,56 @@ const AuthPage = () => {
 
   // Check if user is already authenticated
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    if (isAuthenticated) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Redirect to dashboard or returnUrl if available
+        const params = new URLSearchParams(location.search);
+        const returnUrl = params.get('returnUrl');
+        
+        if (returnUrl) {
+          navigate(returnUrl);
+        } else {
+          navigate('/dashboard');
+        }
+      }
+    };
+    
+    checkAuth();
+  }, [navigate, location]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // This is a mock authentication - in a real app, you would integrate with your auth service
     try {
-      // Save user data and auth state
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify({ 
-        name: loginEmail.split('@')[0], 
-        email: loginEmail 
-      }));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: loginPassword,
+      });
+      
+      if (error) throw error;
       
       toast({
         title: "Login successful",
         description: "Welcome back to SEOHelper.ai",
       });
       
-      // Custom event to notify other parts of the app about authentication change
-      window.dispatchEvent(new Event('storage'));
+      // Check if there's a return URL in the query parameters
+      const params = new URLSearchParams(location.search);
+      const returnUrl = params.get('returnUrl');
       
-      navigate('/dashboard');
-    } catch (error) {
+      if (returnUrl) {
+        navigate(returnUrl);
+      } else {
+        navigate('/dashboard');
+      }
+      
+    } catch (error: any) {
       console.error('Login error:', error);
       toast({
         title: "Login failed",
-        description: "There was a problem with your login",
+        description: error.message || "There was a problem with your login",
         variant: "destructive"
       });
     } finally {
@@ -59,7 +84,7 @@ const AuthPage = () => {
     }
   };
 
-  const handleRegister = (userData: any) => {
+  const handleRegister = async (userData: any) => {
     if (userData.password !== userData.confirmPassword) {
       toast({
         title: "Passwords don't match",
@@ -72,31 +97,39 @@ const AuthPage = () => {
     setIsLoading(true);
     
     try {
-      // In a real implementation, this is where we would process payment with IDEAL/Credit Card
-      // and create user account after successful payment
-      
-      // Save user data and auth state
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify({ 
-        name: userData.name, 
+      // Register user with Supabase
+      const { data, error } = await supabase.auth.signUp({
         email: userData.email,
-        subscription: userData.subscription
-      }));
+        password: userData.password,
+        options: {
+          data: {
+            name: userData.name,
+          }
+        }
+      });
+      
+      if (error) throw error;
       
       toast({
-        title: "Registration & Payment successful",
+        title: "Registration successful",
         description: "Welcome to SEOHelper.ai",
       });
       
-      // Custom event to notify other parts of the app about authentication change
-      window.dispatchEvent(new Event('storage'));
+      // Check if there's a return URL in the query parameters
+      const params = new URLSearchParams(location.search);
+      const returnUrl = params.get('returnUrl');
       
-      navigate('/dashboard');
-    } catch (error) {
+      if (returnUrl) {
+        navigate(returnUrl);
+      } else {
+        navigate('/dashboard');
+      }
+      
+    } catch (error: any) {
       console.error('Registration error:', error);
       toast({
         title: "Registration failed",
-        description: "There was a problem creating your account",
+        description: error.message || "There was a problem creating your account",
         variant: "destructive"
       });
     } finally {
