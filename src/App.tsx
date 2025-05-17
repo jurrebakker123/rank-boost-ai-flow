@@ -13,6 +13,7 @@ import TestimonialsPage from "./pages/TestimonialsPage";
 import FAQPage from "./pages/FAQPage";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/AuthPage";
+import LandingPage from "./pages/LandingPage"; // Nieuwe import
 
 // Dashboard
 import DashboardLayout from "./components/layouts/DashboardLayout";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/testimonials" element={<TestimonialsPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/login" element={<AuthPage />} />
+          <Route path="/ad-campagne" element={<LandingPage />} /> {/* Nieuwe route */}
           
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<DashboardLayout />}>
