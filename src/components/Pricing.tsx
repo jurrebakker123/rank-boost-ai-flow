@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, MessageSquare } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface PlanFeature {
   text: string;
@@ -17,7 +19,17 @@ interface PricingPlan {
   buttonText: string;
 }
 
-const PricingCard = ({ plan, onSelect }: { plan: PricingPlan, onSelect: () => void }) => (
+const PricingCard = ({ 
+  plan, 
+  onSelect, 
+  chatbotEnabled, 
+  chatbotPrice 
+}: { 
+  plan: PricingPlan, 
+  onSelect: () => void,
+  chatbotEnabled: boolean,
+  chatbotPrice: string
+}) => (
   <div className={`bg-white rounded-xl shadow-sm border ${plan.popular ? 'border-brand-purple' : 'border-gray-100'} p-6 flex flex-col relative`}>
     {plan.popular && (
       <div className="absolute top-0 right-0 bg-brand-purple text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
@@ -25,10 +37,18 @@ const PricingCard = ({ plan, onSelect }: { plan: PricingPlan, onSelect: () => vo
       </div>
     )}
     <h3 className="text-xl font-bold">{plan.name}</h3>
-    <div className="mt-4 mb-6">
+    <div className="mt-4 mb-3">
       <span className="text-3xl font-bold">{plan.price}</span>
       <span className="text-gray-600 text-sm">/month</span>
     </div>
+    
+    {/* Chatbot add-on display */}
+    {chatbotEnabled && (
+      <div className="text-gray-600 text-sm mb-3 italic">
+        + {chatbotPrice} for AI Chatbot
+      </div>
+    )}
+    
     <p className="text-brand-purple font-medium mb-6">
       {plan.blogs} {plan.blogs === 1 ? 'blog post' : 'blog posts'} per month
     </p>
@@ -58,6 +78,8 @@ const PricingCard = ({ plan, onSelect }: { plan: PricingPlan, onSelect: () => vo
 
 const Pricing = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [chatbotEnabled, setChatbotEnabled] = useState(false);
+  const chatbotPrice = "€9";
   
   const plans: PricingPlan[] = [
     {
@@ -130,7 +152,7 @@ const Pricing = () => {
   const handleSelect = (planName: string) => {
     setSelectedPlan(planName);
     // In a real implementation, this would navigate to sign up with the selected plan
-    console.log(`Selected plan: ${planName}`);
+    console.log(`Selected plan: ${planName}, Chatbot enabled: ${chatbotEnabled}`);
     
     // Scroll to CTA section
     const ctaSection = document.getElementById('cta');
@@ -146,9 +168,25 @@ const Pricing = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Simple, <span className="gradient-text">Transparent Pricing</span>
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 mb-8">
             Choose the plan that best fits your business needs. All plans include our core SEO automation features.
           </p>
+          
+          {/* Chatbot add-on toggle */}
+          <div className="flex items-center justify-center space-x-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm mb-8 max-w-md mx-auto">
+            <div className="flex items-center space-x-2">
+              <Switch 
+                id="chatbot-toggle" 
+                checked={chatbotEnabled}
+                onCheckedChange={setChatbotEnabled}
+              />
+              <Label htmlFor="chatbot-toggle" className="font-medium">Add AI Chatbot</Label>
+            </div>
+            <div className="flex items-center text-brand-purple">
+              <MessageSquare className="w-5 h-5 mr-2" />
+              <span>{chatbotPrice}/month</span>
+            </div>
+          </div>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -157,9 +195,44 @@ const Pricing = () => {
               key={plan.name} 
               plan={plan} 
               onSelect={() => handleSelect(plan.name)} 
+              chatbotEnabled={chatbotEnabled}
+              chatbotPrice={chatbotPrice}
             />
           ))}
         </div>
+        
+        {/* AI Chatbot Feature Highlight */}
+        {chatbotEnabled && (
+          <div className="mt-12 p-6 bg-white rounded-xl border border-brand-purple/30 max-w-3xl mx-auto">
+            <div className="flex items-start space-x-4">
+              <div className="bg-brand-purple/10 p-3 rounded-full">
+                <MessageSquare className="w-6 h-6 text-brand-purple" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold mb-2">AI Chatbot for Your Website</h3>
+                <p className="text-gray-700 mb-4">Supercharge your website with an AI-powered chatbot that answers visitor questions instantly. Trained on your site's content.</p>
+                <ul className="space-y-2">
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Easy installation via simple script</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Custom branding options</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Visitor question analytics</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>No coding required</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
         
         <div className="mt-12 text-center text-gray-600">
           <p>All plans include a 14-day money-back guarantee. No long-term contracts. Cancel anytime.</p>
