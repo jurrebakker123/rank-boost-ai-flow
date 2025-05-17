@@ -29,11 +29,12 @@ const DashboardSidebar = () => {
     { title: 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
-  const getNavCls = ({ isActive }: { isActive: boolean }) =>
-    isActive 
-      ? "bg-muted text-brand-purple font-medium" 
-      : "hover:bg-muted/50 text-sidebar-foreground";
+  const isActive = (path: string) => {
+    if (path === '/dashboard') {
+      return location.pathname === '/dashboard';
+    }
+    return location.pathname.startsWith(path);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -43,10 +44,10 @@ const DashboardSidebar = () => {
 
   return (
     <Sidebar 
-      className={`${collapsed ? 'w-14' : 'w-60'} transition-all duration-300 bg-sidebar-background border-r`}
+      className={`${collapsed ? 'w-14' : 'w-60'} transition-all duration-300 border-r`}
       collapsible="icon"
     >
-      <SidebarTrigger className="m-2 self-end text-sidebar-foreground" />
+      <SidebarTrigger className="m-2 self-end" />
 
       <SidebarContent>
         <div className={`flex items-center justify-center py-4 ${collapsed ? 'px-2' : 'px-6'}`}>
@@ -55,13 +56,13 @@ const DashboardSidebar = () => {
           ) : (
             <div className="font-bold text-xl flex items-center gap-1">
               <span className="text-brand-purple font-extrabold">SEO</span>
-              <span className="text-sidebar-primary">Helper.ai</span>
+              <span>Helper.ai</span>
             </div>
           )}
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/60">
+          <SidebarGroupLabel>
             {!collapsed && 'Dashboard'}
           </SidebarGroupLabel>
 
@@ -72,11 +73,12 @@ const DashboardSidebar = () => {
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.path} 
+                      end={item.path === '/dashboard'}
                       className={({ isActive }) => `
                         flex items-center px-4 py-2 rounded-md text-sm
                         ${isActive 
-                          ? 'text-brand-purple font-medium' 
-                          : 'text-gray-600 hover:text-brand-purple'
+                          ? 'text-brand-purple bg-muted font-medium' 
+                          : 'text-gray-600 hover:text-brand-purple hover:bg-muted/50'
                         }
                       `}
                     >
@@ -93,8 +95,11 @@ const DashboardSidebar = () => {
         <div className="mt-auto mb-6">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton onClick={handleLogout} className="text-sidebar-foreground hover:bg-muted/50 w-full justify-start">
-                <LogOut className="h-4 w-4 mr-2" />
+              <SidebarMenuButton 
+                onClick={handleLogout} 
+                className="text-gray-600 hover:text-brand-purple hover:bg-muted/50 w-full flex items-center px-4 py-2 rounded-md text-sm"
+              >
+                <LogOut className="h-5 w-5 mr-2" />
                 {!collapsed && <span>Logout</span>}
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -26,7 +26,7 @@ const DashboardLayout = () => {
       } else {
         setIsLoading(false);
       }
-    }, 300);
+    }, 500);
     
     return () => clearTimeout(checkAuth);
   }, [navigate]);
@@ -40,17 +40,19 @@ const DashboardLayout = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <DashboardSidebar />
-        <div className="flex-1 flex flex-col">
-          <DashboardHeader />
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
-            <Outlet />
-          </main>
+    <div className="min-h-screen bg-background">
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <DashboardSidebar />
+          <div className="flex-1 flex flex-col">
+            <DashboardHeader />
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <Outlet />
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </div>
   );
 };
 
