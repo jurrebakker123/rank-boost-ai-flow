@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowUp, ArrowDown, Search, Clipboard, Users, Globe } from 'lucide-react';
+import { ArrowUp, ArrowDown, Search, Clipboard, Users, Globe, PlusCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Line, Bar } from 'recharts';
@@ -12,6 +12,8 @@ const DashboardPage = () => {
   const [stats, setStats] = useState([]);
   const [keywordData, setKeywordData] = useState([]);
   const [trafficData, setTrafficData] = useState([]);
+  const [recentImprovements, setRecentImprovements] = useState([]);
+  const [isNewUser, setIsNewUser] = useState(false);
   const navigate = useNavigate();
 
   // Simulate data loading when component mounts
@@ -19,39 +21,104 @@ const DashboardPage = () => {
     const fetchDashboardData = async () => {
       // Simulate network request with a delay
       setTimeout(() => {
-        // Mock data for the dashboard stats
-        const dashboardStats = [
-          { title: 'Totale Keywords', value: '847', icon: Search, change: '+12%', positive: true },
-          { title: 'Totale Pagina\'s', value: '34', icon: Clipboard, change: '+3', positive: true },
-          { title: 'Gemiddelde Positie', value: '14.3', icon: ArrowUp, change: '-2.1', positive: true },
-          { title: 'Keywords in Top 10', value: '32', icon: Globe, change: '-5%', positive: false },
-        ];
+        // Check if user is new by looking at local storage or other metrics
+        // For demo, we'll use a flag in localStorage to simulate a new user
+        const isFirstTimeUser = !localStorage.getItem('hasVisitedDashboard');
+        setIsNewUser(isFirstTimeUser);
         
-        // Mock data for keyword performance chart
-        const keywordChartData = [
-          { name: 'Jan', value: 30 },
-          { name: 'Feb', value: 25 },
-          { name: 'Mar', value: 32 },
-          { name: 'Apr', value: 28 },
-          { name: 'May', value: 35 },
-          { name: 'Jun', value: 42 },
-          { name: 'Jul', value: 38 }
-        ];
+        if (isFirstTimeUser) {
+          // Set empty stats for new users
+          const emptyStats = [
+            { title: 'Totale Keywords', value: '0', icon: Search, change: '0%', positive: true },
+            { title: 'Totale Pagina\'s', value: '0', icon: Clipboard, change: '0', positive: true },
+            { title: 'Gemiddelde Positie', value: '0', icon: ArrowUp, change: '0', positive: true },
+            { title: 'Keywords in Top 10', value: '0', icon: Globe, change: '0%', positive: true },
+          ];
+          
+          // Empty chart data
+          const emptyChartData = [
+            { name: 'Jan', value: 0 },
+            { name: 'Feb', value: 0 },
+            { name: 'Mar', value: 0 },
+            { name: 'Apr', value: 0 },
+            { name: 'May', value: 0 },
+            { name: 'Jun', value: 0 },
+            { name: 'Jul', value: 0 }
+          ];
+          
+          const emptyTrafficData = [
+            { name: 'Jan', traffic: 0 },
+            { name: 'Feb', traffic: 0 },
+            { name: 'Mar', traffic: 0 },
+            { name: 'Apr', traffic: 0 },
+            { name: 'May', traffic: 0 },
+            { name: 'Jun', traffic: 0 },
+            { name: 'Jul', traffic: 0 }
+          ];
+          
+          // Set empty improvements for new users
+          const emptyImprovements = [];
+          
+          setStats(emptyStats);
+          setKeywordData(emptyChartData);
+          setTrafficData(emptyTrafficData);
+          setRecentImprovements(emptyImprovements);
+          
+          // Mark that the user has visited the dashboard
+          localStorage.setItem('hasVisitedDashboard', 'true');
+        } else {
+          // For returning users, show some sample data
+          const dashboardStats = [
+            { title: 'Totale Keywords', value: '847', icon: Search, change: '+12%', positive: true },
+            { title: 'Totale Pagina\'s', value: '34', icon: Clipboard, change: '+3', positive: true },
+            { title: 'Gemiddelde Positie', value: '14.3', icon: ArrowUp, change: '-2.1', positive: true },
+            { title: 'Keywords in Top 10', value: '32', icon: Globe, change: '-5%', positive: false },
+          ];
+          
+          const keywordChartData = [
+            { name: 'Jan', value: 30 },
+            { name: 'Feb', value: 25 },
+            { name: 'Mar', value: 32 },
+            { name: 'Apr', value: 28 },
+            { name: 'May', value: 35 },
+            { name: 'Jun', value: 42 },
+            { name: 'Jul', value: 38 }
+          ];
+          
+          const trafficChartData = [
+            { name: 'Jan', traffic: 3000 },
+            { name: 'Feb', traffic: 3500 },
+            { name: 'Mar', traffic: 3200 },
+            { name: 'Apr', traffic: 4000 },
+            { name: 'May', traffic: 4200 },
+            { name: 'Jun', traffic: 4800 },
+            { name: 'Jul', traffic: 5100 }
+          ];
+          
+          const improvements = [
+            {
+              title: 'Meta Beschrijving Update',
+              description: 'Bijgewerkte meta beschrijvingen voor 5 pagina\'s',
+              date: '2 dagen geleden'
+            },
+            {
+              title: 'Content Optimalisatie',
+              description: 'Meer keywords toegevoegd aan homepagina content',
+              date: '5 dagen geleden'
+            },
+            {
+              title: 'Backlink Groei',
+              description: '3 nieuwe backlinks verkregen van gezaghebbende sites',
+              date: '1 week geleden'
+            }
+          ];
+          
+          setStats(dashboardStats);
+          setKeywordData(keywordChartData);
+          setTrafficData(trafficChartData);
+          setRecentImprovements(improvements);
+        }
         
-        // Mock data for traffic overview chart
-        const trafficChartData = [
-          { name: 'Jan', traffic: 3000 },
-          { name: 'Feb', traffic: 3500 },
-          { name: 'Mar', traffic: 3200 },
-          { name: 'Apr', traffic: 4000 },
-          { name: 'May', traffic: 4200 },
-          { name: 'Jun', traffic: 4800 },
-          { name: 'Jul', traffic: 5100 }
-        ];
-        
-        setStats(dashboardStats);
-        setKeywordData(keywordChartData);
-        setTrafficData(trafficChartData);
         setLoading(false);
       }, 1500); // 1.5 second delay to simulate loading
     };
@@ -110,7 +177,11 @@ const DashboardPage = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Dashboard Overzicht</h1>
-        <p className="text-muted-foreground">Welkom bij je SEO werkruimte. Hier is je huidige voortgang.</p>
+        <p className="text-muted-foreground">
+          {isNewUser 
+            ? "Welkom bij je SEO werkruimte. Begin met het analyseren van je website om inzichten te krijgen."
+            : "Welkom bij je SEO werkruimte. Hier is je huidige voortgang."}
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -145,7 +216,6 @@ const DashboardPage = () => {
                   keywords: { label: "Keywords", color: "#8b5cf6" }
                 }}
               >
-                {/* Wrap the chart components in a React Fragment */}
                 <>
                   <Line 
                     data={keywordData}
@@ -185,7 +255,6 @@ const DashboardPage = () => {
                   traffic: { label: "Traffic", color: "#22c55e" }
                 }}
               >
-                {/* Wrap the chart components in a React Fragment */}
                 <>
                   <Bar 
                     data={trafficData}
@@ -218,29 +287,36 @@ const DashboardPage = () => {
           <CardTitle>Recente SEO Verbeteringen</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <div className="p-4 border-b flex justify-between items-center">
-              <div>
-                <p className="font-medium">Meta Beschrijving Update</p>
-                <p className="text-sm text-muted-foreground">Bijgewerkte meta beschrijvingen voor 5 pagina's</p>
-              </div>
-              <span className="text-xs text-muted-foreground">2 dagen geleden</span>
+          {recentImprovements.length > 0 ? (
+            <div className="rounded-md border">
+              {recentImprovements.map((improvement, index) => (
+                <div 
+                  key={index} 
+                  className={`p-4 ${index !== recentImprovements.length - 1 ? 'border-b' : ''} flex justify-between items-center`}
+                >
+                  <div>
+                    <p className="font-medium">{improvement.title}</p>
+                    <p className="text-sm text-muted-foreground">{improvement.description}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{improvement.date}</span>
+                </div>
+              ))}
             </div>
-            <div className="p-4 border-b flex justify-between items-center">
-              <div>
-                <p className="font-medium">Content Optimalisatie</p>
-                <p className="text-sm text-muted-foreground">Meer keywords toegevoegd aan homepagina content</p>
-              </div>
-              <span className="text-xs text-muted-foreground">5 dagen geleden</span>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-10 text-center">
+              <PlusCircle className="h-10 w-10 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-1">Geen recente verbeteringen</h3>
+              <p className="text-muted-foreground max-w-xs">
+                Begin met het gebruik van onze SEO tools om verbeteringen aan jouw website aan te brengen.
+              </p>
+              <Button 
+                onClick={navigateToAnalyzer} 
+                className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 mt-4"
+              >
+                Start met SEO Analyzer
+              </Button>
             </div>
-            <div className="p-4 flex justify-between items-center">
-              <div>
-                <p className="font-medium">Backlink Groei</p>
-                <p className="text-sm text-muted-foreground">3 nieuwe backlinks verkregen van gezaghebbende sites</p>
-              </div>
-              <span className="text-xs text-muted-foreground">1 week geleden</span>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

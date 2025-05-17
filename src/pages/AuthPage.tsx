@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
+import RegistrationForm from '@/components/RegistrationForm';
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -14,12 +16,6 @@ const AuthPage = () => {
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
-  
-  // Register form state
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -63,10 +59,8 @@ const AuthPage = () => {
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (password !== confirmPassword) {
+  const handleRegister = (userData: any) => {
+    if (userData.password !== userData.confirmPassword) {
       toast({
         title: "Passwords don't match",
         description: "Please make sure your passwords match",
@@ -78,12 +72,19 @@ const AuthPage = () => {
     setIsLoading(true);
     
     try {
+      // In a real implementation, this is where we would process payment with IDEAL/Credit Card
+      // and create user account after successful payment
+      
       // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify({ name, email }));
+      localStorage.setItem('user', JSON.stringify({ 
+        name: userData.name, 
+        email: userData.email,
+        subscription: userData.subscription
+      }));
       
       toast({
-        title: "Registration successful",
+        title: "Registration & Payment successful",
         description: "Welcome to SEOHelper.ai",
       });
       
@@ -105,11 +106,11 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="container max-w-md mx-auto flex-1 flex flex-col items-center justify-center px-2 py-12">
-        <Tabs defaultValue="login" className="w-full">
+      <div className="container mx-auto flex-1 flex flex-col items-center justify-center px-2 py-12">
+        <Tabs defaultValue="login" className="w-full max-w-4xl">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsTrigger value="register">Registreren</TabsTrigger>
           </TabsList>
           
           <TabsContent value="login">
@@ -117,7 +118,7 @@ const AuthPage = () => {
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
                 <CardDescription>
-                  Enter your credentials to access your dashboard
+                  Voer je gegevens in om toegang te krijgen tot je dashboard
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleLogin}>
@@ -134,7 +135,7 @@ const AuthPage = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label htmlFor="login-password">Wachtwoord</Label>
                     <Input 
                       id="login-password" 
                       type="password" 
@@ -151,11 +152,11 @@ const AuthPage = () => {
                     className="w-full bg-gradient-to-r from-brand-purple to-brand-blue"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Logging in..." : "Login"}
+                    {isLoading ? "Inloggen..." : "Inloggen"}
                   </Button>
                   <div className="text-center text-sm">
                     <Link to="/forgot-password" className="text-brand-purple hover:underline">
-                      Forgot your password?
+                      Wachtwoord vergeten?
                     </Link>
                   </div>
                 </CardFooter>
@@ -166,67 +167,14 @@ const AuthPage = () => {
           <TabsContent value="register">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Create an account</CardTitle>
+                <CardTitle className="text-2xl">Account aanmaken</CardTitle>
                 <CardDescription>
-                  Enter your details to create your SEOHelper.ai account
+                  Vul je gegevens in om een SEOHelper.ai account aan te maken
                 </CardDescription>
               </CardHeader>
-              <form onSubmit={handleRegister}>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input 
-                      id="name" 
-                      placeholder="John Doe" 
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="mail@example.com" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      placeholder="••••••••" 
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
-                    <Input 
-                      id="confirm-password" 
-                      type="password" 
-                      placeholder="••••••••" 
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-brand-purple to-brand-blue"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Creating account..." : "Create account"}
-                  </Button>
-                </CardFooter>
-              </form>
+              <CardContent>
+                <RegistrationForm onSubmit={handleRegister} isLoading={isLoading} />
+              </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
