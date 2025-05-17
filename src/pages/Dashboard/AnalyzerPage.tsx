@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -39,10 +38,10 @@ const SEO_TIPS = {
 };
 
 // Mock data for SEO analysis
-const generateMockResults = (url) => {
+const generateMockResults = (url: string) => {
   // Generate somewhat random but realistic looking scores
   const seedValue = url.length + url.charCodeAt(0) + url.charCodeAt(url.length - 1);
-  const randomizer = (base, variation) => Math.max(0, Math.min(100, base + ((seedValue % 10) - 5) * variation));
+  const randomizer = (base: number, variation: number) => Math.max(0, Math.min(100, base + ((seedValue % 10) - 5) * variation));
   
   // Base scores for different metrics
   const seoBaseScore = 75; // Most sites have decent basic SEO
@@ -73,8 +72,8 @@ const generateMockResults = (url) => {
   if (performanceScore < 50) performanceIssues.push('Server response time is slow');
   if (performanceIssues.length === 0) performanceIssues.push('No major performance issues detected');
   
-  // Content analysis
-  const contentAnalysis = [
+  // Content analysis - Fix: using typed status values instead of arbitrary strings
+  const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [
     { 
       text: 'Page has a proper title', 
       status: Math.random() > 0.3 ? 'good' : 'warning' 
@@ -140,7 +139,7 @@ const generateMockResults = (url) => {
       categories: {
         performance: { score: performanceScore / 100 },
         accessibility: { score: accessibilityScore / 100 },
-        'best-practices': { score: bestPracticesScore / 100 },
+        'best-practices': { score: bestPracticesBaseScore / 100 },
         seo: { score: seoScore / 100 }
       },
       audits: {
