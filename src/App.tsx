@@ -18,6 +18,10 @@ import AuthPage from "./pages/AuthPage";
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import AnalyzerPage from "./pages/Dashboard/AnalyzerPage";
+import KeywordResearchPage from "./pages/Dashboard/KeywordResearchPage";
+import RankTrackingPage from "./pages/Dashboard/RankTrackingPage";
+import ContentToolsPage from "./pages/Dashboard/ContentToolsPage";
+import SettingsPage from "./pages/Dashboard/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +45,11 @@ const App = () => (
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<DashboardPage />} />
             <Route path="analyzer" element={<AnalyzerPage />} />
-            {/* Add more dashboard routes here */}
+            <Route path="keywords" element={<KeywordResearchPage />} />
+            <Route path="rank-tracking" element={<RankTrackingPage />} />
+            <Route path="content" element={<ContentToolsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            {/* All other routes show "Coming Soon" */}
             <Route path="*" element={<div>Coming Soon</div>} />
           </Route>
           

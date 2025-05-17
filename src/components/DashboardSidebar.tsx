@@ -32,7 +32,7 @@ const DashboardSidebar = () => {
   const isActive = (path: string) => location.pathname === path;
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive 
-      ? "bg-muted text-primary font-medium" 
+      ? "bg-muted text-brand-purple font-medium" 
       : "hover:bg-muted/50 text-sidebar-foreground";
 
   const handleLogout = () => {
@@ -70,8 +70,17 @@ const DashboardSidebar = () => {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <NavLink to={item.path} className={getNavCls}>
-                      <item.icon className="h-4 w-4 mr-2" />
+                    <NavLink 
+                      to={item.path} 
+                      className={({ isActive }) => `
+                        flex items-center px-4 py-2 rounded-md text-sm
+                        ${isActive 
+                          ? 'text-brand-purple font-medium' 
+                          : 'text-gray-600 hover:text-brand-purple'
+                        }
+                      `}
+                    >
+                      <item.icon className="h-5 w-5 mr-2" />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
