@@ -1,15 +1,9 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Hero = () => {
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <section className="relative py-20 overflow-hidden">
       {/* Background elements */}
@@ -30,19 +24,21 @@ const Hero = () => {
               SEOHelper.ai automates your entire SEO strategy. Get AI-generated blog posts, optimization tips, and monthly reports—all personalized for your business.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
-              <Button 
-                onClick={() => scrollToSection('cta')}
-                className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity px-8 py-6 text-lg"
-              >
-                Get Started Now
-              </Button>
-              <Button 
-                onClick={() => scrollToSection('demo')}
-                variant="outline" 
-                className="border-brand-purple text-brand-purple hover:bg-brand-purple/10 px-8 py-6 text-lg"
-              >
-                See Demo
-              </Button>
+              <Link to="/pricing">
+                <Button 
+                  className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity px-8 py-6 text-lg"
+                >
+                  Get Started Now
+                </Button>
+              </Link>
+              <Link to="/demo">
+                <Button 
+                  variant="outline" 
+                  className="border-brand-purple text-brand-purple hover:bg-brand-purple/10 px-8 py-6 text-lg"
+                >
+                  See Demo
+                </Button>
+              </Link>
             </div>
             <div className="flex items-center gap-2 pt-4">
               <div className="flex -space-x-2">

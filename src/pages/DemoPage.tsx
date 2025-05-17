@@ -1,16 +1,18 @@
 
 import React from 'react';
 import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
+import Demo from '@/components/Demo';
+import Testimonials from '@/components/Testimonials';
 import CTA from '@/components/CTA';
 import Footer from '@/components/Footer';
 
-const Index = () => {
+const DemoPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow">
-        <Hero />
+        <Demo />
+        <Testimonials />
         <CTA />
       </main>
       <Footer />
@@ -18,4 +20,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default DemoPage;

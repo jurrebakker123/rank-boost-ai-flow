@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
@@ -9,11 +10,7 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
+  const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
 
@@ -21,44 +18,45 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm py-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
-          <a href="#" className="font-bold text-xl flex items-center gap-2">
+          <Link to="/" className="font-bold text-xl flex items-center gap-2">
             <span className="text-brand-purple font-extrabold">SEO</span>
             <span className="text-gray-800">Helper.ai</span>
-          </a>
+          </Link>
         </div>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8 items-center">
-          <button 
-            onClick={() => scrollToSection('features')}
+          <Link 
+            to="/features"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
             Features
-          </button>
-          <button 
-            onClick={() => scrollToSection('how-it-works')}
+          </Link>
+          <Link 
+            to="/how-it-works"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
             How It Works
-          </button>
-          <button 
-            onClick={() => scrollToSection('pricing')}
+          </Link>
+          <Link 
+            to="/pricing"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
             Pricing
-          </button>
-          <button 
-            onClick={() => scrollToSection('demo')}
+          </Link>
+          <Link 
+            to="/demo"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
             Demo
-          </button>
-          <Button 
-            onClick={() => scrollToSection('cta')}
-            className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity"
-          >
-            Get Started
-          </Button>
+          </Link>
+          <Link to="/pricing">
+            <Button 
+              className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity"
+            >
+              Get Started
+            </Button>
+          </Link>
         </div>
         
         {/* Mobile Menu Button */}
@@ -84,36 +82,41 @@ const Navbar = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white py-4 border-t">
           <div className="container mx-auto flex flex-col space-y-4">
-            <button 
-              onClick={() => scrollToSection('features')}
+            <Link 
+              to="/features"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
+              onClick={closeMobileMenu}
             >
               Features
-            </button>
-            <button 
-              onClick={() => scrollToSection('how-it-works')}
+            </Link>
+            <Link 
+              to="/how-it-works"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
+              onClick={closeMobileMenu}
             >
               How It Works
-            </button>
-            <button 
-              onClick={() => scrollToSection('pricing')}
+            </Link>
+            <Link 
+              to="/pricing"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
+              onClick={closeMobileMenu}
             >
               Pricing
-            </button>
-            <button 
-              onClick={() => scrollToSection('demo')}
+            </Link>
+            <Link 
+              to="/demo"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
+              onClick={closeMobileMenu}
             >
               Demo
-            </button>
-            <Button 
-              onClick={() => scrollToSection('cta')}
-              className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity w-full"
-            >
-              Get Started
-            </Button>
+            </Link>
+            <Link to="/pricing" onClick={closeMobileMenu}>
+              <Button 
+                className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity w-full"
+              >
+                Get Started
+              </Button>
+            </Link>
           </div>
         </div>
       )}
