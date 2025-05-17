@@ -9,14 +9,14 @@ import { toast } from '@/hooks/use-toast';
 const DashboardLayout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   // Check if user is authenticated
   useEffect(() => {
-    // Add a small delay to ensure localStorage is checked after it's been set
-    const checkAuth = setTimeout(() => {
-      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    const checkAuth = () => {
+      const authStatus = localStorage.getItem('isAuthenticated') === 'true';
       
-      if (!isAuthenticated) {
+      if (!authStatus) {
         toast({
           title: "Authentication required",
           description: "Please login to access the dashboard",
@@ -24,11 +24,20 @@ const DashboardLayout = () => {
         });
         navigate('/login');
       } else {
+        setIsAuthenticated(true);
         setIsLoading(false);
       }
-    }, 500);
+    };
     
-    return () => clearTimeout(checkAuth);
+    // Execute immediately instead of using timeout
+    checkAuth();
+    
+    // Add event listener for storage changes
+    window.addEventListener('storage', checkAuth);
+    
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
   }, [navigate]);
 
   if (isLoading) {

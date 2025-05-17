@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Sidebar, 
   SidebarContent,
@@ -14,11 +14,13 @@ import {
   useSidebar 
 } from '@/components/ui/sidebar';
 import { LineChart, Settings, Search, FileText, BarChart, Home, LogOut } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 const DashboardSidebar = () => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { title: 'Overview', path: '/dashboard', icon: Home },
@@ -39,7 +41,16 @@ const DashboardSidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('user');
-    window.location.href = '/';
+    
+    // Custom event to notify other parts of the app about authentication change
+    window.dispatchEvent(new Event('storage'));
+    
+    toast({
+      title: "Logged out successfully",
+      description: "Come back soon!",
+    });
+    
+    navigate('/login');
   };
 
   return (

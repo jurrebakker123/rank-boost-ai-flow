@@ -34,7 +34,7 @@ const AuthPage = () => {
     setIsLoading(true);
     
     // This is a mock authentication - in a real app, you would integrate with your auth service
-    setTimeout(() => {
+    try {
       // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify({ 
@@ -47,13 +47,20 @@ const AuthPage = () => {
         description: "Welcome back to SEOHelper.ai",
       });
       
-      setIsLoading(false);
+      // Custom event to notify other parts of the app about authentication change
+      window.dispatchEvent(new Event('storage'));
       
-      // Use a small delay before redirecting to ensure localStorage is updated
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 100);
-    }, 1000);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "Login failed",
+        description: "There was a problem with your login",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -70,8 +77,7 @@ const AuthPage = () => {
     
     setIsLoading(true);
     
-    // This is a mock registration - in a real app, you would integrate with your auth service
-    setTimeout(() => {
+    try {
       // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify({ name, email }));
@@ -81,13 +87,20 @@ const AuthPage = () => {
         description: "Welcome to SEOHelper.ai",
       });
       
-      setIsLoading(false);
+      // Custom event to notify other parts of the app about authentication change
+      window.dispatchEvent(new Event('storage'));
       
-      // Use a small delay before redirecting to ensure localStorage is updated
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 100);
-    }, 1000);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        title: "Registration failed",
+        description: "There was a problem creating your account",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

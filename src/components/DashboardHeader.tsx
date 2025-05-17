@@ -16,18 +16,22 @@ import { toast } from '@/hooks/use-toast';
 
 const DashboardHeader = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const userDataString = localStorage.getItem('user');
+  const user = userDataString ? JSON.parse(userDataString) : { name: 'User', email: 'user@example.com' };
   
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('user');
+    
+    // Custom event to notify other parts of the app about authentication change
+    window.dispatchEvent(new Event('storage'));
     
     toast({
       title: "Logged out successfully",
       description: "Come back soon!",
     });
     
-    navigate('/');
+    navigate('/login');
   };
 
   return (
