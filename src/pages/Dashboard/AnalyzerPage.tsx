@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -887,14 +886,14 @@ const AnalyzerPage = () => {
             <CardContent>
               <div className="mb-6">
                 <div className="flex space-x-1 rounded-lg bg-muted p-1">
-                  {Object.keys(SEO_TIPS).map(category => (
+                  {Object.keys(SEO_TIPS).map((category) => (
                     <Button
                       key={category}
                       variant={activeTipCategory === category ? "default" : "ghost"}
                       className={`flex-1 capitalize ${activeTipCategory === category ? 
                         'bg-gradient-to-r from-brand-purple to-brand-blue text-white' : 
                         ''}`}
-                      onClick={() => setActiveTipCategory(category)}
+                      onClick={() => setActiveTipCategory(category as 'content' | 'technical' | 'onPage' | 'links')}
                     >
                       {category === 'content' ? 'Content' : 
                        category === 'technical' ? 'Technical' : 
