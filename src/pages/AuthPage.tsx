@@ -9,12 +9,17 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import RegistrationForm from '@/components/RegistrationForm';
 import { createClient } from '@supabase/supabase-js';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
-// Initialiseer Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-);
+// Initialize Supabase client with proper error handling
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Create a placeholder client or null if credentials are missing
+const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -28,6 +33,8 @@ const AuthPage = () => {
   // Check if user is already authenticated
   useEffect(() => {
     const checkAuth = async () => {
+      if (!supabase) return;
+      
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         // Redirect to dashboard or returnUrl if available
@@ -47,6 +54,16 @@ const AuthPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!supabase) {
+      toast({
+        title: "Configuration Error",
+        description: "Supabase connection is not configured. Please connect to Supabase via the integration.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
@@ -85,6 +102,15 @@ const AuthPage = () => {
   };
 
   const handleRegister = async (userData: any) => {
+    if (!supabase) {
+      toast({
+        title: "Configuration Error",
+        description: "Supabase connection is not configured. Please connect to Supabase via the integration.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (userData.password !== userData.confirmPassword) {
       toast({
         title: "Passwords don't match",
@@ -140,6 +166,16 @@ const AuthPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <div className="container mx-auto flex-1 flex flex-col items-center justify-center px-2 py-12">
+        {!supabase && (
+          <Alert className="mb-6 max-w-4xl border-yellow-300 bg-yellow-50">
+            <AlertCircle className="h-4 w-4 text-yellow-600" />
+            <AlertTitle>Supabase connection not configured</AlertTitle>
+            <AlertDescription>
+              Authentication functionality requires a Supabase connection. Please connect this application to Supabase via the integration.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <Tabs defaultValue="login" className="w-full max-w-4xl">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="login">Login</TabsTrigger>

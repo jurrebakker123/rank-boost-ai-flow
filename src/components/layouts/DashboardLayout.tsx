@@ -8,11 +8,14 @@ import { toast } from '@/hooks/use-toast';
 import Chatbot from '@/components/Chatbot';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialiseer Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-);
+// Initialize Supabase client with proper error handling
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Create a placeholder client when credentials are missing
+const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -21,8 +24,23 @@ const DashboardLayout = () => {
   const [user, setUser] = useState<any>(null);
   const [subscription, setSubscription] = useState<any>(null);
   
+  // Check if Supabase is configured
+  useEffect(() => {
+    if (!supabase) {
+      toast({
+        title: "Configuration Error",
+        description: "Supabase credentials are missing. Please connect to Supabase via the integration.",
+        variant: "destructive",
+      });
+      navigate('/');
+      return;
+    }
+  }, [navigate]);
+  
   // Check if user is authenticated
   useEffect(() => {
+    if (!supabase) return;
+    
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -35,7 +53,7 @@ const DashboardLayout = () => {
       setIsAuthenticated(true);
       setUser(session.user);
       
-      // Controleer abonnementsstatus
+      // Check subscription status
       try {
         const { data, error } = await supabase.functions.invoke('check-subscription');
         
@@ -44,7 +62,7 @@ const DashboardLayout = () => {
         } else if (data) {
           setSubscription(data);
           
-          // Toon een toast bij succesvolle checkout
+          // Show a toast on successful checkout
           const params = new URLSearchParams(window.location.search);
           if (params.get('checkout_success') === 'true') {
             toast({
@@ -52,7 +70,7 @@ const DashboardLayout = () => {
               description: "Your subscription has been activated.",
             });
             
-            // Verwijder de query parameter
+            // Remove query parameter
             navigate('/dashboard', { replace: true });
           }
         }
@@ -65,33 +83,52 @@ const DashboardLayout = () => {
     
     checkAuth();
     
-    // Abonneren op auth veranderingen
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        setIsAuthenticated(true);
-        setUser(session.user);
-        
-        // Controleer abonnementsstatus na inloggen
-        try {
-          const { data } = await supabase.functions.invoke('check-subscription');
-          if (data) {
-            setSubscription(data);
+    // Subscribe to auth changes
+    if (supabase) {
+      const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          setIsAuthenticated(true);
+          setUser(session.user);
+          
+          // Check subscription status after login
+          try {
+            const { data } = await supabase.functions.invoke('check-subscription');
+            if (data) {
+              setSubscription(data);
+            }
+          } catch (error) {
+            console.error("Error checking subscription:", error);
           }
-        } catch (error) {
-          console.error("Error checking subscription:", error);
+        } else if (event === 'SIGNED_OUT') {
+          setIsAuthenticated(false);
+          setUser(null);
+          setSubscription(null);
+          navigate('/login');
         }
-      } else if (event === 'SIGNED_OUT') {
-        setIsAuthenticated(false);
-        setUser(null);
-        setSubscription(null);
-        navigate('/login');
-      }
-    });
-    
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+      });
+      
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    }
   }, [navigate]);
+
+  // If Supabase is not configured, show a message
+  if (!supabase) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md text-center">
+          <h2 className="text-xl font-bold text-red-700 mb-3">Configuration Error</h2>
+          <p className="text-gray-700 mb-4">
+            Supabase connection information is missing. To use this application, you need to connect it to Supabase.
+          </p>
+          <p className="text-sm text-gray-600">
+            Please ensure you've connected to Supabase via the integration and set the required environment variables.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -102,7 +139,7 @@ const DashboardLayout = () => {
   }
 
   if (!isAuthenticated) {
-    return null; // Navigate gebeurt al in useEffect
+    return null; // Navigation is already handled in useEffect
   }
 
   return (
@@ -115,7 +152,9 @@ const DashboardLayout = () => {
               user={user} 
               subscription={subscription}
               onSignOut={async () => {
-                await supabase.auth.signOut();
+                if (supabase) {
+                  await supabase.auth.signOut();
+                }
                 navigate('/');
               }}
             />

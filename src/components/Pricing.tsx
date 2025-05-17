@@ -1,11 +1,20 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, MessageSquare, Loader2 } from 'lucide-react';
+import { Check, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from '@supabase/supabase-js';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+// Initialize Supabase client with proper error handling
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Create a placeholder client or null if credentials are missing
+const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 interface PlanFeature {
   text: string;
@@ -22,12 +31,6 @@ interface PricingPlan {
   features: PlanFeature[];
   buttonText: string;
 }
-
-// Initialiseer Supabase client
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-);
 
 const PricingCard = ({ 
   plan, 
@@ -126,6 +129,11 @@ const Pricing = () => {
   // Check authentication status
   useEffect(() => {
     const checkAuth = async () => {
+      if (!supabase) {
+        setIsAuthenticated(false);
+        return;
+      }
+      
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       
@@ -225,6 +233,16 @@ const Pricing = () => {
 
   const handleSelect = async (planName: string) => {
     try {
+      // Check if Supabase is configured
+      if (!supabase) {
+        toast({
+          title: "Configuration Error",
+          description: "Supabase connection is not configured. Please connect to Supabase via the integration.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       // Check if user is authenticated
       if (!isAuthenticated) {
         // Redirect to auth page with return URL
@@ -270,6 +288,16 @@ const Pricing = () => {
     try {
       setIsProcessing(true);
       
+      if (!supabase) {
+        toast({
+          title: "Configuration Error",
+          description: "Supabase connection is not configured. Please connect to Supabase via the integration.",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+        return;
+      }
+      
       // Call customer portal edge function
       const { data, error } = await supabase.functions.invoke('customer-portal', {
         body: {
@@ -297,6 +325,16 @@ const Pricing = () => {
   return (
     <section id="pricing" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
+        {!supabase && (
+          <Alert className="mb-8 border-yellow-300 bg-yellow-50">
+            <AlertCircle className="h-4 w-4 text-yellow-600" />
+            <AlertTitle>Supabase connection not configured</AlertTitle>
+            <AlertDescription>
+              To enable subscription functionality, please connect this application to Supabase via the integration.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Simple, <span className="gradient-text">Transparent Pricing</span>
