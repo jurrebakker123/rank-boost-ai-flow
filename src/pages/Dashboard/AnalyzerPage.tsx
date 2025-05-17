@@ -1,15 +1,18 @@
-
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { HelpCircle, CheckCircle, XCircle, AlertCircle, TrendingUp, FileText, Globe, Link as LinkIcon, Code } from 'lucide-react';
+import { HelpCircle, CheckCircle, XCircle, AlertCircle, TrendingUp, FileText, Globe, Link as LinkIcon, Code, ArrowRight } from 'lucide-react';
 import { ChartContainer, ChartTooltipContent, ChartTooltip } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { useNavigate } from 'react-router-dom';
+
+// Google API Key for SEO data
+const GOOGLE_API_KEY = 'AIzaSyDLEbqqWb2uxio1yoyARx-PzrvbzbGvCpg';
 
 // SEO tips by category
 const SEO_TIPS = {
@@ -35,9 +38,8 @@ const SEO_TIPS = {
   ]
 };
 
-// Mock data for SEO analysis
+// Generate realistic mock results based on URL
 const generateMockResults = (url: string) => {
-  // Generate somewhat random but realistic looking scores based on the URL
   const urlLength = url.length;
   const domain = new URL(url).hostname;
   const hasDash = domain.includes('-');
@@ -46,47 +48,33 @@ const generateMockResults = (url: string) => {
   const pathLength = new URL(url).pathname.length;
   const hasHttps = url.startsWith('https://');
   
-  // Seed with domain characteristics to get consistent but different results per domain
   let seedValue = domain.length;
   for (let i = 0; i < Math.min(domain.length, 5); i++) {
     seedValue += domain.charCodeAt(i);
   }
   
-  // Premium domains tend to get slightly better scores
   const isPremiumTLD = ['com', 'org', 'net', 'io', 'ai'].includes(topLevelDomain);
   const tldBonus = isPremiumTLD ? 5 : 0;
-  
-  // HTTPS sites get better security scores
   const httpsBonus = hasHttps ? 10 : 0;
-  
-  // Clean domains without dashes tend to be slightly better
   const dashPenalty = hasDash ? -5 : 0;
-  
-  // Very long domains might indicate keyword stuffing
   const lengthPenalty = domain.length > 20 ? -5 : 0;
-  
-  // Very long paths might indicate deep site structure or overly specific pages
   const pathPenalty = pathLength > 30 ? -8 : 0;
   
   const randomizer = (base: number, variation: number) => {
-    // Create consistent but different randomization per URL
     const randomFactor = ((seedValue % 13) - 6) * variation / 3;
     return Math.max(15, Math.min(98, base + randomFactor));
   };
   
-  // Base scores with variations based on URL characteristics
   const seoBaseScore = 70 + tldBonus + dashPenalty + lengthPenalty + pathPenalty; 
-  const performanceBaseScore = 65 + (hasWWW ? -5 : 0); // WWW might add a slight redirect penalty
+  const performanceBaseScore = 65 + (hasWWW ? -5 : 0);
   const accessibilityBaseScore = 75;
   const bestPracticesBaseScore = 68 + httpsBonus;
   
-  // Generate scores with some variation
   const seoScore = Math.round(randomizer(seoBaseScore, 2));
   const performanceScore = Math.round(randomizer(performanceBaseScore, 3));
   const accessibilityScore = Math.round(randomizer(accessibilityBaseScore, 1.5));
   const bestPracticesScore = Math.round(randomizer(bestPracticesBaseScore, 2));
   
-  // Chart data for different metrics
   const chartData = [
     { name: "SEO", score: seoScore },
     { name: "Performance", score: performanceScore },
@@ -94,7 +82,6 @@ const generateMockResults = (url: string) => {
     { name: "Best Practices", score: bestPracticesScore },
   ];
   
-  // Generate realistic issues based on scores
   const performanceIssues: string[] = [];
   if (performanceScore < 90) performanceIssues.push('Render-blocking resources detected');
   if (performanceScore < 80) performanceIssues.push('Images are not properly optimized');
@@ -103,61 +90,50 @@ const generateMockResults = (url: string) => {
   if (performanceScore < 50) performanceIssues.push('Server response time is slow');
   if (performanceIssues.length === 0) performanceIssues.push('No major performance issues detected');
   
-  // Content analysis - Fix: using typed status values
   const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [];
   
-  // Title analysis
   contentAnalysis.push({ 
     text: 'Page has a proper title', 
     status: seedValue % 10 > 3 ? 'good' : 'warning' 
   });
   
-  // Meta description
   contentAnalysis.push({ 
     text: 'Meta description quality', 
     status: seedValue % 7 > 2 ? 'good' : 'warning' 
   });
   
-  // Link text quality
   contentAnalysis.push({ 
     text: 'Proper link text used', 
     status: seedValue % 8 > 3 ? 'good' : 'warning' 
   });
   
-  // Headers structure
   contentAnalysis.push({ 
     text: 'Headers structure (H1, H2, H3)', 
     status: seedValue % 12 > 6 ? 'good' : seedValue % 12 > 3 ? 'warning' : 'error'
   });
   
-  // Mobile friendliness
   contentAnalysis.push({ 
     text: 'Mobile-friendly design', 
     status: seedValue % 9 > 4 ? 'good' : 'warning' 
   });
   
-  // Image alt text
   contentAnalysis.push({ 
     text: 'Image alt text', 
     status: seedValue % 11 > 5 ? 'good' : seedValue % 11 > 2 ? 'warning' : 'error'
   });
   
-  // SSL certificate
   contentAnalysis.push({ 
     text: 'HTTPS Implementation', 
     status: hasHttps ? 'good' : 'error' 
   });
   
-  // Canonical URL
   contentAnalysis.push({ 
     text: 'Canonical URL implementation', 
     status: seedValue % 8 > 4 ? 'good' : 'warning' 
   });
   
-  // Generate recommendations based on scores and URL analysis
   const recommendations: {title: string, description: string}[] = [];
   
-  // SEO recommendations
   if (seoScore < 90) {
     if (!hasHttps) {
       recommendations.push({
@@ -181,7 +157,6 @@ const generateMockResults = (url: string) => {
     }
   }
   
-  // Performance recommendations
   if (performanceScore < 85) {
     recommendations.push({
       title: 'Optimize Images',
@@ -203,7 +178,6 @@ const generateMockResults = (url: string) => {
     });
   }
   
-  // Accessibility recommendations
   if (accessibilityScore < 85) {
     recommendations.push({
       title: 'Improve Color Contrast',
@@ -232,7 +206,6 @@ const generateMockResults = (url: string) => {
     });
   }
   
-  // Technical SEO issues (domain-specific)
   const technicalIssues: {severity: 'high' | 'medium' | 'low', issue: string, solution: string}[] = [];
   
   if (!hasHttps) {
@@ -283,7 +256,6 @@ const generateMockResults = (url: string) => {
     });
   }
   
-  // Mock API response with more comprehensive data
   const apiResponse = JSON.stringify({
     url: url,
     timestamp: new Date().toISOString(),
@@ -358,6 +330,184 @@ const generateMockResults = (url: string) => {
   };
 };
 
+const fetchSEOData = async (url: string) => {
+  try {
+    const response = await fetch(
+      `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=${GOOGLE_API_KEY}`
+    );
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    const lighthouseResult = data.lighthouseResult;
+    
+    const seoScore = Math.round(lighthouseResult?.categories?.seo?.score * 100) || 0;
+    const performanceScore = Math.round(lighthouseResult?.categories?.performance?.score * 100) || 0;
+    const accessibilityScore = Math.round(lighthouseResult?.categories?.accessibility?.score * 100) || 0;
+    const bestPracticesScore = Math.round(lighthouseResult?.categories?.['best-practices']?.score * 100) || 0;
+    
+    const chartData = [
+      { name: "SEO", score: seoScore },
+      { name: "Performance", score: performanceScore },
+      { name: "Accessibility", score: accessibilityScore },
+      { name: "Best Practices", score: bestPracticesScore },
+    ];
+    
+    const performanceIssues: string[] = [];
+    if (lighthouseResult?.audits) {
+      if (lighthouseResult.audits['render-blocking-resources']?.score < 1) {
+        performanceIssues.push('Render-blocking resources detected');
+      }
+      if (lighthouseResult.audits['unminified-javascript']?.score < 1) {
+        performanceIssues.push('JavaScript files are not minified');
+      }
+      if (lighthouseResult.audits['unused-javascript']?.score < 1) {
+        performanceIssues.push('Unused JavaScript detected');
+      }
+      if (lighthouseResult.audits['uses-optimized-images']?.score < 1) {
+        performanceIssues.push('Images are not properly optimized');
+      }
+      if (lighthouseResult.audits['unused-css-rules']?.score < 1) {
+        performanceIssues.push('Unused CSS detected');
+      }
+    }
+    
+    if (performanceIssues.length === 0) performanceIssues.push('No major performance issues detected');
+    
+    const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [];
+    
+    if (lighthouseResult?.audits) {
+      contentAnalysis.push({ 
+        text: 'Page has a proper title', 
+        status: lighthouseResult.audits['document-title']?.score === 1 ? 'good' : 'warning' 
+      });
+      
+      contentAnalysis.push({ 
+        text: 'Meta description quality', 
+        status: lighthouseResult.audits['meta-description']?.score === 1 ? 'good' : 'warning' 
+      });
+      
+      contentAnalysis.push({ 
+        text: 'Proper link text used', 
+        status: lighthouseResult.audits['link-text']?.score === 1 ? 'good' : 'warning' 
+      });
+      
+      contentAnalysis.push({ 
+        text: 'Headers structure (H1, H2, H3)', 
+        status: lighthouseResult.audits['heading-order']?.score === 1 ? 'good' : 
+               lighthouseResult.audits['heading-order']?.score === 0 ? 'error' : 'warning'
+      });
+      
+      contentAnalysis.push({ 
+        text: 'Mobile-friendly design', 
+        status: lighthouseResult.audits['viewport']?.score === 1 ? 'good' : 'warning' 
+      });
+      
+      contentAnalysis.push({ 
+        text: 'Image alt text', 
+        status: lighthouseResult.audits['image-alt']?.score === 1 ? 'good' :
+               lighthouseResult.audits['image-alt']?.score === 0 ? 'error' : 'warning'
+      });
+      
+      contentAnalysis.push({ 
+        text: 'HTTPS Implementation', 
+        status: lighthouseResult.audits['is-on-https']?.score === 1 ? 'good' : 'error' 
+      });
+      
+      contentAnalysis.push({ 
+        text: 'Canonical URL implementation', 
+        status: lighthouseResult.audits['canonical']?.score === 1 ? 'good' : 'warning' 
+      });
+    }
+    
+    const recommendations: {title: string, description: string}[] = [];
+    
+    if (seoScore < 90) {
+      if (lighthouseResult.audits['is-crawlable']?.score !== 1) {
+        recommendations.push({
+          title: 'Ensure Site is Crawlable',
+          description: 'Check robots.txt and meta robots tags to make sure your content can be properly indexed.'
+        });
+      }
+      
+      if (lighthouseResult.audits['meta-description']?.score !== 1) {
+        recommendations.push({
+          title: 'Add Meta Descriptions',
+          description: 'Meta descriptions help improve click-through rates from search results.'
+        });
+      }
+    }
+    
+    if (performanceScore < 85) {
+      if (lighthouseResult.audits['uses-optimized-images']?.score !== 1) {
+        recommendations.push({
+          title: 'Optimize Images',
+          description: 'Compress and properly format images to improve load time.'
+        });
+      }
+      
+      if (lighthouseResult.audits['render-blocking-resources']?.score !== 1) {
+        recommendations.push({
+          title: 'Remove Render-Blocking Resources',
+          description: 'Defer or async load JavaScript and CSS files that block rendering.'
+        });
+      }
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push({
+        title: 'Maintain Current SEO Strategy',
+        description: 'Your website appears to be following SEO best practices. Keep up the good work!'
+      });
+    }
+    
+    const technicalIssues: {severity: 'high' | 'medium' | 'low', issue: string, solution: string}[] = [];
+    
+    if (!lighthouseResult.audits['is-on-https']?.score) {
+      technicalIssues.push({
+        severity: 'high',
+        issue: 'No HTTPS implementation',
+        solution: 'Implement SSL certificate and redirect all HTTP traffic to HTTPS'
+      });
+    }
+    
+    if (!lighthouseResult.audits['robots-txt']?.score) {
+      technicalIssues.push({
+        severity: 'medium',
+        issue: 'Missing or invalid robots.txt file',
+        solution: 'Create a proper robots.txt file to guide search engine crawling behavior'
+      });
+    }
+    
+    if (!lighthouseResult.audits['canonical']?.score) {
+      technicalIssues.push({
+        severity: 'medium',
+        issue: 'Missing canonical tags',
+        solution: 'Implement canonical tags to prevent duplicate content issues'
+      });
+    }
+    
+    return {
+      seoScore,
+      performanceScore,
+      accessibilityScore, 
+      bestPracticesScore,
+      chartData,
+      performanceIssues,
+      contentAnalysis,
+      recommendations,
+      technicalIssues,
+      apiResponse: JSON.stringify(data, null, 2)
+    };
+  } catch (error) {
+    console.error("Error fetching SEO data:", error);
+    return generateMockResults(url);
+  }
+};
+
 const AnalyzerPage = () => {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -370,22 +520,7 @@ const AnalyzerPage = () => {
   const [technicalIssues, setTechnicalIssues] = useState<{severity: 'high' | 'medium' | 'low', issue: string, solution: string}[]>([]);
   const [apiResponse, setApiResponse] = useState('');
   const [activeTipCategory, setActiveTipCategory] = useState('content');
-
-  const mockLighthouseAnalysis = async (targetUrl: string) => {
-    // Generate mock results based on the URL
-    const results = generateMockResults(targetUrl);
-    
-    // Update state with the mock results
-    setSeoScore(results.seoScore);
-    setChartData(results.chartData);
-    setPerformanceIssues(results.performanceIssues);
-    setContentAnalysis(results.contentAnalysis);
-    setRecommendations(results.recommendations);
-    setTechnicalIssues(results.technicalIssues);
-    setApiResponse(results.apiResponse);
-    
-    return true;
-  };
+  const navigate = useNavigate();
 
   const handleAnalysis = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -399,7 +534,6 @@ const AnalyzerPage = () => {
       return;
     }
     
-    // Validate URL format
     try {
       new URL(url);
     } catch (e) {
@@ -414,16 +548,21 @@ const AnalyzerPage = () => {
     setIsLoading(true);
     
     try {
-      // Use mock data instead of actual API call
-      const success = await mockLighthouseAnalysis(url);
+      const results = await fetchSEOData(url);
       
-      if (success) {
-        setAnalyzed(true);
-        toast({
-          title: "Analysis complete",
-          description: "Your SEO analysis is ready to view",
-        });
-      }
+      setSeoScore(results.seoScore);
+      setChartData(results.chartData);
+      setPerformanceIssues(results.performanceIssues);
+      setContentAnalysis(results.contentAnalysis);
+      setRecommendations(results.recommendations);
+      setTechnicalIssues(results.technicalIssues);
+      setApiResponse(results.apiResponse);
+      setAnalyzed(true);
+      
+      toast({
+        title: "Analysis complete",
+        description: "Your SEO analysis is ready to view",
+      });
     } catch (error) {
       console.error("Analysis error:", error);
       toast({
@@ -434,6 +573,10 @@ const AnalyzerPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const navigateToContentTools = () => {
+    navigate('/dashboard/content-tools');
   };
 
   const renderStatusIcon = (status: 'good' | 'warning' | 'error') => {
@@ -758,64 +901,16 @@ const AnalyzerPage = () => {
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Domain Information</CardTitle>
-                <CardDescription>Basic information about the analyzed URL</CardDescription>
+              
+              <div className="flex justify-center mt-8">
+                <Button 
+                  onClick={navigateToContentTools}
+                  className="bg-gradient-to-r from-brand-purple to-brand-blue flex items-center gap-2"
+                >
+                  Continue to Content Tools
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
               </div>
-              <Globe className="h-5 w-5 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-3 bg-muted/30 rounded-md">
-                    <div className="text-sm font-medium text-muted-foreground">Domain</div>
-                    <div className="mt-1 font-medium">{new URL(url).hostname}</div>
-                  </div>
-                  <div className="p-3 bg-muted/30 rounded-md">
-                    <div className="text-sm font-medium text-muted-foreground">Protocol</div>
-                    <div className="mt-1 font-medium">{new URL(url).protocol.replace(':', '')}</div>
-                  </div>
-                  <div className="p-3 bg-muted/30 rounded-md">
-                    <div className="text-sm font-medium text-muted-foreground">Path</div>
-                    <div className="mt-1 font-medium">{new URL(url).pathname || '/'}</div>
-                  </div>
-                  <div className="p-3 bg-muted/30 rounded-md">
-                    <div className="text-sm font-medium text-muted-foreground">TLD</div>
-                    <div className="mt-1 font-medium">
-                      {new URL(url).hostname.split('.').pop()?.toUpperCase()}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-center mt-4">
-                  <a 
-                    href={`https://www.whois.com/whois/${new URL(url).hostname}`} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-sm flex items-center gap-1 text-brand-purple hover:underline"
-                  >
-                    <LinkIcon className="h-3 w-3" /> View WHOIS Information
-                  </a>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>API Response (Debug)</CardTitle>
-              <CardDescription>Raw data from analysis API</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Textarea 
-                className="font-mono h-64 text-xs"
-                readOnly
-                value={apiResponse}
-              />
             </CardContent>
           </Card>
         </>
@@ -862,10 +957,17 @@ const AnalyzerPage = () => {
                 </p>
               </div>
               
-              <div className="text-center mt-6">
-                <p className="text-muted-foreground">
+              <div className="flex flex-col items-center mt-8">
+                <p className="text-muted-foreground mb-4">
                   Enter a URL above to get personalized SEO recommendations
                 </p>
+                <Button 
+                  onClick={navigateToContentTools} 
+                  className="bg-gradient-to-r from-brand-purple to-brand-blue flex items-center gap-2"
+                >
+                  Go to Content Tools
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </CardContent>
