@@ -110,7 +110,7 @@ const AuthPage = () => {
         <Tabs defaultValue="login" className="w-full max-w-4xl">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Registreren</TabsTrigger>
+            <TabsTrigger value="register">Register</TabsTrigger>
           </TabsList>
           
           <TabsContent value="login">
@@ -118,7 +118,7 @@ const AuthPage = () => {
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
                 <CardDescription>
-                  Voer je gegevens in om toegang te krijgen tot je dashboard
+                  Enter your credentials to access your dashboard
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleLogin}>
@@ -135,7 +135,7 @@ const AuthPage = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Wachtwoord</Label>
+                    <Label htmlFor="login-password">Password</Label>
                     <Input 
                       id="login-password" 
                       type="password" 
@@ -152,11 +152,11 @@ const AuthPage = () => {
                     className="w-full bg-gradient-to-r from-brand-purple to-brand-blue"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Inloggen..." : "Inloggen"}
+                    {isLoading ? "Logging in..." : "Login"}
                   </Button>
                   <div className="text-center text-sm">
                     <Link to="/forgot-password" className="text-brand-purple hover:underline">
-                      Wachtwoord vergeten?
+                      Forgot password?
                     </Link>
                   </div>
                 </CardFooter>
@@ -167,9 +167,9 @@ const AuthPage = () => {
           <TabsContent value="register">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Account aanmaken</CardTitle>
+                <CardTitle className="text-2xl">Create Account</CardTitle>
                 <CardDescription>
-                  Vul je gegevens in om een SEOHelper.ai account aan te maken
+                  Fill in your details to create an SEOHelper.ai account
                 </CardDescription>
               </CardHeader>
               <CardContent>

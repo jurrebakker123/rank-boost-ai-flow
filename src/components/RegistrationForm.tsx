@@ -23,7 +23,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
     address: '',
     city: '',
     postalCode: '',
-    country: 'Nederland',
+    country: 'Netherlands',
     companyName: '',
     websiteUrl: '',
     subscription: 'basic'
@@ -56,7 +56,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
     { 
       id: 'basic', 
       name: 'Basic', 
-      price: '€19/maand', 
+      price: '€19/month', 
       features: [
         '1 SEO Blog Post',
         'Basic SEO Tips',
@@ -66,7 +66,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
     { 
       id: 'pro', 
       name: 'Pro', 
-      price: '€39/maand',
+      price: '€39/month',
       features: [
         '3 SEO Blog Posts',
         'Advanced SEO Tips',
@@ -78,7 +78,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
     { 
       id: 'ultimate', 
       name: 'Ultimate', 
-      price: '€59/maand',
+      price: '€59/month',
       popular: true,
       features: [
         '9 SEO Blog Posts',
@@ -97,11 +97,11 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
     <form onSubmit={handleSubmit} className="space-y-6">
       {step === 1 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-bold mb-4">Persoonlijke Gegevens</h2>
+          <h2 className="text-xl font-bold mb-4">Personal Information</h2>
           
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="name">Voornaam</Label>
+              <Label htmlFor="name">First Name</Label>
               <Input 
                 id="name" 
                 name="name"
@@ -113,7 +113,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="lastName">Achternaam</Label>
+              <Label htmlFor="lastName">Last Name</Label>
               <Input 
                 id="lastName" 
                 name="lastName"
@@ -140,7 +140,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
           
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="password">Wachtwoord</Label>
+              <Label htmlFor="password">Password</Label>
               <Input 
                 id="password" 
                 name="password"
@@ -153,7 +153,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Bevestig Wachtwoord</Label>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input 
                 id="confirmPassword" 
                 name="confirmPassword"
@@ -167,7 +167,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="phone">Telefoonnummer</Label>
+            <Label htmlFor="phone">Phone Number</Label>
             <Input 
               id="phone" 
               name="phone"
@@ -185,7 +185,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
               onClick={handleNext}
               className="bg-gradient-to-r from-brand-purple to-brand-blue text-white"
             >
-              Volgende
+              Next
             </Button>
           </div>
         </div>
@@ -193,14 +193,14 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
       
       {step === 2 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-bold mb-4">Adresgegevens & Website</h2>
+          <h2 className="text-xl font-bold mb-4">Address & Website</h2>
           
           <div className="space-y-2">
-            <Label htmlFor="address">Adres</Label>
+            <Label htmlFor="address">Address</Label>
             <Input 
               id="address" 
               name="address"
-              placeholder="Hoofdstraat 123" 
+              placeholder="123 Main Street" 
               value={formData.address}
               onChange={handleChange}
               required
@@ -209,7 +209,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
           
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="city">Plaats</Label>
+              <Label htmlFor="city">City</Label>
               <Input 
                 id="city" 
                 name="city"
@@ -221,7 +221,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="postalCode">Postcode</Label>
+              <Label htmlFor="postalCode">Postal Code</Label>
               <Input 
                 id="postalCode" 
                 name="postalCode"
@@ -234,29 +234,29 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="country">Land</Label>
+            <Label htmlFor="country">Country</Label>
             <Select 
               value={formData.country} 
               onValueChange={(value) => handleSelectChange("country", value)}
             >
               <SelectTrigger id="country">
-                <SelectValue placeholder="Selecteer een land" />
+                <SelectValue placeholder="Select a country" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Nederland">Nederland</SelectItem>
-                <SelectItem value="België">België</SelectItem>
-                <SelectItem value="Duitsland">Duitsland</SelectItem>
-                <SelectItem value="Anders">Anders</SelectItem>
+                <SelectItem value="Netherlands">Netherlands</SelectItem>
+                <SelectItem value="Belgium">Belgium</SelectItem>
+                <SelectItem value="Germany">Germany</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="companyName">Bedrijfsnaam (optioneel)</Label>
+            <Label htmlFor="companyName">Company Name (optional)</Label>
             <Input 
               id="companyName" 
               name="companyName"
-              placeholder="Bedrijf B.V." 
+              placeholder="Company Ltd." 
               value={formData.companyName}
               onChange={handleChange}
             />
@@ -268,7 +268,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
               id="websiteUrl" 
               name="websiteUrl"
               type="url" 
-              placeholder="https://uwwebsite.nl" 
+              placeholder="https://yourwebsite.com" 
               value={formData.websiteUrl}
               onChange={handleChange}
               required
@@ -281,14 +281,14 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
               onClick={handlePrevious}
               variant="outline"
             >
-              Vorige
+              Previous
             </Button>
             <Button 
               type="button" 
               onClick={handleNext}
               className="bg-gradient-to-r from-brand-purple to-brand-blue text-white"
             >
-              Volgende
+              Next
             </Button>
           </div>
         </div>
@@ -296,8 +296,8 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
       
       {step === 3 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-bold mb-2">Kies uw Abonnement</h2>
-          <p className="text-gray-600 mb-4">Selecteer het abonnement dat het beste past bij uw behoeften.</p>
+          <h2 className="text-xl font-bold mb-2">Choose Your Subscription</h2>
+          <p className="text-gray-600 mb-4">Select the subscription that best fits your needs.</p>
           
           <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
             {subscriptions.map(sub => (
@@ -310,7 +310,7 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
               >
                 {sub.popular && (
                   <div className="absolute top-0 right-0 bg-brand-purple text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
-                    POPULAIR
+                    POPULAR
                   </div>
                 )}
                 <CardContent className="p-6">
@@ -337,9 +337,9 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
           </div>
           
           <div className="pt-4">
-            <h3 className="text-lg font-bold mb-3">Betaalmethode</h3>
+            <h3 className="text-lg font-bold mb-3">Payment Method</h3>
             <div className="p-4 border rounded-lg bg-gray-50">
-              <p className="text-center text-gray-600 mb-3">In een echte implementatie zou hier een integratie met een betaalsysteem zoals Mollie of Stripe komen voor IDEAL, creditcard, etc.</p>
+              <p className="text-center text-gray-600 mb-3">In a real implementation, this would include integration with a payment system like Mollie or Stripe for IDEAL, credit card, etc.</p>
               <div className="flex justify-center gap-3">
                 <div className="p-2 border bg-white rounded">
                   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/IDEAL_Logo.svg/640px-IDEAL_Logo.svg.png" alt="iDEAL" className="h-6" />
@@ -360,14 +360,14 @@ const RegistrationForm = ({ onSubmit, isLoading }: RegistrationFormProps) => {
               onClick={handlePrevious}
               variant="outline"
             >
-              Vorige
+              Previous
             </Button>
             <Button 
               type="submit" 
               className="bg-gradient-to-r from-brand-purple to-brand-blue text-white"
               disabled={isLoading}
             >
-              {isLoading ? "Registreren..." : "Registreren & Betalen"}
+              {isLoading ? "Registering..." : "Register & Pay"}
             </Button>
           </div>
         </div>
