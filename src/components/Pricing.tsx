@@ -13,6 +13,7 @@ interface PlanFeature {
 interface PricingPlan {
   name: string;
   price: string;
+  description?: string;
   blogs: number;
   popular?: boolean;
   features: PlanFeature[];
@@ -37,6 +38,9 @@ const PricingCard = ({
       </div>
     )}
     <h3 className="text-xl font-bold">{plan.name}</h3>
+    {plan.description && (
+      <p className="text-gray-600 text-sm mt-1">{plan.description}</p>
+    )}
     <div className="mt-4 mb-3">
       <span className="text-3xl font-bold">{plan.price}</span>
       <span className="text-gray-600 text-sm">/month</span>
@@ -84,7 +88,7 @@ const Pricing = () => {
   const plans: PricingPlan[] = [
     {
       name: "Basic",
-      price: "€19",
+      price: "$24",
       blogs: 1,
       features: [
         { text: "1 SEO Blog Post", included: true },
@@ -100,7 +104,8 @@ const Pricing = () => {
     },
     {
       name: "Pro",
-      price: "€39",
+      price: "$49",
+      description: "Voor de actieve ondernemer",
       blogs: 3,
       features: [
         { text: "3 SEO Blog Posts", included: true },
@@ -116,7 +121,8 @@ const Pricing = () => {
     },
     {
       name: "Ultimate",
-      price: "€59",
+      price: "$79",
+      description: "Alles wat een klein bedrijf nodig heeft",
       blogs: 9,
       popular: true,
       features: [
@@ -133,7 +139,8 @@ const Pricing = () => {
     },
     {
       name: "Power",
-      price: "€99",
+      price: "$119",
+      description: "Voor bureaus / heavy content",
       blogs: 20,
       features: [
         { text: "20 SEO Blog Posts", included: true },
