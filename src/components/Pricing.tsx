@@ -144,7 +144,7 @@ const Pricing = () => {
           
           if (error) throw error;
           
-          if (data.subscribed && data.subscription_tier) {
+          if (data && data.subscribed && data.subscription_tier) {
             setCurrentSubscription(data.subscription_tier);
           }
         } catch (error) {
