@@ -16,7 +16,8 @@ import {
 import { LineChart, Settings, Search, FileText, BarChart, Home, LogOut } from 'lucide-react';
 
 const DashboardSidebar = () => {
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
+  const collapsed = state === "collapsed";
   const location = useLocation();
 
   const menuItems = [
@@ -43,7 +44,7 @@ const DashboardSidebar = () => {
   return (
     <Sidebar 
       className={`${collapsed ? 'w-14' : 'w-60'} transition-all duration-300 bg-sidebar-background border-r`}
-      collapsible
+      collapsible="icon"
     >
       <SidebarTrigger className="m-2 self-end text-sidebar-foreground" />
 
@@ -59,7 +60,7 @@ const DashboardSidebar = () => {
           )}
         </div>
 
-        <SidebarGroup defaultOpen={true}>
+        <SidebarGroup>
           <SidebarGroupLabel className="text-sidebar-foreground/60">
             {!collapsed && 'Dashboard'}
           </SidebarGroupLabel>
