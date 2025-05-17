@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -36,8 +35,6 @@ const AuthPage = () => {
     
     // This is a mock authentication - in a real app, you would integrate with your auth service
     setTimeout(() => {
-      setIsLoading(false);
-      
       // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify({ 
@@ -50,8 +47,13 @@ const AuthPage = () => {
         description: "Welcome back to SEOHelper.ai",
       });
       
-      navigate('/dashboard');
-    }, 1500);
+      setIsLoading(false);
+      
+      // Use a small delay before redirecting to ensure localStorage is updated
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 100);
+    }, 1000);
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -70,8 +72,6 @@ const AuthPage = () => {
     
     // This is a mock registration - in a real app, you would integrate with your auth service
     setTimeout(() => {
-      setIsLoading(false);
-      
       // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify({ name, email }));
@@ -81,8 +81,13 @@ const AuthPage = () => {
         description: "Welcome to SEOHelper.ai",
       });
       
-      navigate('/dashboard');
-    }, 1500);
+      setIsLoading(false);
+      
+      // Use a small delay before redirecting to ensure localStorage is updated
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 100);
+    }, 1000);
   };
 
   return (

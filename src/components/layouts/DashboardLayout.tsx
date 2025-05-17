@@ -12,17 +12,23 @@ const DashboardLayout = () => {
   
   // Check if user is authenticated
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    if (!isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please login to access the dashboard",
-        variant: "destructive"
-      });
-      navigate('/login');
-    } else {
-      setIsLoading(false);
-    }
+    // Add a small delay to ensure localStorage is checked after it's been set
+    const checkAuth = setTimeout(() => {
+      const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+      
+      if (!isAuthenticated) {
+        toast({
+          title: "Authentication required",
+          description: "Please login to access the dashboard",
+          variant: "destructive"
+        });
+        navigate('/login');
+      } else {
+        setIsLoading(false);
+      }
+    }, 300);
+    
+    return () => clearTimeout(checkAuth);
   }, [navigate]);
 
   if (isLoading) {
