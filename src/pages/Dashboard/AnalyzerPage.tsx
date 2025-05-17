@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,12 +7,9 @@ import { toast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { HelpCircle, CheckCircle, XCircle, AlertCircle, TrendingUp, FileText } from 'lucide-react';
+import { HelpCircle, CheckCircle, XCircle, AlertCircle, TrendingUp, FileText, Globe, Link as LinkIcon, Code } from 'lucide-react';
 import { ChartContainer, ChartTooltipContent, ChartTooltip } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
-
-// Google Lighthouse API key
-const LIGHTHOUSE_API_KEY = "AIzaSyDLEbqqWb2uxio1yoyARx-PzrvbzbGvCpg";
 
 // SEO tips by category
 const SEO_TIPS = {
@@ -39,21 +37,54 @@ const SEO_TIPS = {
 
 // Mock data for SEO analysis
 const generateMockResults = (url: string) => {
-  // Generate somewhat random but realistic looking scores
-  const seedValue = url.length + url.charCodeAt(0) + url.charCodeAt(url.length - 1);
-  const randomizer = (base: number, variation: number) => Math.max(0, Math.min(100, base + ((seedValue % 10) - 5) * variation));
+  // Generate somewhat random but realistic looking scores based on the URL
+  const urlLength = url.length;
+  const domain = new URL(url).hostname;
+  const hasDash = domain.includes('-');
+  const hasWWW = domain.includes('www.');
+  const topLevelDomain = domain.split('.').pop()?.toLowerCase() || '';
+  const pathLength = new URL(url).pathname.length;
+  const hasHttps = url.startsWith('https://');
   
-  // Base scores for different metrics
-  const seoBaseScore = 75; // Most sites have decent basic SEO
-  const performanceBaseScore = 65; // Performance is often challenging
-  const accessibilityBaseScore = 80; // Basic accessibility is often decent
-  const bestPracticesBaseScore = 70; // Best practices implementation varies
+  // Seed with domain characteristics to get consistent but different results per domain
+  let seedValue = domain.length;
+  for (let i = 0; i < Math.min(domain.length, 5); i++) {
+    seedValue += domain.charCodeAt(i);
+  }
+  
+  // Premium domains tend to get slightly better scores
+  const isPremiumTLD = ['com', 'org', 'net', 'io', 'ai'].includes(topLevelDomain);
+  const tldBonus = isPremiumTLD ? 5 : 0;
+  
+  // HTTPS sites get better security scores
+  const httpsBonus = hasHttps ? 10 : 0;
+  
+  // Clean domains without dashes tend to be slightly better
+  const dashPenalty = hasDash ? -5 : 0;
+  
+  // Very long domains might indicate keyword stuffing
+  const lengthPenalty = domain.length > 20 ? -5 : 0;
+  
+  // Very long paths might indicate deep site structure or overly specific pages
+  const pathPenalty = pathLength > 30 ? -8 : 0;
+  
+  const randomizer = (base: number, variation: number) => {
+    // Create consistent but different randomization per URL
+    const randomFactor = ((seedValue % 13) - 6) * variation / 3;
+    return Math.max(15, Math.min(98, base + randomFactor));
+  };
+  
+  // Base scores with variations based on URL characteristics
+  const seoBaseScore = 70 + tldBonus + dashPenalty + lengthPenalty + pathPenalty; 
+  const performanceBaseScore = 65 + (hasWWW ? -5 : 0); // WWW might add a slight redirect penalty
+  const accessibilityBaseScore = 75;
+  const bestPracticesBaseScore = 68 + httpsBonus;
   
   // Generate scores with some variation
-  const seoScore = randomizer(seoBaseScore, 2);
-  const performanceScore = randomizer(performanceBaseScore, 3);
-  const accessibilityScore = randomizer(accessibilityBaseScore, 1.5);
-  const bestPracticesScore = randomizer(bestPracticesBaseScore, 2);
+  const seoScore = Math.round(randomizer(seoBaseScore, 2));
+  const performanceScore = Math.round(randomizer(performanceBaseScore, 3));
+  const accessibilityScore = Math.round(randomizer(accessibilityBaseScore, 1.5));
+  const bestPracticesScore = Math.round(randomizer(bestPracticesBaseScore, 2));
   
   // Chart data for different metrics
   const chartData = [
@@ -64,7 +95,7 @@ const generateMockResults = (url: string) => {
   ];
   
   // Generate realistic issues based on scores
-  const performanceIssues = [];
+  const performanceIssues: string[] = [];
   if (performanceScore < 90) performanceIssues.push('Render-blocking resources detected');
   if (performanceScore < 80) performanceIssues.push('Images are not properly optimized');
   if (performanceScore < 70) performanceIssues.push('JavaScript files are not minified');
@@ -72,57 +103,125 @@ const generateMockResults = (url: string) => {
   if (performanceScore < 50) performanceIssues.push('Server response time is slow');
   if (performanceIssues.length === 0) performanceIssues.push('No major performance issues detected');
   
-  // Content analysis - Fix: using typed status values instead of arbitrary strings
-  const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [
-    { 
-      text: 'Page has a proper title', 
-      status: Math.random() > 0.3 ? 'good' : 'warning' 
-    },
-    { 
-      text: 'Meta description quality', 
-      status: Math.random() > 0.5 ? 'good' : 'warning' 
-    },
-    { 
-      text: 'Proper link text used', 
-      status: Math.random() > 0.4 ? 'good' : 'warning' 
-    },
-    { 
-      text: 'Hreflang tags implementation', 
-      status: Math.random() > 0.7 ? 'good' : 'warning' 
-    },
-    { 
-      text: 'Canonical URL implementation', 
-      status: Math.random() > 0.6 ? 'good' : 'warning' 
-    }
-  ];
+  // Content analysis - Fix: using typed status values
+  const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [];
   
-  // Generate recommendations based on scores
-  const recommendations = [];
+  // Title analysis
+  contentAnalysis.push({ 
+    text: 'Page has a proper title', 
+    status: seedValue % 10 > 3 ? 'good' : 'warning' 
+  });
+  
+  // Meta description
+  contentAnalysis.push({ 
+    text: 'Meta description quality', 
+    status: seedValue % 7 > 2 ? 'good' : 'warning' 
+  });
+  
+  // Link text quality
+  contentAnalysis.push({ 
+    text: 'Proper link text used', 
+    status: seedValue % 8 > 3 ? 'good' : 'warning' 
+  });
+  
+  // Headers structure
+  contentAnalysis.push({ 
+    text: 'Headers structure (H1, H2, H3)', 
+    status: seedValue % 12 > 6 ? 'good' : seedValue % 12 > 3 ? 'warning' : 'error'
+  });
+  
+  // Mobile friendliness
+  contentAnalysis.push({ 
+    text: 'Mobile-friendly design', 
+    status: seedValue % 9 > 4 ? 'good' : 'warning' 
+  });
+  
+  // Image alt text
+  contentAnalysis.push({ 
+    text: 'Image alt text', 
+    status: seedValue % 11 > 5 ? 'good' : seedValue % 11 > 2 ? 'warning' : 'error'
+  });
+  
+  // SSL certificate
+  contentAnalysis.push({ 
+    text: 'HTTPS Implementation', 
+    status: hasHttps ? 'good' : 'error' 
+  });
+  
+  // Canonical URL
+  contentAnalysis.push({ 
+    text: 'Canonical URL implementation', 
+    status: seedValue % 8 > 4 ? 'good' : 'warning' 
+  });
+  
+  // Generate recommendations based on scores and URL analysis
+  const recommendations: {title: string, description: string}[] = [];
+  
+  // SEO recommendations
   if (seoScore < 90) {
-    recommendations.push({
-      title: 'Improve Meta Descriptions',
-      description: 'Add descriptive and engaging meta descriptions to improve click-through rates.'
-    });
+    if (!hasHttps) {
+      recommendations.push({
+        title: 'Implement HTTPS',
+        description: 'Secure your site with HTTPS to improve trust and search rankings.'
+      });
+    }
+    
+    if (hasDash) {
+      recommendations.push({
+        title: 'Consider Domain Improvements',
+        description: 'Domains with hyphens may be seen as less trustworthy. Consider consolidating to a cleaner domain if possible.'
+      });
+    }
+    
+    if (domain.length > 15) {
+      recommendations.push({
+        title: 'Review Domain Length',
+        description: 'Your domain is quite long. Shorter domains are easier to remember and type.'
+      });
+    }
   }
   
-  if (performanceScore < 80) {
+  // Performance recommendations
+  if (performanceScore < 85) {
     recommendations.push({
       title: 'Optimize Images',
-      description: 'Properly format and compress images to improve load time.'
+      description: 'Compress and properly format images to improve load time.'
     });
   }
   
-  if (performanceScore < 70) {
+  if (performanceScore < 75) {
     recommendations.push({
-      title: 'Eliminate Render-Blocking Resources',
-      description: 'Defer or inline critical JS/CSS resources to improve page load times.'
+      title: 'Minimize JavaScript',
+      description: 'Minify and defer non-critical JavaScript to improve page load performance.'
     });
   }
   
+  if (performanceScore < 65) {
+    recommendations.push({
+      title: 'Implement Browser Caching',
+      description: 'Set proper cache headers to improve load speed for returning visitors.'
+    });
+  }
+  
+  // Accessibility recommendations
   if (accessibilityScore < 85) {
     recommendations.push({
       title: 'Improve Color Contrast',
       description: 'Ensure sufficient color contrast between text and background for better readability.'
+    });
+  }
+  
+  if (accessibilityScore < 75) {
+    recommendations.push({
+      title: 'Add Alt Text to Images',
+      description: 'Ensure all images have descriptive alt text for screen readers.'
+    });
+  }
+  
+  if (contentAnalysis.find(item => item.text.includes('Headers') && item.status !== 'good')) {
+    recommendations.push({
+      title: 'Fix Heading Structure',
+      description: 'Use proper H1, H2, H3 heading hierarchy to structure your content for better SEO and accessibility.'
     });
   }
   
@@ -133,21 +232,114 @@ const generateMockResults = (url: string) => {
     });
   }
   
-  // Mock API response
+  // Technical SEO issues (domain-specific)
+  const technicalIssues: {severity: 'high' | 'medium' | 'low', issue: string, solution: string}[] = [];
+  
+  if (!hasHttps) {
+    technicalIssues.push({
+      severity: 'high',
+      issue: 'No HTTPS implementation',
+      solution: 'Implement SSL certificate and redirect all HTTP traffic to HTTPS'
+    });
+  }
+  
+  if (hasWWW) {
+    technicalIssues.push({
+      severity: 'low',
+      issue: 'WWW subdomain usage',
+      solution: 'Consider implementing a canonical redirect to consolidate domain authority'
+    });
+  }
+  
+  if (pathLength > 20) {
+    technicalIssues.push({
+      severity: 'medium',
+      issue: 'Deep URL structure',
+      solution: 'Consider flattening URL structure for key pages to improve crawlability'
+    });
+  }
+  
+  if (seedValue % 7 === 3) {
+    technicalIssues.push({
+      severity: 'medium',
+      issue: 'Missing robots.txt file',
+      solution: 'Create a robots.txt file to guide search engine crawling behavior'
+    });
+  }
+  
+  if (seedValue % 9 === 4) {
+    technicalIssues.push({
+      severity: 'medium',
+      issue: 'Missing or incomplete sitemap.xml',
+      solution: 'Generate a comprehensive XML sitemap and submit to search engines'
+    });
+  }
+  
+  if (seedValue % 12 === 2) {
+    technicalIssues.push({
+      severity: 'high',
+      issue: 'Slow server response time',
+      solution: 'Upgrade hosting or implement caching to improve TTFB (Time to First Byte)'
+    });
+  }
+  
+  // Mock API response with more comprehensive data
   const apiResponse = JSON.stringify({
+    url: url,
+    timestamp: new Date().toISOString(),
     lighthouseResult: {
+      finalUrl: url,
+      requestedUrl: url,
+      mainDocumentUrl: url,
+      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+      fetchTime: new Date().toISOString(),
       categories: {
-        performance: { score: performanceScore / 100 },
-        accessibility: { score: accessibilityScore / 100 },
-        'best-practices': { score: bestPracticesBaseScore / 100 },
-        seo: { score: seoScore / 100 }
+        performance: { score: performanceScore / 100, title: "Performance" },
+        accessibility: { score: accessibilityScore / 100, title: "Accessibility" },
+        'best-practices': { score: bestPracticesScore / 100, title: "Best Practices" },
+        seo: { score: seoScore / 100, title: "SEO" }
       },
       audits: {
-        'document-title': { score: contentAnalysis[0].status === 'good' ? 1 : 0.5 },
-        'meta-description': { score: contentAnalysis[1].status === 'good' ? 1 : 0.5 },
-        'link-text': { score: contentAnalysis[2].status === 'good' ? 1 : 0.5 },
-        'hreflang': { score: contentAnalysis[3].status === 'good' ? 1 : 0.5 },
-        'canonical': { score: contentAnalysis[4].status === 'good' ? 1 : 0.5 },
+        'document-title': { 
+          score: contentAnalysis.find(i => i.text.includes('title'))?.status === 'good' ? 1 : 0.5,
+          title: "Document has a title element",
+          description: "The title gives screen reader users an overview of the page, and search engine users rely on it heavily to determine if a page is relevant to their search."
+        },
+        'meta-description': { 
+          score: contentAnalysis.find(i => i.text.includes('Meta description'))?.status === 'good' ? 1 : 0.5,
+          title: "Document has a meta description",
+          description: "Meta descriptions may be included in search results to concisely summarize page content."
+        },
+        'link-text': { 
+          score: contentAnalysis.find(i => i.text.includes('link text'))?.status === 'good' ? 1 : 0.5,
+          title: "Links have descriptive text",
+          description: "Link text that is descriptive helps search engines understand your content."
+        },
+        'heading-order': {
+          score: contentAnalysis.find(i => i.text.includes('Headers'))?.status === 'good' ? 1 : 0.5,
+          title: "Heading elements appear in a sequentially-descending order",
+          description: "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies."
+        },
+        'canonical': { 
+          score: contentAnalysis.find(i => i.text.includes('Canonical'))?.status === 'good' ? 1 : 0.5,
+          title: "Document has a valid `rel=canonical`",
+          description: "Canonical links suggest which URL to show in search results."
+        },
+        'is-crawlable': {
+          score: seedValue % 8 > 4 ? 1 : 0.5,
+          title: "Page isn't blocked from indexing",
+          description: "Search engines are unable to include your pages in search results if they're blocked from crawling."
+        },
+        'viewport': {
+          score: contentAnalysis.find(i => i.text.includes('Mobile'))?.status === 'good' ? 1 : 0.5,
+          title: "Has a `<meta name=\"viewport\">` tag with `width` or `initial-scale`",
+          description: "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents a 300 millisecond delay to user input."
+        },
+        'robots-txt': {
+          score: seedValue % 13 > 4 ? 1 : 0,
+          title: "robots.txt is valid",
+          description: "If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed."
+        }
       }
     }
   }, null, 2);
@@ -161,6 +353,7 @@ const generateMockResults = (url: string) => {
     performanceIssues,
     contentAnalysis,
     recommendations,
+    technicalIssues,
     apiResponse
   };
 };
@@ -174,6 +367,7 @@ const AnalyzerPage = () => {
   const [performanceIssues, setPerformanceIssues] = useState<string[]>([]);
   const [contentAnalysis, setContentAnalysis] = useState<{text: string, status: 'good' | 'warning' | 'error'}[]>([]);
   const [recommendations, setRecommendations] = useState<{title: string, description: string}[]>([]);
+  const [technicalIssues, setTechnicalIssues] = useState<{severity: 'high' | 'medium' | 'low', issue: string, solution: string}[]>([]);
   const [apiResponse, setApiResponse] = useState('');
   const [activeTipCategory, setActiveTipCategory] = useState('content');
 
@@ -187,6 +381,7 @@ const AnalyzerPage = () => {
     setPerformanceIssues(results.performanceIssues);
     setContentAnalysis(results.contentAnalysis);
     setRecommendations(results.recommendations);
+    setTechnicalIssues(results.technicalIssues);
     setApiResponse(results.apiResponse);
     
     return true;
@@ -245,6 +440,12 @@ const AnalyzerPage = () => {
     if (status === 'good') return <CheckCircle className="h-4 w-4 text-green-500" />;
     if (status === 'warning') return <AlertCircle className="h-4 w-4 text-yellow-500" />;
     return <XCircle className="h-4 w-4 text-red-500" />;
+  };
+  
+  const renderSeverityIcon = (severity: 'high' | 'medium' | 'low') => {
+    if (severity === 'low') return <AlertCircle className="h-4 w-4 text-blue-500" />;
+    if (severity === 'medium') return <AlertCircle className="h-4 w-4 text-yellow-500" />;
+    return <AlertCircle className="h-4 w-4 text-red-500" />;
   };
 
   const getSeoScoreDescription = (score: number) => {
@@ -417,6 +618,60 @@ const AnalyzerPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
+                Technical SEO Issues
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Code className="h-4 w-4 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Technical issues that may impact search engine crawling and indexing</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {technicalIssues.length > 0 ? (
+                <div className="space-y-4">
+                  {technicalIssues.map((issue, index) => (
+                    <div key={index} className="p-4 border rounded-md bg-muted/30">
+                      <div className="flex items-center gap-2">
+                        {renderSeverityIcon(issue.severity)}
+                        <h3 className="font-medium flex items-center gap-1.5">
+                          {issue.issue}
+                          <span className={`px-2 py-0.5 text-xs font-medium rounded-full 
+                            ${issue.severity === 'high' ? 'bg-red-100 text-red-800' : 
+                              issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                'bg-blue-100 text-blue-800'}`}>
+                            {issue.severity}
+                          </span>
+                        </h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        <span className="font-medium">Solution: </span>
+                        {issue.solution}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 border rounded-md">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <h3 className="font-medium">No major technical issues found</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Your website appears to follow technical SEO best practices. Keep up the good work!
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 Recommendations
                 <TooltipProvider>
                   <Tooltip>
@@ -502,6 +757,50 @@ const AnalyzerPage = () => {
                     <p className="text-sm text-muted-foreground mt-2">{tip.description}</p>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Domain Information</CardTitle>
+                <CardDescription>Basic information about the analyzed URL</CardDescription>
+              </div>
+              <Globe className="h-5 w-5 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-3 bg-muted/30 rounded-md">
+                    <div className="text-sm font-medium text-muted-foreground">Domain</div>
+                    <div className="mt-1 font-medium">{new URL(url).hostname}</div>
+                  </div>
+                  <div className="p-3 bg-muted/30 rounded-md">
+                    <div className="text-sm font-medium text-muted-foreground">Protocol</div>
+                    <div className="mt-1 font-medium">{new URL(url).protocol.replace(':', '')}</div>
+                  </div>
+                  <div className="p-3 bg-muted/30 rounded-md">
+                    <div className="text-sm font-medium text-muted-foreground">Path</div>
+                    <div className="mt-1 font-medium">{new URL(url).pathname || '/'}</div>
+                  </div>
+                  <div className="p-3 bg-muted/30 rounded-md">
+                    <div className="text-sm font-medium text-muted-foreground">TLD</div>
+                    <div className="mt-1 font-medium">
+                      {new URL(url).hostname.split('.').pop()?.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-center mt-4">
+                  <a 
+                    href={`https://www.whois.com/whois/${new URL(url).hostname}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-sm flex items-center gap-1 text-brand-purple hover:underline"
+                  >
+                    <LinkIcon className="h-3 w-3" /> View WHOIS Information
+                  </a>
+                </div>
               </div>
             </CardContent>
           </Card>
