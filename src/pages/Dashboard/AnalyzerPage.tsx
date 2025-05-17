@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,323 +12,329 @@ import { ChartContainer, ChartTooltipContent, ChartTooltip } from '@/components/
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 
-// Google API Key for SEO data
+// Google API Key voor SEO data
 const GOOGLE_API_KEY = 'AIzaSyDLEbqqWb2uxio1yoyARx-PzrvbzbGvCpg';
 
 // SEO tips by category
 const SEO_TIPS = {
   content: [
-    { title: "Create Quality Content", description: "Publish original, relevant content that provides value to your audience." },
-    { title: "Keyword Research", description: "Use keywords strategically throughout your content, especially in titles, headings, and first paragraph." },
-    { title: "Content Length", description: "Aim for comprehensive content (1000+ words) for important pages to increase authority." }
+    { title: "Creëer kwaliteitsinhoud", description: "Publiceer originele, relevante content die waarde biedt voor je publiek." },
+    { title: "Zoekwoordenonderzoek", description: "Gebruik zoekwoorden strategisch in je content, vooral in titels, koppen en eerste alinea." },
+    { title: "Contentlengte", description: "Streef naar uitgebreide content (1000+ woorden) voor belangrijke pagina's om autoriteit te vergroten." }
   ],
   technical: [
-    { title: "Mobile Optimization", description: "Ensure your site is fully responsive and mobile-friendly." },
-    { title: "Page Speed", description: "Optimize page loading speed by compressing images, minifying code, and using browser caching." },
-    { title: "HTTPS", description: "Secure your site with HTTPS to improve trust and rankings." }
+    { title: "Mobiele optimalisatie", description: "Zorg ervoor dat je site volledig responsive en mobiel-vriendelijk is." },
+    { title: "Paginasnelheid", description: "Optimaliseer laadsnelheid door afbeeldingen te comprimeren, code te minificeren en browsercaching te gebruiken." },
+    { title: "HTTPS", description: "Beveilig je site met HTTPS om vertrouwen en rankings te verbeteren." }
   ],
   onPage: [
-    { title: "Meta Tags", description: "Optimize title tags (55-60 characters) and meta descriptions (150-160 characters)." },
-    { title: "Header Structure", description: "Use proper H1, H2, H3 heading hierarchy to structure your content." },
-    { title: "URL Structure", description: "Create clean, descriptive URLs that include keywords." }
+    { title: "Meta Tags", description: "Optimaliseer title tags (55-60 tekens) en meta descriptions (150-160 tekens)." },
+    { title: "Koppenstructuur", description: "Gebruik een goede H1, H2, H3 hiërarchie om je content te structureren." },
+    { title: "URL Structuur", description: "Maak schone, beschrijvende URL's die zoekwoorden bevatten." }
   ],
   links: [
-    { title: "Internal Linking", description: "Link between relevant pages on your site to establish site architecture." },
-    { title: "External Linking", description: "Link to authoritative external sources to boost credibility." },
-    { title: "Quality Backlinks", description: "Earn backlinks from reputable websites in your industry." }
+    { title: "Interne linking", description: "Link tussen relevante pagina's op je site om de site-architectuur te versterken." },
+    { title: "Externe linking", description: "Link naar gezaghebbende externe bronnen om geloofwaardigheid te vergroten." },
+    { title: "Kwalitatieve backlinks", description: "Verkrijg backlinks van gerenommeerde websites in je branche." }
   ]
 };
 
 // Generate realistic mock results based on URL
 const generateMockResults = (url: string) => {
-  const urlLength = url.length;
-  const domain = new URL(url).hostname;
-  const hasDash = domain.includes('-');
-  const hasWWW = domain.includes('www.');
-  const topLevelDomain = domain.split('.').pop()?.toLowerCase() || '';
-  const pathLength = new URL(url).pathname.length;
-  const hasHttps = url.startsWith('https://');
-  
-  let seedValue = domain.length;
-  for (let i = 0; i < Math.min(domain.length, 5); i++) {
-    seedValue += domain.charCodeAt(i);
-  }
-  
-  const isPremiumTLD = ['com', 'org', 'net', 'io', 'ai'].includes(topLevelDomain);
-  const tldBonus = isPremiumTLD ? 5 : 0;
-  const httpsBonus = hasHttps ? 10 : 0;
-  const dashPenalty = hasDash ? -5 : 0;
-  const lengthPenalty = domain.length > 20 ? -5 : 0;
-  const pathPenalty = pathLength > 30 ? -8 : 0;
-  
-  const randomizer = (base: number, variation: number) => {
-    const randomFactor = ((seedValue % 13) - 6) * variation / 3;
-    return Math.max(15, Math.min(98, base + randomFactor));
-  };
-  
-  const seoBaseScore = 70 + tldBonus + dashPenalty + lengthPenalty + pathPenalty; 
-  const performanceBaseScore = 65 + (hasWWW ? -5 : 0);
-  const accessibilityBaseScore = 75;
-  const bestPracticesBaseScore = 68 + httpsBonus;
-  
-  const seoScore = Math.round(randomizer(seoBaseScore, 2));
-  const performanceScore = Math.round(randomizer(performanceBaseScore, 3));
-  const accessibilityScore = Math.round(randomizer(accessibilityBaseScore, 1.5));
-  const bestPracticesScore = Math.round(randomizer(bestPracticesBaseScore, 2));
-  
-  const chartData = [
-    { name: "SEO", score: seoScore },
-    { name: "Performance", score: performanceScore },
-    { name: "Accessibility", score: accessibilityScore },
-    { name: "Best Practices", score: bestPracticesScore },
-  ];
-  
-  const performanceIssues: string[] = [];
-  if (performanceScore < 90) performanceIssues.push('Render-blocking resources detected');
-  if (performanceScore < 80) performanceIssues.push('Images are not properly optimized');
-  if (performanceScore < 70) performanceIssues.push('JavaScript files are not minified');
-  if (performanceScore < 60) performanceIssues.push('CSS files could be optimized');
-  if (performanceScore < 50) performanceIssues.push('Server response time is slow');
-  if (performanceIssues.length === 0) performanceIssues.push('No major performance issues detected');
-  
-  const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [];
-  
-  contentAnalysis.push({ 
-    text: 'Page has a proper title', 
-    status: seedValue % 10 > 3 ? 'good' : 'warning' 
-  });
-  
-  contentAnalysis.push({ 
-    text: 'Meta description quality', 
-    status: seedValue % 7 > 2 ? 'good' : 'warning' 
-  });
-  
-  contentAnalysis.push({ 
-    text: 'Proper link text used', 
-    status: seedValue % 8 > 3 ? 'good' : 'warning' 
-  });
-  
-  contentAnalysis.push({ 
-    text: 'Headers structure (H1, H2, H3)', 
-    status: seedValue % 12 > 6 ? 'good' : seedValue % 12 > 3 ? 'warning' : 'error'
-  });
-  
-  contentAnalysis.push({ 
-    text: 'Mobile-friendly design', 
-    status: seedValue % 9 > 4 ? 'good' : 'warning' 
-  });
-  
-  contentAnalysis.push({ 
-    text: 'Image alt text', 
-    status: seedValue % 11 > 5 ? 'good' : seedValue % 11 > 2 ? 'warning' : 'error'
-  });
-  
-  contentAnalysis.push({ 
-    text: 'HTTPS Implementation', 
-    status: hasHttps ? 'good' : 'error' 
-  });
-  
-  contentAnalysis.push({ 
-    text: 'Canonical URL implementation', 
-    status: seedValue % 8 > 4 ? 'good' : 'warning' 
-  });
-  
-  const recommendations: {title: string, description: string}[] = [];
-  
-  if (seoScore < 90) {
-    if (!hasHttps) {
-      recommendations.push({
-        title: 'Implement HTTPS',
-        description: 'Secure your site with HTTPS to improve trust and search rankings.'
-      });
+  try {
+    const urlObj = new URL(url);
+    const urlLength = url.length;
+    const domain = urlObj.hostname;
+    const hasDash = domain.includes('-');
+    const hasWWW = domain.includes('www.');
+    const topLevelDomain = domain.split('.').pop()?.toLowerCase() || '';
+    const pathLength = urlObj.pathname.length;
+    const hasHttps = url.startsWith('https://');
+    
+    let seedValue = domain.length;
+    for (let i = 0; i < Math.min(domain.length, 5); i++) {
+      seedValue += domain.charCodeAt(i);
     }
     
-    if (hasDash) {
-      recommendations.push({
-        title: 'Consider Domain Improvements',
-        description: 'Domains with hyphens may be seen as less trustworthy. Consider consolidating to a cleaner domain if possible.'
-      });
-    }
+    const isPremiumTLD = ['com', 'org', 'net', 'io', 'ai'].includes(topLevelDomain);
+    const tldBonus = isPremiumTLD ? 5 : 0;
+    const httpsBonus = hasHttps ? 10 : 0;
+    const dashPenalty = hasDash ? -5 : 0;
+    const lengthPenalty = domain.length > 20 ? -5 : 0;
+    const pathPenalty = pathLength > 30 ? -8 : 0;
     
-    if (domain.length > 15) {
-      recommendations.push({
-        title: 'Review Domain Length',
-        description: 'Your domain is quite long. Shorter domains are easier to remember and type.'
-      });
-    }
-  }
-  
-  if (performanceScore < 85) {
-    recommendations.push({
-      title: 'Optimize Images',
-      description: 'Compress and properly format images to improve load time.'
+    const randomizer = (base: number, variation: number) => {
+      const randomFactor = ((seedValue % 13) - 6) * variation / 3;
+      return Math.max(15, Math.min(98, base + randomFactor));
+    };
+    
+    const seoBaseScore = 70 + tldBonus + dashPenalty + lengthPenalty + pathPenalty; 
+    const performanceBaseScore = 65 + (hasWWW ? -5 : 0);
+    const accessibilityBaseScore = 75;
+    const bestPracticesBaseScore = 68 + httpsBonus;
+    
+    const seoScore = Math.round(randomizer(seoBaseScore, 2));
+    const performanceScore = Math.round(randomizer(performanceBaseScore, 3));
+    const accessibilityScore = Math.round(randomizer(accessibilityBaseScore, 1.5));
+    const bestPracticesScore = Math.round(randomizer(bestPracticesBaseScore, 2));
+    
+    const chartData = [
+      { name: "SEO", score: seoScore },
+      { name: "Performance", score: performanceScore },
+      { name: "Accessibility", score: accessibilityScore },
+      { name: "Best Practices", score: bestPracticesScore },
+    ];
+    
+    const performanceIssues: string[] = [];
+    if (performanceScore < 90) performanceIssues.push('Render-blocking bronnen gedetecteerd');
+    if (performanceScore < 80) performanceIssues.push('Afbeeldingen zijn niet goed geoptimaliseerd');
+    if (performanceScore < 70) performanceIssues.push('JavaScript bestanden zijn niet geminificeerd');
+    if (performanceScore < 60) performanceIssues.push('CSS bestanden kunnen geoptimaliseerd worden');
+    if (performanceScore < 50) performanceIssues.push('Server responstijd is traag');
+    if (performanceIssues.length === 0) performanceIssues.push('Geen grote prestatieproblemen gedetecteerd');
+    
+    const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [];
+    
+    contentAnalysis.push({ 
+      text: 'Pagina heeft een juiste titel', 
+      status: seedValue % 10 > 3 ? 'good' : 'warning' 
     });
-  }
-  
-  if (performanceScore < 75) {
-    recommendations.push({
-      title: 'Minimize JavaScript',
-      description: 'Minify and defer non-critical JavaScript to improve page load performance.'
+    
+    contentAnalysis.push({ 
+      text: 'Meta beschrijving kwaliteit', 
+      status: seedValue % 7 > 2 ? 'good' : 'warning' 
     });
-  }
-  
-  if (performanceScore < 65) {
-    recommendations.push({
-      title: 'Implement Browser Caching',
-      description: 'Set proper cache headers to improve load speed for returning visitors.'
+    
+    contentAnalysis.push({ 
+      text: 'Juiste linktekst gebruikt', 
+      status: seedValue % 8 > 3 ? 'good' : 'warning' 
     });
-  }
-  
-  if (accessibilityScore < 85) {
-    recommendations.push({
-      title: 'Improve Color Contrast',
-      description: 'Ensure sufficient color contrast between text and background for better readability.'
+    
+    contentAnalysis.push({ 
+      text: 'Koppen structuur (H1, H2, H3)', 
+      status: seedValue % 12 > 6 ? 'good' : seedValue % 12 > 3 ? 'warning' : 'error'
     });
-  }
-  
-  if (accessibilityScore < 75) {
-    recommendations.push({
-      title: 'Add Alt Text to Images',
-      description: 'Ensure all images have descriptive alt text for screen readers.'
+    
+    contentAnalysis.push({ 
+      text: 'Mobiel-vriendelijk ontwerp', 
+      status: seedValue % 9 > 4 ? 'good' : 'warning' 
     });
-  }
-  
-  if (contentAnalysis.find(item => item.text.includes('Headers') && item.status !== 'good')) {
-    recommendations.push({
-      title: 'Fix Heading Structure',
-      description: 'Use proper H1, H2, H3 heading hierarchy to structure your content for better SEO and accessibility.'
+    
+    contentAnalysis.push({ 
+      text: 'Afbeelding alt-tekst', 
+      status: seedValue % 11 > 5 ? 'good' : seedValue % 11 > 2 ? 'warning' : 'error'
     });
-  }
-  
-  if (recommendations.length === 0) {
-    recommendations.push({
-      title: 'Maintain Current SEO Strategy',
-      description: 'Your website appears to be following SEO best practices. Keep up the good work!'
+    
+    contentAnalysis.push({ 
+      text: 'HTTPS implementatie', 
+      status: hasHttps ? 'good' : 'error' 
     });
-  }
-  
-  const technicalIssues: {severity: 'high' | 'medium' | 'low', issue: string, solution: string}[] = [];
-  
-  if (!hasHttps) {
-    technicalIssues.push({
-      severity: 'high',
-      issue: 'No HTTPS implementation',
-      solution: 'Implement SSL certificate and redirect all HTTP traffic to HTTPS'
+    
+    contentAnalysis.push({ 
+      text: 'Canonical URL implementatie', 
+      status: seedValue % 8 > 4 ? 'good' : 'warning' 
     });
-  }
-  
-  if (hasWWW) {
-    technicalIssues.push({
-      severity: 'low',
-      issue: 'WWW subdomain usage',
-      solution: 'Consider implementing a canonical redirect to consolidate domain authority'
-    });
-  }
-  
-  if (pathLength > 20) {
-    technicalIssues.push({
-      severity: 'medium',
-      issue: 'Deep URL structure',
-      solution: 'Consider flattening URL structure for key pages to improve crawlability'
-    });
-  }
-  
-  if (seedValue % 7 === 3) {
-    technicalIssues.push({
-      severity: 'medium',
-      issue: 'Missing robots.txt file',
-      solution: 'Create a robots.txt file to guide search engine crawling behavior'
-    });
-  }
-  
-  if (seedValue % 9 === 4) {
-    technicalIssues.push({
-      severity: 'medium',
-      issue: 'Missing or incomplete sitemap.xml',
-      solution: 'Generate a comprehensive XML sitemap and submit to search engines'
-    });
-  }
-  
-  if (seedValue % 12 === 2) {
-    technicalIssues.push({
-      severity: 'high',
-      issue: 'Slow server response time',
-      solution: 'Upgrade hosting or implement caching to improve TTFB (Time to First Byte)'
-    });
-  }
-  
-  const apiResponse = JSON.stringify({
-    url: url,
-    timestamp: new Date().toISOString(),
-    lighthouseResult: {
-      finalUrl: url,
-      requestedUrl: url,
-      mainDocumentUrl: url,
-      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
-      fetchTime: new Date().toISOString(),
-      categories: {
-        performance: { score: performanceScore / 100, title: "Performance" },
-        accessibility: { score: accessibilityScore / 100, title: "Accessibility" },
-        'best-practices': { score: bestPracticesScore / 100, title: "Best Practices" },
-        seo: { score: seoScore / 100, title: "SEO" }
-      },
-      audits: {
-        'document-title': { 
-          score: contentAnalysis.find(i => i.text.includes('title'))?.status === 'good' ? 1 : 0.5,
-          title: "Document has a title element",
-          description: "The title gives screen reader users an overview of the page, and search engine users rely on it heavily to determine if a page is relevant to their search."
-        },
-        'meta-description': { 
-          score: contentAnalysis.find(i => i.text.includes('Meta description'))?.status === 'good' ? 1 : 0.5,
-          title: "Document has a meta description",
-          description: "Meta descriptions may be included in search results to concisely summarize page content."
-        },
-        'link-text': { 
-          score: contentAnalysis.find(i => i.text.includes('link text'))?.status === 'good' ? 1 : 0.5,
-          title: "Links have descriptive text",
-          description: "Link text that is descriptive helps search engines understand your content."
-        },
-        'heading-order': {
-          score: contentAnalysis.find(i => i.text.includes('Headers'))?.status === 'good' ? 1 : 0.5,
-          title: "Heading elements appear in a sequentially-descending order",
-          description: "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies."
-        },
-        'canonical': { 
-          score: contentAnalysis.find(i => i.text.includes('Canonical'))?.status === 'good' ? 1 : 0.5,
-          title: "Document has a valid `rel=canonical`",
-          description: "Canonical links suggest which URL to show in search results."
-        },
-        'is-crawlable': {
-          score: seedValue % 8 > 4 ? 1 : 0.5,
-          title: "Page isn't blocked from indexing",
-          description: "Search engines are unable to include your pages in search results if they're blocked from crawling."
-        },
-        'viewport': {
-          score: contentAnalysis.find(i => i.text.includes('Mobile'))?.status === 'good' ? 1 : 0.5,
-          title: "Has a `<meta name=\"viewport\">` tag with `width` or `initial-scale`",
-          description: "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents a 300 millisecond delay to user input."
-        },
-        'robots-txt': {
-          score: seedValue % 13 > 4 ? 1 : 0,
-          title: "robots.txt is valid",
-          description: "If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed."
-        }
+    
+    const recommendations: {title: string, description: string}[] = [];
+    
+    if (seoScore < 90) {
+      if (!hasHttps) {
+        recommendations.push({
+          title: 'Implementeer HTTPS',
+          description: 'Beveilig je site met HTTPS om vertrouwen en zoekrankings te verbeteren.'
+        });
+      }
+      
+      if (hasDash) {
+        recommendations.push({
+          title: 'Overweeg domeinverbeteringen',
+          description: 'Domeinen met koppeltekens kunnen als minder betrouwbaar worden gezien. Overweeg te consolideren naar een schoner domein indien mogelijk.'
+        });
+      }
+      
+      if (domain.length > 15) {
+        recommendations.push({
+          title: 'Bekijk domeinlengte',
+          description: 'Je domein is vrij lang. Kortere domeinen zijn makkelijker te onthouden en te typen.'
+        });
       }
     }
-  }, null, 2);
-  
-  return {
-    seoScore,
-    performanceScore,
-    accessibilityScore, 
-    bestPracticesScore,
-    chartData,
-    performanceIssues,
-    contentAnalysis,
-    recommendations,
-    technicalIssues,
-    apiResponse
-  };
+    
+    if (performanceScore < 85) {
+      recommendations.push({
+        title: 'Optimaliseer afbeeldingen',
+        description: 'Comprimeer en formatteer afbeeldingen correct om de laadtijd te verbeteren.'
+      });
+    }
+    
+    if (performanceScore < 75) {
+      recommendations.push({
+        title: 'Minimaliseer JavaScript',
+        description: 'Minify en stel niet-kritieke JavaScript uit om de paginalaadprestaties te verbeteren.'
+      });
+    }
+    
+    if (performanceScore < 65) {
+      recommendations.push({
+        title: 'Implementeer browser caching',
+        description: 'Stel juiste cache headers in om de laadsnelheid voor terugkerende bezoekers te verbeteren.'
+      });
+    }
+    
+    if (accessibilityScore < 85) {
+      recommendations.push({
+        title: 'Verbeter kleurcontrast',
+        description: 'Zorg voor voldoende kleurcontrast tussen tekst en achtergrond voor betere leesbaarheid.'
+      });
+    }
+    
+    if (accessibilityScore < 75) {
+      recommendations.push({
+        title: 'Voeg alt-tekst toe aan afbeeldingen',
+        description: 'Zorg ervoor dat alle afbeeldingen beschrijvende alt-tekst hebben voor schermlezers.'
+      });
+    }
+    
+    if (contentAnalysis.find(item => item.text.includes('Koppen') && item.status !== 'good')) {
+      recommendations.push({
+        title: 'Herstel koppen structuur',
+        description: 'Gebruik juiste H1, H2, H3 kop hiërarchie om je content te structureren voor betere SEO en toegankelijkheid.'
+      });
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push({
+        title: 'Handhaaf huidige SEO-strategie',
+        description: 'Je website lijkt SEO-best practices te volgen. Ga zo door!'
+      });
+    }
+    
+    const technicalIssues: {severity: 'high' | 'medium' | 'low', issue: string, solution: string}[] = [];
+    
+    if (!hasHttps) {
+      technicalIssues.push({
+        severity: 'high',
+        issue: 'Geen HTTPS implementatie',
+        solution: 'Implementeer SSL-certificaat en stuur alle HTTP-verkeer door naar HTTPS'
+      });
+    }
+    
+    if (hasWWW) {
+      technicalIssues.push({
+        severity: 'low',
+        issue: 'WWW subdomein gebruik',
+        solution: 'Overweeg een canonical redirect te implementeren om domeinautoriteit te consolideren'
+      });
+    }
+    
+    if (pathLength > 20) {
+      technicalIssues.push({
+        severity: 'medium',
+        issue: 'Diepe URL-structuur',
+        solution: 'Overweeg URL-structuur voor belangrijke pagina\'s af te vlakken om crawlbaarheid te verbeteren'
+      });
+    }
+    
+    if (seedValue % 7 === 3) {
+      technicalIssues.push({
+        severity: 'medium',
+        issue: 'Ontbrekend robots.txt bestand',
+        solution: 'Maak een robots.txt bestand aan om het crawlgedrag van zoekmachines te sturen'
+      });
+    }
+    
+    if (seedValue % 9 === 4) {
+      technicalIssues.push({
+        severity: 'medium',
+        issue: 'Ontbrekende of onvolledige sitemap.xml',
+        solution: 'Genereer een uitgebreide XML sitemap en dien deze in bij zoekmachines'
+      });
+    }
+    
+    if (seedValue % 12 === 2) {
+      technicalIssues.push({
+        severity: 'high',
+        issue: 'Trage server responstijd',
+        solution: 'Upgrade hosting of implementeer caching om TTFB (Time to First Byte) te verbeteren'
+      });
+    }
+    
+    const apiResponse = JSON.stringify({
+      url: url,
+      timestamp: new Date().toISOString(),
+      lighthouseResult: {
+        finalUrl: url,
+        requestedUrl: url,
+        mainDocumentUrl: url,
+        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+        fetchTime: new Date().toISOString(),
+        categories: {
+          performance: { score: performanceScore / 100, title: "Performance" },
+          accessibility: { score: accessibilityScore / 100, title: "Accessibility" },
+          'best-practices': { score: bestPracticesScore / 100, title: "Best Practices" },
+          seo: { score: seoScore / 100, title: "SEO" }
+        },
+        audits: {
+          'document-title': { 
+            score: contentAnalysis.find(i => i.text.includes('titel'))?.status === 'good' ? 1 : 0.5,
+            title: "Document has a title element",
+            description: "The title gives screen reader users an overview of the page, and search engine users rely on it heavily to determine if a page is relevant to their search."
+          },
+          'meta-description': { 
+            score: contentAnalysis.find(i => i.text.includes('Meta'))?.status === 'good' ? 1 : 0.5,
+            title: "Document has a meta description",
+            description: "Meta descriptions may be included in search results to concisely summarize page content."
+          },
+          'link-text': { 
+            score: contentAnalysis.find(i => i.text.includes('linktekst'))?.status === 'good' ? 1 : 0.5,
+            title: "Links have descriptive text",
+            description: "Link text that is descriptive helps search engines understand your content."
+          },
+          'heading-order': {
+            score: contentAnalysis.find(i => i.text.includes('Koppen'))?.status === 'good' ? 1 : 0.5,
+            title: "Heading elements appear in a sequentially-descending order",
+            description: "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies."
+          },
+          'canonical': { 
+            score: contentAnalysis.find(i => i.text.includes('Canonical'))?.status === 'good' ? 1 : 0.5,
+            title: "Document has a valid `rel=canonical`",
+            description: "Canonical links suggest which URL to show in search results."
+          },
+          'is-crawlable': {
+            score: seedValue % 8 > 4 ? 1 : 0.5,
+            title: "Page isn't blocked from indexing",
+            description: "Search engines are unable to include your pages in search results if they're blocked from crawling."
+          },
+          'viewport': {
+            score: contentAnalysis.find(i => i.text.includes('Mobiel'))?.status === 'good' ? 1 : 0.5,
+            title: "Has a `<meta name=\"viewport\">` tag with `width` or `initial-scale`",
+            description: "A `<meta name=\"viewport\">` not only optimizes your app for mobile screen sizes, but also prevents a 300 millisecond delay to user input."
+          },
+          'robots-txt': {
+            score: seedValue % 13 > 4 ? 1 : 0,
+            title: "robots.txt is valid",
+            description: "If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed."
+          }
+        }
+      }
+    }, null, 2);
+    
+    return {
+      seoScore,
+      performanceScore,
+      accessibilityScore, 
+      bestPracticesScore,
+      chartData,
+      performanceIssues,
+      contentAnalysis,
+      recommendations,
+      technicalIssues,
+      apiResponse
+    };
+  } catch (error) {
+    console.error("Error generating mock results:", error);
+    throw error;
+  }
 };
 
 const fetchSEOData = async (url: string) => {
@@ -337,7 +344,7 @@ const fetchSEOData = async (url: string) => {
     );
     
     if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
+      throw new Error(`API fout: ${response.status}`);
     }
     
     const data = await response.json();
@@ -359,66 +366,66 @@ const fetchSEOData = async (url: string) => {
     const performanceIssues: string[] = [];
     if (lighthouseResult?.audits) {
       if (lighthouseResult.audits['render-blocking-resources']?.score < 1) {
-        performanceIssues.push('Render-blocking resources detected');
+        performanceIssues.push('Render-blocking bronnen gedetecteerd');
       }
       if (lighthouseResult.audits['unminified-javascript']?.score < 1) {
-        performanceIssues.push('JavaScript files are not minified');
+        performanceIssues.push('JavaScript bestanden zijn niet geminificeerd');
       }
       if (lighthouseResult.audits['unused-javascript']?.score < 1) {
-        performanceIssues.push('Unused JavaScript detected');
+        performanceIssues.push('Ongebruikte JavaScript gedetecteerd');
       }
       if (lighthouseResult.audits['uses-optimized-images']?.score < 1) {
-        performanceIssues.push('Images are not properly optimized');
+        performanceIssues.push('Afbeeldingen zijn niet goed geoptimaliseerd');
       }
       if (lighthouseResult.audits['unused-css-rules']?.score < 1) {
-        performanceIssues.push('Unused CSS detected');
+        performanceIssues.push('Ongebruikte CSS gedetecteerd');
       }
     }
     
-    if (performanceIssues.length === 0) performanceIssues.push('No major performance issues detected');
+    if (performanceIssues.length === 0) performanceIssues.push('Geen grote prestatieproblemen gedetecteerd');
     
     const contentAnalysis: Array<{ text: string; status: 'good' | 'warning' | 'error' }> = [];
     
     if (lighthouseResult?.audits) {
       contentAnalysis.push({ 
-        text: 'Page has a proper title', 
+        text: 'Pagina heeft een juiste titel', 
         status: lighthouseResult.audits['document-title']?.score === 1 ? 'good' : 'warning' 
       });
       
       contentAnalysis.push({ 
-        text: 'Meta description quality', 
+        text: 'Meta beschrijving kwaliteit', 
         status: lighthouseResult.audits['meta-description']?.score === 1 ? 'good' : 'warning' 
       });
       
       contentAnalysis.push({ 
-        text: 'Proper link text used', 
+        text: 'Juiste linktekst gebruikt', 
         status: lighthouseResult.audits['link-text']?.score === 1 ? 'good' : 'warning' 
       });
       
       contentAnalysis.push({ 
-        text: 'Headers structure (H1, H2, H3)', 
+        text: 'Koppen structuur (H1, H2, H3)', 
         status: lighthouseResult.audits['heading-order']?.score === 1 ? 'good' : 
                lighthouseResult.audits['heading-order']?.score === 0 ? 'error' : 'warning'
       });
       
       contentAnalysis.push({ 
-        text: 'Mobile-friendly design', 
+        text: 'Mobiel-vriendelijk ontwerp', 
         status: lighthouseResult.audits['viewport']?.score === 1 ? 'good' : 'warning' 
       });
       
       contentAnalysis.push({ 
-        text: 'Image alt text', 
+        text: 'Afbeelding alt-tekst', 
         status: lighthouseResult.audits['image-alt']?.score === 1 ? 'good' :
                lighthouseResult.audits['image-alt']?.score === 0 ? 'error' : 'warning'
       });
       
       contentAnalysis.push({ 
-        text: 'HTTPS Implementation', 
+        text: 'HTTPS implementatie', 
         status: lighthouseResult.audits['is-on-https']?.score === 1 ? 'good' : 'error' 
       });
       
       contentAnalysis.push({ 
-        text: 'Canonical URL implementation', 
+        text: 'Canonical URL implementatie', 
         status: lighthouseResult.audits['canonical']?.score === 1 ? 'good' : 'warning' 
       });
     }
@@ -428,15 +435,15 @@ const fetchSEOData = async (url: string) => {
     if (seoScore < 90) {
       if (lighthouseResult.audits['is-crawlable']?.score !== 1) {
         recommendations.push({
-          title: 'Ensure Site is Crawlable',
-          description: 'Check robots.txt and meta robots tags to make sure your content can be properly indexed.'
+          title: 'Zorg dat site crawlbaar is',
+          description: 'Controleer robots.txt en meta robots tags om ervoor te zorgen dat je content goed geïndexeerd kan worden.'
         });
       }
       
       if (lighthouseResult.audits['meta-description']?.score !== 1) {
         recommendations.push({
-          title: 'Add Meta Descriptions',
-          description: 'Meta descriptions help improve click-through rates from search results.'
+          title: 'Voeg meta beschrijvingen toe',
+          description: 'Meta beschrijvingen helpen de klikratio vanuit zoekresultaten te verbeteren.'
         });
       }
     }
@@ -444,23 +451,23 @@ const fetchSEOData = async (url: string) => {
     if (performanceScore < 85) {
       if (lighthouseResult.audits['uses-optimized-images']?.score !== 1) {
         recommendations.push({
-          title: 'Optimize Images',
-          description: 'Compress and properly format images to improve load time.'
+          title: 'Optimaliseer afbeeldingen',
+          description: 'Comprimeer en formatteer afbeeldingen correct om de laadtijd te verbeteren.'
         });
       }
       
       if (lighthouseResult.audits['render-blocking-resources']?.score !== 1) {
         recommendations.push({
-          title: 'Remove Render-Blocking Resources',
-          description: 'Defer or async load JavaScript and CSS files that block rendering.'
+          title: 'Verwijder render-blokkerende bronnen',
+          description: 'Stel JavaScript en CSS bestanden uit of laad ze asynchroon wanneer ze het renderen blokkeren.'
         });
       }
     }
     
     if (recommendations.length === 0) {
       recommendations.push({
-        title: 'Maintain Current SEO Strategy',
-        description: 'Your website appears to be following SEO best practices. Keep up the good work!'
+        title: 'Handhaaf huidige SEO-strategie',
+        description: 'Je website lijkt SEO-best practices te volgen. Ga zo door!'
       });
     }
     
@@ -469,24 +476,24 @@ const fetchSEOData = async (url: string) => {
     if (!lighthouseResult.audits['is-on-https']?.score) {
       technicalIssues.push({
         severity: 'high',
-        issue: 'No HTTPS implementation',
-        solution: 'Implement SSL certificate and redirect all HTTP traffic to HTTPS'
+        issue: 'Geen HTTPS implementatie',
+        solution: 'Implementeer SSL-certificaat en stuur alle HTTP-verkeer door naar HTTPS'
       });
     }
     
     if (!lighthouseResult.audits['robots-txt']?.score) {
       technicalIssues.push({
         severity: 'medium',
-        issue: 'Missing or invalid robots.txt file',
-        solution: 'Create a proper robots.txt file to guide search engine crawling behavior'
+        issue: 'Ontbrekend of ongeldig robots.txt bestand',
+        solution: 'Maak een goed robots.txt bestand aan om het crawlgedrag van zoekmachines te sturen'
       });
     }
     
     if (!lighthouseResult.audits['canonical']?.score) {
       technicalIssues.push({
         severity: 'medium',
-        issue: 'Missing canonical tags',
-        solution: 'Implement canonical tags to prevent duplicate content issues'
+        issue: 'Ontbrekende canonical tags',
+        solution: 'Implementeer canonical tags om problemen met dubbele content te voorkomen'
       });
     }
     
@@ -504,7 +511,9 @@ const fetchSEOData = async (url: string) => {
     };
   } catch (error) {
     console.error("Error fetching SEO data:", error);
-    return generateMockResults(url);
+    // Als de API-aanroep mislukt, gebruik dan de mock resultaten
+    const mockResults = generateMockResults(url);
+    return mockResults;
   }
 };
 
@@ -513,7 +522,7 @@ const AnalyzerPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
   const [seoScore, setSeoScore] = useState(0);
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<{ name: string; score: number }[]>([]);
   const [performanceIssues, setPerformanceIssues] = useState<string[]>([]);
   const [contentAnalysis, setContentAnalysis] = useState<{text: string, status: 'good' | 'warning' | 'error'}[]>([]);
   const [recommendations, setRecommendations] = useState<{title: string, description: string}[]>([]);
@@ -527,19 +536,25 @@ const AnalyzerPage = () => {
     
     if (!url) {
       toast({
-        title: "URL required",
-        description: "Please enter a URL to analyze",
+        title: "URL verplicht",
+        description: "Voer een URL in om te analyseren",
         variant: "destructive"
       });
       return;
     }
     
+    // Controleer of URL geldig is
+    let validUrl = url;
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      validUrl = 'https://' + url;
+    }
+    
     try {
-      new URL(url);
+      new URL(validUrl);
     } catch (e) {
       toast({
-        title: "Invalid URL",
-        description: "Please enter a valid URL (including http:// or https://)",
+        title: "Ongeldige URL",
+        description: "Voer een geldige URL in (inclusief http:// of https://)",
         variant: "destructive"
       });
       return;
@@ -548,7 +563,7 @@ const AnalyzerPage = () => {
     setIsLoading(true);
     
     try {
-      const results = await fetchSEOData(url);
+      const results = await fetchSEOData(validUrl);
       
       setSeoScore(results.seoScore);
       setChartData(results.chartData);
@@ -560,14 +575,14 @@ const AnalyzerPage = () => {
       setAnalyzed(true);
       
       toast({
-        title: "Analysis complete",
-        description: "Your SEO analysis is ready to view",
+        title: "Analyse voltooid",
+        description: "Je SEO-analyse is klaar om te bekijken",
       });
     } catch (error) {
-      console.error("Analysis error:", error);
+      console.error("Analyse error:", error);
       toast({
-        title: "Analysis failed",
-        description: "There was an error analyzing this URL. Please try again.",
+        title: "Analyse mislukt",
+        description: "Er was een fout bij het analyseren van deze URL. Probeer het opnieuw.",
         variant: "destructive"
       });
     } finally {
@@ -576,7 +591,7 @@ const AnalyzerPage = () => {
   };
 
   const navigateToContentTools = () => {
-    navigate('/dashboard/content-tools');
+    navigate('/dashboard/content');
   };
 
   const renderStatusIcon = (status: 'good' | 'warning' | 'error') => {
@@ -592,10 +607,10 @@ const AnalyzerPage = () => {
   };
 
   const getSeoScoreDescription = (score: number) => {
-    if (score >= 90) return { text: 'Excellent! Your website has great SEO.', color: 'text-green-500' };
-    if (score >= 75) return { text: 'Good! Your website scores well but has room for improvement.', color: 'text-blue-500' };
-    if (score >= 50) return { text: 'Average. Your website needs some SEO improvements.', color: 'text-yellow-500' };
-    return { text: 'Poor. Your website needs significant SEO improvements.', color: 'text-red-500' };
+    if (score >= 90) return { text: 'Uitstekend! Je website heeft geweldige SEO.', color: 'text-green-500' };
+    if (score >= 75) return { text: 'Goed! Je website scoort goed maar heeft ruimte voor verbetering.', color: 'text-blue-500' };
+    if (score >= 50) return { text: 'Gemiddeld. Je website heeft enkele SEO-verbeteringen nodig.', color: 'text-yellow-500' };
+    return { text: 'Slecht. Je website heeft aanzienlijke SEO-verbeteringen nodig.', color: 'text-red-500' };
   };
 
   const scoreDescription = getSeoScoreDescription(seoScore);
@@ -604,14 +619,14 @@ const AnalyzerPage = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">SEO Analyzer</h1>
-        <p className="text-muted-foreground">Analyze any URL to get SEO recommendations and insights.</p>
+        <p className="text-muted-foreground">Analyseer elke URL om SEO-aanbevelingen en inzichten te krijgen.</p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Analyze a URL</CardTitle>
+          <CardTitle>Analyseer een URL</CardTitle>
           <CardDescription>
-            Enter a URL to analyze its SEO performance and get recommendations
+            Voer een URL in om de SEO-prestaties te analyseren en aanbevelingen te krijgen
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -627,7 +642,7 @@ const AnalyzerPage = () => {
               disabled={isLoading}
               className="bg-gradient-to-r from-brand-purple to-brand-blue"
             >
-              {isLoading ? "Analyzing..." : "Analyze"}
+              {isLoading ? "Analyseren..." : "Analyseren"}
             </Button>
           </form>
         </CardContent>
@@ -638,7 +653,7 @@ const AnalyzerPage = () => {
           <Card>
             <CardHeader>
               <CardTitle>SEO Score</CardTitle>
-              <CardDescription>Overall score based on multiple SEO factors</CardDescription>
+              <CardDescription>Algemene score gebaseerd op meerdere SEO-factoren</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col md:flex-row justify-between items-center gap-6">
@@ -701,14 +716,14 @@ const AnalyzerPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  Performance Issues
+                  Prestatieproblemen
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <HelpCircle className="h-4 w-4 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Issues that affect your website's speed and performance</p>
+                        <p>Problemen die de snelheid en prestaties van je website beïnvloeden</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -718,7 +733,7 @@ const AnalyzerPage = () => {
                 <ul className="space-y-3">
                   {performanceIssues.map((issue, index) => (
                     <li key={index} className="flex items-center gap-3 bg-muted/50 p-3 rounded-md">
-                      {issue.includes('No major') ? 
+                      {issue.includes('Geen grote') ? 
                         <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" /> : 
                         <AlertCircle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
                       }
@@ -732,14 +747,14 @@ const AnalyzerPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  Content Analysis
+                  Content analyse
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <HelpCircle className="h-4 w-4 text-muted-foreground" />
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Analysis of your content structure and metadata</p>
+                        <p>Analyse van je content structuur en metadata</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -761,14 +776,14 @@ const AnalyzerPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                Technical SEO Issues
+                Technische SEO-problemen
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Code className="h-4 w-4 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Technical issues that may impact search engine crawling and indexing</p>
+                      <p>Technische problemen die het crawlen en indexeren door zoekmachines kunnen beïnvloeden</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -787,12 +802,12 @@ const AnalyzerPage = () => {
                             ${issue.severity === 'high' ? 'bg-red-100 text-red-800' : 
                               issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
                                 'bg-blue-100 text-blue-800'}`}>
-                            {issue.severity}
+                            {issue.severity === 'high' ? 'hoog' : issue.severity === 'medium' ? 'medium' : 'laag'}
                           </span>
                         </h3>
                       </div>
                       <p className="text-sm text-muted-foreground mt-2">
-                        <span className="font-medium">Solution: </span>
+                        <span className="font-medium">Oplossing: </span>
                         {issue.solution}
                       </p>
                     </div>
@@ -802,10 +817,10 @@ const AnalyzerPage = () => {
                 <div className="p-4 border rounded-md">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-500" />
-                    <h3 className="font-medium">No major technical issues found</h3>
+                    <h3 className="font-medium">Geen grote technische problemen gevonden</h3>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Your website appears to follow technical SEO best practices. Keep up the good work!
+                    Je website lijkt technische SEO-best practices te volgen. Ga zo door!
                   </p>
                 </div>
               )}
@@ -815,14 +830,14 @@ const AnalyzerPage = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                Recommendations
+                Aanbevelingen
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <HelpCircle className="h-4 w-4 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Specific actions to improve your SEO</p>
+                      <p>Specifieke acties om je SEO te verbeteren</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -842,10 +857,10 @@ const AnalyzerPage = () => {
                   <div className="p-4 border rounded-md">
                     <div className="flex items-center gap-2">
                       <CheckCircle className="h-5 w-5 text-green-500" />
-                      <h3 className="font-medium">No major issues found</h3>
+                      <h3 className="font-medium">Geen grote problemen gevonden</h3>
                     </div>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Your website appears to be following SEO best practices. Keep up the good work!
+                      Je website lijkt SEO-best practices te volgen. Ga zo door!
                     </p>
                   </div>
                 )}
@@ -863,13 +878,13 @@ const AnalyzerPage = () => {
                       <HelpCircle className="h-4 w-4 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>General SEO advice to improve your website</p>
+                      <p>Algemeen SEO-advies om je website te verbeteren</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </CardTitle>
               <CardDescription>
-                Learn how to optimize your website for better search engine rankings
+                Leer hoe je je website kunt optimaliseren voor betere posities in zoekmachines
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -884,7 +899,9 @@ const AnalyzerPage = () => {
                         ''}`}
                       onClick={() => setActiveTipCategory(category)}
                     >
-                      {category}
+                      {category === 'content' ? 'Content' : 
+                       category === 'technical' ? 'Technisch' : 
+                       category === 'onPage' ? 'On-Page' : 'Links'}
                     </Button>
                   ))}
                 </div>
@@ -907,7 +924,7 @@ const AnalyzerPage = () => {
                   onClick={navigateToContentTools}
                   className="bg-gradient-to-r from-brand-purple to-brand-blue flex items-center gap-2"
                 >
-                  Continue to Content Tools
+                  Ga door naar Content Tools
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -920,52 +937,52 @@ const AnalyzerPage = () => {
         <Card>
           <CardHeader>
             <CardTitle>SEO Best Practices</CardTitle>
-            <CardDescription>Tips to optimize your website for search engines</CardDescription>
+            <CardDescription>Tips om je website te optimaliseren voor zoekmachines</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="p-4 border rounded-md bg-muted/30">
                 <div className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-brand-purple" />
-                  <h3 className="font-medium">Optimize Page Speed</h3>
+                  <h3 className="font-medium">Optimaliseer paginasnelheid</h3>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Faster pages rank better in search results and provide better user experience. 
-                  Compress images, minimize code, and leverage browser caching.
+                  Snellere pagina's scoren beter in zoekresultaten en bieden een betere gebruikerservaring. 
+                  Comprimeer afbeeldingen, minimaliseer code en gebruik browsercaching.
                 </p>
               </div>
               
               <div className="p-4 border rounded-md bg-muted/30">
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-brand-purple" />
-                  <h3 className="font-medium">Create Quality Content</h3>
+                  <h3 className="font-medium">Creëer kwaliteitsinhoud</h3>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
-                  High-quality, relevant content improves your search rankings and engages visitors. 
-                  Focus on providing value to your audience.
+                  Hoogwaardige, relevante content verbetert je zoekrangschikking en betrekt bezoekers. 
+                  Focus op het bieden van waarde aan je publiek.
                 </p>
               </div>
               
               <div className="p-4 border rounded-md bg-muted/30">
                 <div className="flex items-center gap-2">
                   <FileText className="h-5 w-5 text-brand-purple" />
-                  <h3 className="font-medium">Optimize Meta Tags</h3>
+                  <h3 className="font-medium">Optimaliseer meta tags</h3>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Create compelling title tags and meta descriptions for each page. 
-                  Keep titles under 60 characters and descriptions under 160 characters.
+                  Maak overtuigende titeltags en meta-beschrijvingen voor elke pagina. 
+                  Houd titels onder 60 tekens en beschrijvingen onder 160 tekens.
                 </p>
               </div>
               
               <div className="flex flex-col items-center mt-8">
                 <p className="text-muted-foreground mb-4">
-                  Enter a URL above to get personalized SEO recommendations
+                  Voer hierboven een URL in om gepersonaliseerde SEO-aanbevelingen te krijgen
                 </p>
                 <Button 
                   onClick={navigateToContentTools} 
                   className="bg-gradient-to-r from-brand-purple to-brand-blue flex items-center gap-2"
                 >
-                  Go to Content Tools
+                  Ga naar Content Tools
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>

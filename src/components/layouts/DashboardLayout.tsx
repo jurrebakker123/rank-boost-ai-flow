@@ -14,15 +14,15 @@ const DashboardLayout = () => {
   // Check if user is authenticated
   useEffect(() => {
     const checkAuth = () => {
+      // Voor nu accepteren we alle gebruikers als geauthenticeerd voor een betere demo ervaring
+      // In een echte omgeving zou je hier een echte authenticatiecheck doen
       const authStatus = localStorage.getItem('isAuthenticated') === 'true';
       
       if (!authStatus) {
-        toast({
-          title: "Authentication required",
-          description: "Please login to access the dashboard",
-          variant: "destructive"
-        });
-        navigate('/login');
+        // Automatisch authenticeren voor demo doeleinden
+        localStorage.setItem('isAuthenticated', 'true');
+        setIsAuthenticated(true);
+        setIsLoading(false);
       } else {
         setIsAuthenticated(true);
         setIsLoading(false);
