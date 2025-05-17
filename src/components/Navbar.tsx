@@ -1,10 +1,17 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(authStatus);
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -12,6 +19,11 @@ const Navbar = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+  
+  const handleDashboardClick = () => {
+    navigate('/dashboard');
+    closeMobileMenu();
   };
 
   return (
@@ -50,19 +62,31 @@ const Navbar = () => {
           >
             Demo
           </Link>
-          <Link 
-            to="/login"
-            className="text-gray-700 hover:text-brand-purple transition-colors"
-          >
-            Login
-          </Link>
-          <Link to="/pricing">
+          
+          {isAuthenticated ? (
             <Button 
+              onClick={handleDashboardClick}
               className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity"
             >
-              Get Started
+              Dashboard
             </Button>
-          </Link>
+          ) : (
+            <>
+              <Link 
+                to="/login"
+                className="text-gray-700 hover:text-brand-purple transition-colors"
+              >
+                Login
+              </Link>
+              <Link to="/login">
+                <Button 
+                  className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity"
+                >
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
         
         {/* Mobile Menu Button */}
@@ -116,20 +140,32 @@ const Navbar = () => {
             >
               Demo
             </Link>
-            <Link 
-              to="/login"
-              className="text-gray-700 hover:text-brand-purple transition-colors py-2"
-              onClick={closeMobileMenu}
-            >
-              Login
-            </Link>
-            <Link to="/pricing" onClick={closeMobileMenu}>
+            
+            {isAuthenticated ? (
               <Button 
+                onClick={handleDashboardClick}
                 className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity w-full"
               >
-                Get Started
+                Dashboard
               </Button>
-            </Link>
+            ) : (
+              <>
+                <Link 
+                  to="/login"
+                  className="text-gray-700 hover:text-brand-purple transition-colors py-2"
+                  onClick={closeMobileMenu}
+                >
+                  Login
+                </Link>
+                <Link to="/login" onClick={closeMobileMenu}>
+                  <Button 
+                    className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity w-full"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

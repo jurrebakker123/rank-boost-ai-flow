@@ -1,7 +1,6 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,6 +22,14 @@ const AuthPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Check if user is already authenticated
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -30,9 +37,13 @@ const AuthPage = () => {
     // This is a mock authentication - in a real app, you would integrate with your auth service
     setTimeout(() => {
       setIsLoading(false);
-      // For demo purposes, let's assume login is successful
+      
+      // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('user', JSON.stringify({ email: loginEmail }));
+      localStorage.setItem('user', JSON.stringify({ 
+        name: loginEmail.split('@')[0], 
+        email: loginEmail 
+      }));
       
       toast({
         title: "Login successful",
@@ -61,7 +72,7 @@ const AuthPage = () => {
     setTimeout(() => {
       setIsLoading(false);
       
-      // For demo purposes, let's assume registration is successful
+      // Save user data and auth state
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('user', JSON.stringify({ name, email }));
       

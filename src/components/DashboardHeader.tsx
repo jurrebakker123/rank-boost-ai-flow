@@ -11,14 +11,23 @@ import {
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
 
 const DashboardHeader = () => {
+  const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('user');
-    window.location.href = '/';
+    
+    toast({
+      title: "Logged out successfully",
+      description: "Come back soon!",
+    });
+    
+    navigate('/');
   };
 
   return (
