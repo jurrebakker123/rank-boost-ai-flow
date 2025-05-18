@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom';
 // Google API Key for PageSpeed Insights
 const GOOGLE_API_KEY = 'AIzaSyA6Y0hB_yipmK41bamP0ZsUr8sp7Kym694';
 
+// Google API Key for Search Console
+const SEARCH_CONSOLE_API_KEY = 'AIzaSyDLEbqqWb2uxio1yoyARx-PzrvbzbGvCpg';
+
 // SEO tips by category
 const SEO_TIPS = {
   content: [
