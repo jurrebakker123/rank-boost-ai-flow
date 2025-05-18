@@ -4,10 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { HelpCircle, CheckCircle, XCircle, AlertCircle, TrendingUp, FileText, Code, ArrowRight } from 'lucide-react';
+import { HelpCircle, CheckCircle, XCircle, AlertCircle, TrendingUp, FileText, Code, ArrowRight, BarChart2 } from 'lucide-react';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LineChart, Line, Tooltip as RechartsTooltip } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import SearchAnalytics from '@/components/search/SearchAnalytics';
 
 // Google API Key for PageSpeed Insights
 const GOOGLE_API_KEY = 'AIzaSyA6Y0hB_yipmK41bamP0ZsUr8sp7Kym694';
@@ -650,285 +652,306 @@ const AnalyzerPage = () => {
 
       {analyzed && (
         <>
-          <Card>
-            <CardHeader>
-              <CardTitle>SEO Score</CardTitle>
-              <CardDescription>Overall score based on multiple SEO factors</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-                <div className="flex flex-col items-center">
-                  <div className="relative w-32 h-32">
-                    <div className="w-full h-full rounded-full bg-gray-100 absolute"></div>
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
-                        fill="none"
-                        stroke="#e6e6e6"
-                        strokeWidth="8"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
-                        fill="none"
-                        stroke={seoScore >= 90 ? "#22c55e" : seoScore >= 75 ? "#3b82f6" : seoScore >= 50 ? "#eab308" : "#ef4444"}
-                        strokeWidth="8"
-                        strokeDasharray={`${seoScore * 2.83} ${283 - seoScore * 2.83}`}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center flex-col">
-                      <div className="text-3xl font-bold">{seoScore}</div>
-                      <div className="text-sm">/ 100</div>
+          <Tabs defaultValue="technical" className="w-full">
+            <div className="mb-6">
+              <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2 h-auto">
+                <TabsTrigger value="technical" className="py-2">
+                  <BarChart2 className="h-4 w-4 mr-2" />
+                  Technical Analysis
+                </TabsTrigger>
+                <TabsTrigger value="search" className="py-2">
+                  <TrendingUp className="h-4 w-4 mr-2" />
+                  Search Performance
+                </TabsTrigger>
+              </TabsList>
+            </div>
+            
+            <TabsContent value="technical" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>SEO Score</CardTitle>
+                  <CardDescription>Overall score based on multiple SEO factors</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-32 h-32">
+                        <div className="w-full h-full rounded-full bg-gray-100 absolute"></div>
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#e6e6e6"
+                            strokeWidth="8"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke={seoScore >= 90 ? "#22c55e" : seoScore >= 75 ? "#3b82f6" : seoScore >= 50 ? "#eab308" : "#ef4444"}
+                            strokeWidth="8"
+                            strokeDasharray={`${seoScore * 2.83} ${283 - seoScore * 2.83}`}
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center flex-col">
+                          <div className="text-3xl font-bold">{seoScore}</div>
+                          <div className="text-sm">/ 100</div>
+                        </div>
+                      </div>
+                      <div className="mt-4 text-center">
+                        <p className={`text-sm ${scoreDescription.color}`}>
+                          {scoreDescription.text}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="w-full md:w-2/3 h-48">
+                      <ChartContainer config={{}} className="h-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis domain={[0, 100]} />
+                            <Bar 
+                              dataKey="score" 
+                              fill="var(--color-primary)" 
+                              radius={[4, 4, 0, 0]}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
                     </div>
                   </div>
-                  <div className="mt-4 text-center">
-                    <p className={`text-sm ${scoreDescription.color}`}>
-                      {scoreDescription.text}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="w-full md:w-2/3 h-48">
-                  <ChartContainer config={{}} className="h-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
-                        <YAxis domain={[0, 100]} />
-                        <Bar 
-                          dataKey="score" 
-                          fill="var(--color-primary)" 
-                          radius={[4, 4, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      Performance Issues
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Issues affecting the speed and performance of your website</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {performanceIssues.map((issue, index) => (
+                        <li key={index} className="flex items-center gap-3 bg-muted/50 p-3 rounded-md">
+                          {issue.includes('No major') ? 
+                            <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" /> : 
+                            <AlertCircle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                          }
+                          <span>{issue}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      Content Analysis
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Analysis of your content structure and metadata</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {contentAnalysis.map((item, index) => (
+                        <li key={index} className="flex items-center gap-3 bg-muted/50 p-3 rounded-md">
+                          {renderStatusIcon(item.status)}
+                          <span>{item.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               </div>
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  Performance Issues
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Issues affecting the speed and performance of your website</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {performanceIssues.map((issue, index) => (
-                    <li key={index} className="flex items-center gap-3 bg-muted/50 p-3 rounded-md">
-                      {issue.includes('No major') ? 
-                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" /> : 
-                        <AlertCircle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-                      }
-                      <span>{issue}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  Content Analysis
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Analysis of your content structure and metadata</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  {contentAnalysis.map((item, index) => (
-                    <li key={index} className="flex items-center gap-3 bg-muted/50 p-3 rounded-md">
-                      {renderStatusIcon(item.status)}
-                      <span>{item.text}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Technical SEO Issues
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Code className="h-4 w-4 text-muted-foreground" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Technical issues that may affect crawling and indexing by search engines</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {technicalIssues.length > 0 ? (
-                <div className="space-y-4">
-                  {technicalIssues.map((issue, index) => (
-                    <div key={index} className="p-4 border rounded-md bg-muted/30">
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    Technical SEO Issues
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Code className="h-4 w-4 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Technical issues that may affect crawling and indexing by search engines</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {technicalIssues.length > 0 ? (
+                    <div className="space-y-4">
+                      {technicalIssues.map((issue, index) => (
+                        <div key={index} className="p-4 border rounded-md bg-muted/30">
+                          <div className="flex items-center gap-2">
+                            {renderSeverityIcon(issue.severity)}
+                            <h3 className="font-medium flex items-center gap-1.5">
+                              {issue.issue}
+                              <span className={`px-2 py-0.5 text-xs font-medium rounded-full 
+                                ${issue.severity === 'high' ? 'bg-red-100 text-red-800' : 
+                                  issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                                    'bg-blue-100 text-blue-800'}`}>
+                                {issue.severity === 'high' ? 'high' : issue.severity === 'medium' ? 'medium' : 'low'}
+                              </span>
+                            </h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-2">
+                            <span className="font-medium">Solution: </span>
+                            {issue.solution}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 border rounded-md">
                       <div className="flex items-center gap-2">
-                        {renderSeverityIcon(issue.severity)}
-                        <h3 className="font-medium flex items-center gap-1.5">
-                          {issue.issue}
-                          <span className={`px-2 py-0.5 text-xs font-medium rounded-full 
-                            ${issue.severity === 'high' ? 'bg-red-100 text-red-800' : 
-                              issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
-                                'bg-blue-100 text-blue-800'}`}>
-                            {issue.severity === 'high' ? 'high' : issue.severity === 'medium' ? 'medium' : 'low'}
-                          </span>
-                        </h3>
+                        <CheckCircle className="h-5 w-5 text-green-500" />
+                        <h3 className="font-medium">No major technical issues found</h3>
                       </div>
                       <p className="text-sm text-muted-foreground mt-2">
-                        <span className="font-medium">Solution: </span>
-                        {issue.solution}
+                        Your website seems to follow technical SEO best practices. Keep it up!
                       </p>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-4 border rounded-md">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    <h3 className="font-medium">No major technical issues found</h3>
+                  )}
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    Recommendations
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Specific actions to improve your SEO</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recommendations.length > 0 ? recommendations.map((rec, index) => (
+                      <div key={index} className="p-4 border rounded-md bg-muted/30 hover:bg-muted/50 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5 text-brand-purple" />
+                          <h3 className="font-medium">{rec.title}</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-2">{rec.description}</p>
+                      </div>
+                    )) : (
+                      <div className="p-4 border rounded-md">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                          <h3 className="font-medium">No major issues found</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Your website seems to follow SEO best practices. Keep it up!
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Your website seems to follow technical SEO best practices. Keep it up!
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Recommendations
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Specific actions to improve your SEO</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {recommendations.length > 0 ? recommendations.map((rec, index) => (
-                  <div key={index} className="p-4 border rounded-md bg-muted/30 hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-brand-purple" />
-                      <h3 className="font-medium">{rec.title}</h3>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    SEO Tips & Best Practices
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>General SEO advice to improve your website</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </CardTitle>
+                  <CardDescription>
+                    Learn how to optimize your website for better positions in search engines
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-6">
+                    <div className="flex space-x-1 rounded-lg bg-muted p-1">
+                      {Object.keys(SEO_TIPS).map((category) => (
+                        <Button
+                          key={category}
+                          variant={activeTipCategory === category ? "default" : "ghost"}
+                          className={`flex-1 capitalize ${activeTipCategory === category ? 
+                            'bg-gradient-to-r from-brand-purple to-brand-blue text-white' : 
+                            ''}`}
+                          onClick={() => setActiveTipCategory(category as 'content' | 'technical' | 'onPage' | 'links')}
+                        >
+                          {category === 'content' ? 'Content' : 
+                           category === 'technical' ? 'Technical' : 
+                           category === 'onPage' ? 'On-Page' : 'Links'}
+                        </Button>
+                      ))}
                     </div>
-                    <p className="text-sm text-muted-foreground mt-2">{rec.description}</p>
                   </div>
-                )) : (
-                  <div className="p-4 border rounded-md">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <h3 className="font-medium">No major issues found</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Your website seems to follow SEO best practices. Keep it up!
-                    </p>
+                  
+                  <div className="space-y-4">
+                    {SEO_TIPS[activeTipCategory].map((tip, index) => (
+                      <div key={index} className="p-4 border rounded-md bg-muted/30">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-5 w-5 text-brand-purple" />
+                          <h3 className="font-medium">{tip.title}</h3>
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-2">{tip.description}</p>
+                      </div>
+                    ))}
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                SEO Tips & Best Practices
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>General SEO advice to improve your website</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </CardTitle>
-              <CardDescription>
-                Learn how to optimize your website for better positions in search engines
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6">
-                <div className="flex space-x-1 rounded-lg bg-muted p-1">
-                  {Object.keys(SEO_TIPS).map((category) => (
-                    <Button
-                      key={category}
-                      variant={activeTipCategory === category ? "default" : "ghost"}
-                      className={`flex-1 capitalize ${activeTipCategory === category ? 
-                        'bg-gradient-to-r from-brand-purple to-brand-blue text-white' : 
-                        ''}`}
-                      onClick={() => setActiveTipCategory(category as 'content' | 'technical' | 'onPage' | 'links')}
+                  
+                  <div className="flex justify-center mt-8">
+                    <Button 
+                      onClick={navigateToContentTools}
+                      className="bg-gradient-to-r from-brand-purple to-brand-blue flex items-center gap-2"
                     >
-                      {category === 'content' ? 'Content' : 
-                       category === 'technical' ? 'Technical' : 
-                       category === 'onPage' ? 'On-Page' : 'Links'}
+                      Go to Content Tools
+                      <ArrowRight className="h-4 w-4" />
                     </Button>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                {SEO_TIPS[activeTipCategory].map((tip, index) => (
-                  <div key={index} className="p-4 border rounded-md bg-muted/30">
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-brand-purple" />
-                      <h3 className="font-medium">{tip.title}</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">{tip.description}</p>
                   </div>
-                ))}
-              </div>
-              
-              <div className="flex justify-center mt-8">
-                <Button 
-                  onClick={navigateToContentTools}
-                  className="bg-gradient-to-r from-brand-purple to-brand-blue flex items-center gap-2"
-                >
-                  Go to Content Tools
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="search" className="space-y-6">
+              <SearchAnalytics url={url} apiKey={SEARCH_CONSOLE_API_KEY} />
+            </TabsContent>
+          </Tabs>
         </>
       )}
       
