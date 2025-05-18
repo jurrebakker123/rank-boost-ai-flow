@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
+import { Check, MessageSquare, Loader2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from '@supabase/supabase-js';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { supabase } from '@/integrations/supabase/client';
 
 // Initialize Supabase client with proper error handling
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -129,11 +128,6 @@ const Pricing = () => {
   // Check authentication status
   useEffect(() => {
     const checkAuth = async () => {
-      if (!supabase) {
-        setIsAuthenticated(false);
-        return;
-      }
-      
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
       
@@ -233,16 +227,6 @@ const Pricing = () => {
 
   const handleSelect = async (planName: string) => {
     try {
-      // Check if Supabase is configured
-      if (!supabase) {
-        toast({
-          title: "Configuration Error",
-          description: "Supabase connection is not configured. Please connect to Supabase via the integration.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
       // Check if user is authenticated
       if (!isAuthenticated) {
         // Redirect to auth page with return URL
@@ -287,16 +271,6 @@ const Pricing = () => {
   const handleManageSubscription = async () => {
     try {
       setIsProcessing(true);
-      
-      if (!supabase) {
-        toast({
-          title: "Configuration Error",
-          description: "Supabase connection is not configured. Please connect to Supabase via the integration.",
-          variant: "destructive",
-        });
-        setIsProcessing(false);
-        return;
-      }
       
       // Call customer portal edge function
       const { data, error } = await supabase.functions.invoke('customer-portal', {

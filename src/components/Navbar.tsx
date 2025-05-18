@@ -2,16 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client with proper error handling
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Create a placeholder client or null if credentials are missing
-const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+import { supabase } from '@/integrations/supabase/client';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -21,28 +12,20 @@ const Navbar = () => {
   // Check authentication status whenever component mounts or route changes
   useEffect(() => {
     const checkAuth = async () => {
-      // Check if Supabase is configured
-      if (!supabase) {
-        setIsAuthenticated(false);
-        return;
-      }
-      
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
     };
     
     checkAuth();
     
-    // Set up an event listener for auth changes if Supabase is configured
-    if (supabase) {
-      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-        setIsAuthenticated(!!session);
-      });
-      
-      return () => {
-        authListener.subscription.unsubscribe();
-      };
-    }
+    // Set up an event listener for auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   const toggleMobileMenu = () => {
