@@ -10,7 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 
 import { useNavigate } from 'react-router-dom';
 
 // Google API Key for PageSpeed Insights
-const GOOGLE_API_KEY = 'AIzaSyDLEbqqWb2uxio1yoyARx-PzrvbzbGvCpg';
+const GOOGLE_API_KEY = 'AIzaSyA6Y0hB_yipmK41bamP0ZsUr8sp7Kym694';
 
 // SEO tips by category
 const SEO_TIPS = {
