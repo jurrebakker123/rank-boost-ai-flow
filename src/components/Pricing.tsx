@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, MessageSquare, Loader2 } from 'lucide-react';
+import { Check, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
-
-// Initialize Supabase client with proper error handling
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Create a placeholder client or null if credentials are missing
-const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface PlanFeature {
   text: string;
