@@ -1,16 +1,20 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Palette, Image } from 'lucide-react';
+import { Palette, Shield, Image } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
 import { Switch } from '@/components/ui/switch';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
+
+// Import refactored components
+import NoAccessAlert from '@/components/white-label/NoAccessAlert';
+import BrandingTabContent from '@/components/white-label/BrandingTabContent';
+import ContentPersonalizationCard from '@/components/white-label/ContentPersonalizationCard';
+import PreviewCard from '@/components/white-label/PreviewCard';
+import DisabledAlert from '@/components/white-label/DisabledAlert';
 
 const WhiteLabelPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -135,25 +139,7 @@ const WhiteLabelPage = () => {
     return (
       <DashboardLayout>
         <div className="container mx-auto py-10">
-          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-            <h1 className="text-2xl font-bold mb-4">White Label</h1>
-            <Alert>
-              <Shield className="h-4 w-4" />
-              <AlertTitle>
-                Je hebt geen toegang tot white label functionaliteit
-              </AlertTitle>
-              <AlertDescription>
-                Upgrade naar het Power abonnement om white label functionaliteit te gebruiken en 
-                content onder je eigen merk aan klanten te leveren.
-              </AlertDescription>
-            </Alert>
-            <Button 
-              onClick={() => window.location.href = '/pricing'} 
-              className="bg-gradient-to-r from-brand-purple to-brand-blue text-white mt-4"
-            >
-              Upgrade naar Power
-            </Button>
-          </div>
+          <NoAccessAlert />
         </div>
       </DashboardLayout>
     );
@@ -197,291 +183,23 @@ const WhiteLabelPage = () => {
             </TabsList>
             
             <TabsContent value="branding">
-              <div className="grid md:grid-cols-2 gap-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Bedrijfsgegevens</CardTitle>
-                    <CardDescription>
-                      Stel je bedrijfsnaam in en hoe deze wordt weergegeven in white label content
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="companyName">Bedrijfsnaam</Label>
-                      <Input
-                        id="companyName"
-                        name="companyName"
-                        value={whiteLabelSettings.companyName}
-                        onChange={handleInputChange}
-                        placeholder="Jouw Bedrijfsnaam"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="emailFooter">Email Footer</Label>
-                      <Input
-                        id="emailFooter"
-                        name="emailFooter"
-                        value={whiteLabelSettings.emailFooter}
-                        onChange={handleInputChange}
-                        placeholder="Powered by Jouw Bedrijf | www.jouwbedrijf.nl"
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Logo</CardTitle>
-                    <CardDescription>
-                      Upload je bedrijfslogo om te gebruiken in white label rapportages
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {whiteLabelSettings.logo && (
-                      <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50 flex justify-center">
-                        <img 
-                          src={whiteLabelSettings.logo} 
-                          alt="Bedrijfslogo" 
-                          className="max-h-12"
-                        />
-                      </div>
-                    )}
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="logo">Logo uploaden</Label>
-                      <Input
-                        id="logo"
-                        type="file"
-                        accept="image/png, image/jpeg, image/svg+xml"
-                        onChange={handleLogoUpload}
-                      />
-                      <p className="text-xs text-gray-500">
-                        Aanbevolen formaat: PNG of SVG, 200x50 pixels
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Kleuren</CardTitle>
-                    <CardDescription>
-                      Pas de kleuren aan zodat ze bij je huisstijl passen
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="primaryColor">Primaire kleur</Label>
-                      <div 
-                        className="w-8 h-8 rounded-full border border-gray-200" 
-                        style={{ backgroundColor: whiteLabelSettings.primaryColor }}
-                      />
-                      <Input
-                        id="primaryColor"
-                        name="primaryColor"
-                        type="color"
-                        value={whiteLabelSettings.primaryColor}
-                        onChange={handleInputChange}
-                        className="w-full"
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="secondaryColor">Secundaire kleur</Label>
-                      <div 
-                        className="w-8 h-8 rounded-full border border-gray-200" 
-                        style={{ backgroundColor: whiteLabelSettings.secondaryColor }}
-                      />
-                      <Input
-                        id="secondaryColor"
-                        name="secondaryColor"
-                        type="color"
-                        value={whiteLabelSettings.secondaryColor}
-                        onChange={handleInputChange}
-                        className="w-full"
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Custom Domain</CardTitle>
-                    <CardDescription>
-                      Gebruik een eigen domein voor je dashboard (Premium feature)
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="customDomain">Custom Domain</Label>
-                      <Input
-                        id="customDomain"
-                        name="customDomain"
-                        value={whiteLabelSettings.customDomain}
-                        onChange={handleInputChange}
-                        placeholder="dashboard.jouwbedrijf.nl"
-                      />
-                      <p className="text-xs text-gray-500">
-                        Je moet een CNAME record aanmaken bij je DNS provider.
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <BrandingTabContent 
+                whiteLabelSettings={whiteLabelSettings}
+                handleInputChange={handleInputChange}
+                handleLogoUpload={handleLogoUpload}
+              />
             </TabsContent>
             
             <TabsContent value="customization">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Content Personalisatie</CardTitle>
-                  <CardDescription>
-                    Pas aan hoe content wordt geleverd aan jouw klanten
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">Verwijder "Powered by" vermeldingen</h3>
-                        <p className="text-sm text-gray-500">
-                          Verwijder alle verwijzingen naar ons platform in rapporten en content
-                        </p>
-                      </div>
-                      <Switch defaultChecked={true} />
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">Gebruik aangepaste email templates</h3>
-                        <p className="text-sm text-gray-500">
-                          Stuur emails naar klanten vanuit je eigen email templates
-                        </p>
-                      </div>
-                      <Switch defaultChecked={true} />
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">Aangepaste rapportages</h3>
-                        <p className="text-sm text-gray-500">
-                          Gebruik je eigen branding in alle rapportages die klanten ontvangen
-                        </p>
-                      </div>
-                      <Switch defaultChecked={true} />
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">White label client login</h3>
-                        <p className="text-sm text-gray-500">
-                          Laat klanten inloggen via een gepersonaliseerd dashboard
-                        </p>
-                      </div>
-                      <Switch defaultChecked={false} />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ContentPersonalizationCard />
             </TabsContent>
             
             <TabsContent value="preview">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Preview van White Label Content</CardTitle>
-                  <CardDescription>
-                    Zo ziet je gepersonaliseerde content eruit voor klanten
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="border rounded-lg overflow-hidden">
-                    <div className="bg-gray-50 p-4 border-b flex items-center justify-between">
-                      {whiteLabelSettings.logo ? (
-                        <img 
-                          src={whiteLabelSettings.logo} 
-                          alt={whiteLabelSettings.companyName} 
-                          className="h-8"
-                        />
-                      ) : (
-                        <h3 className="font-bold text-lg">{whiteLabelSettings.companyName || "Jouw Bedrijf"}</h3>
-                      )}
-                      
-                      <div className="flex space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      </div>
-                    </div>
-                    
-                    <div className="p-6 bg-white">
-                      <div className="mb-6">
-                        <h2 className="text-2xl font-bold" style={{ color: whiteLabelSettings.primaryColor }}>
-                          SEO Rapport voor Client Website
-                        </h2>
-                        <p className="text-sm text-gray-500">Gegenereerd op {new Date().toLocaleDateString()}</p>
-                      </div>
-                      
-                      <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div className="p-4 rounded-lg bg-gray-50 border border-gray-100">
-                          <h4 className="font-medium text-sm text-gray-500">Totaal bezoekers</h4>
-                          <p className="text-2xl font-bold">1.245</p>
-                        </div>
-                        <div className="p-4 rounded-lg bg-gray-50 border border-gray-100">
-                          <h4 className="font-medium text-sm text-gray-500">Tijd op pagina</h4>
-                          <p className="text-2xl font-bold">2:34</p>
-                        </div>
-                        <div className="p-4 rounded-lg bg-gray-50 border border-gray-100">
-                          <h4 className="font-medium text-sm text-gray-500">Bouncepercentage</h4>
-                          <p className="text-2xl font-bold">42%</p>
-                        </div>
-                      </div>
-                      
-                      <div className="p-4 rounded-lg bg-gray-50 border border-gray-100 mb-6">
-                        <h3 className="font-medium mb-2" style={{ color: whiteLabelSettings.secondaryColor }}>
-                          Google rankings voor top keywords
-                        </h3>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span>zakelijke website bouwen</span>
-                            <span className="font-bold">#3</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>wordpress website kosten</span>
-                            <span className="font-bold">#5</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>webdesign amsterdam</span>
-                            <span className="font-bold">#8</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-xs text-gray-400 text-center">
-                        {whiteLabelSettings.emailFooter || 
-                         `Powered by ${whiteLabelSettings.companyName || "Jouw Bedrijf"} | www.jouwbedrijf.nl`}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <PreviewCard whiteLabelSettings={whiteLabelSettings} />
             </TabsContent>
           </Tabs>
         ) : (
-          <Alert>
-            <Shield className="h-4 w-4" />
-            <AlertTitle>
-              White Label staat momenteel uit
-            </AlertTitle>
-            <AlertDescription>
-              Schakel White Label in om content onder je eigen merk aan te bieden aan klanten.
-            </AlertDescription>
-          </Alert>
+          <DisabledAlert />
         )}
         
         <div className="flex justify-end mt-8">
