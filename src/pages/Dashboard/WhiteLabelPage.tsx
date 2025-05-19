@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -138,8 +139,10 @@ const WhiteLabelPage = () => {
           <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
             <h1 className="text-2xl font-bold mb-4">White Label</h1>
             <Alert className="mb-4">
-              <Shield className="h-4 w-4" />
-              <AlertTitle>Je hebt geen toegang tot white label functionaliteit</AlertTitle>
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                <AlertTitle>Je hebt geen toegang tot white label functionaliteit</AlertTitle>
+              </div>
               <AlertDescription className="mt-2">
                 Upgrade naar het Power abonnement om white label functionaliteit te gebruiken en 
                 content onder je eigen merk aan klanten te leveren.
@@ -476,8 +479,10 @@ const WhiteLabelPage = () => {
           </Tabs>
         ) : (
           <Alert className="mb-8">
-            <Shield className="h-4 w-4" />
-            <AlertTitle>White Label staat momenteel uit</AlertTitle>
+            <div className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              <AlertTitle>White Label staat momenteel uit</AlertTitle>
+            </div>
             <AlertDescription className="mt-2">
               Schakel White Label in om content onder je eigen merk aan te bieden aan klanten.
             </AlertDescription>
