@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import FAQPage from "./pages/FAQPage";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/AuthPage";
 import LandingPage from "./pages/LandingPage"; // Nieuwe import
+import WhiteLabelPage from "./pages/Dashboard/WhiteLabelPage"; // Add this import
 
 // Dashboard
 import DashboardLayout from "./components/layouts/DashboardLayout";

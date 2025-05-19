@@ -1,9 +1,11 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Users, Settings, Plus, FileText, Tag, MessageSquare } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { supabase } from '@/integrations/supabase/client';
+import { Button } from "@/components/ui/button"; // Add this import
 
 interface SubscriptionData {
   subscribed: boolean;
