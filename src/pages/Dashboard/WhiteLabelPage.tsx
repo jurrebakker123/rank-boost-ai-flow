@@ -138,11 +138,11 @@ const WhiteLabelPage = () => {
           <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
             <h1 className="text-2xl font-bold mb-4">White Label</h1>
             <Alert>
-              <AlertTitle className="flex items-center gap-2">
-                <Shield className="h-4 w-4" />
+              <Shield className="h-4 w-4" />
+              <AlertTitle>
                 Je hebt geen toegang tot white label functionaliteit
               </AlertTitle>
-              <AlertDescription className="mt-2">
+              <AlertDescription>
                 Upgrade naar het Power abonnement om white label functionaliteit te gebruiken en 
                 content onder je eigen merk aan klanten te leveren.
               </AlertDescription>
@@ -474,11 +474,11 @@ const WhiteLabelPage = () => {
           </Tabs>
         ) : (
           <Alert>
-            <AlertTitle className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
+            <Shield className="h-4 w-4" />
+            <AlertTitle>
               White Label staat momenteel uit
             </AlertTitle>
-            <AlertDescription className="mt-2">
+            <AlertDescription>
               Schakel White Label in om content onder je eigen merk aan te bieden aan klanten.
             </AlertDescription>
           </Alert>
