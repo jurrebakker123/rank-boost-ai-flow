@@ -17,53 +17,53 @@ const Features = () => {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Your Complete <span className="gradient-text">SEO Solution</span>
+            Jouw Complete <span className="gradient-text">SEO Oplossing</span>
           </h2>
           <p className="text-lg text-gray-600">
-            We don't just analyze your SEO – we improve it. With zero effort from your side.
+            We analyseren je SEO niet alleen - we verbeteren het. Zonder enige moeite van jouw kant.
           </p>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <FeatureCard 
             icon="📝"
-            title="AI-Generated Blog Content" 
-            description="Get unique SEO-optimized blog posts written by AI, tailored to your business and target keywords."
+            title="AI-Gegenereerde Blog Content" 
+            description="Ontvang unieke SEO-geoptimaliseerde blogposts geschreven door AI, op maat voor jouw bedrijf en doelzoekwoorden."
           />
           <FeatureCard 
             icon="📊"
-            title="Monthly SEO Reports" 
-            description="Receive comprehensive PDF reports with SEO tips, keyword advice, and page health analysis."
+            title="Maandelijkse SEO Rapporten" 
+            description="Ontvang uitgebreide PDF-rapporten met SEO-tips, zoekwoordadvies en pagina-gezondheidsanalyse."
           />
           <FeatureCard 
             icon="🏷️"
-            title="Meta Tag Suggestions" 
-            description="Automatically generate optimized meta titles and descriptions based on your content."
+            title="Meta Tag Suggesties" 
+            description="Genereer automatisch geoptimaliseerde meta titels en beschrijvingen op basis van je content."
           />
           <FeatureCard 
             icon="🔍"
-            title="Google My Business Posts" 
-            description="Get monthly post suggestions for Google My Business to boost your local presence."
+            title="Google Mijn Bedrijf Posts" 
+            description="Ontvang maandelijkse postvoorstellen voor Google Mijn Bedrijf om je lokale aanwezigheid te versterken."
           />
           <FeatureCard 
             icon="🖥️"
-            title="Customer Dashboard" 
-            description="Access your content, reports, and settings through an intuitive self-service portal."
+            title="Klant Dashboard" 
+            description="Toegang tot je content, rapporten en instellingen via een intuïtief zelfservice portaal."
           />
           <FeatureCard 
             icon="📲"
-            title="Mobile Optimization" 
-            description="Receive tips to improve your mobile site speed and performance for better rankings."
+            title="Mobiele Optimalisatie" 
+            description="Ontvang tips om je mobiele sitesnelheid en prestaties te verbeteren voor betere rankings."
           />
           <FeatureCard 
             icon="🚀"
-            title="Keyword Strategy" 
-            description="Get data-driven keyword suggestions to target the searches that matter most."
+            title="Zoekwoordstrategie" 
+            description="Krijg data-gedreven zoekwoordsuggesties om te richten op de zoekopdrachten die het meest belangrijk zijn."
           />
           <FeatureCard 
             icon="🔄"
-            title="Easy Subscription Management" 
-            description="Upgrade, downgrade, or update your plan anytime through your dashboard."
+            title="Eenvoudig Abonnementsbeheer" 
+            description="Upgrade, downgrade of update je plan op elk moment via je dashboard."
           />
         </div>
       </div>

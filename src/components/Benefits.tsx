@@ -10,10 +10,10 @@ const Benefits = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Why choose <span className="gradient-text">SEOHelper.ai?</span>
+            Waarom kiezen voor <span className="gradient-text">SEOHelper.ai?</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            We make SEO accessible to everyone. No technical knowledge required, just results that help you get more visitors and customers.
+            Wij maken SEO toegankelijk voor iedereen. Geen technische kennis vereist, alleen resultaten die je helpen meer bezoekers en klanten te krijgen.
           </p>
         </div>
         
@@ -26,9 +26,9 @@ const Benefits = () => {
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">Higher Google Rankings</h3>
+                <h3 className="text-xl font-semibold mb-2">Hogere Google-rangschikkingen</h3>
                 <p className="text-gray-600">
-                  Our AI technology analyzes your website and industry to help you rank higher in search results for your key search terms.
+                  Onze AI-technologie analyseert je website en branche om je hoger te laten scoren in zoekresultaten voor je belangrijkste zoektermen.
                 </p>
               </div>
             </div>
@@ -40,9 +40,9 @@ const Benefits = () => {
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">AI-Generated Content</h3>
+                <h3 className="text-xl font-semibold mb-2">AI-gegenereerde content</h3>
                 <p className="text-gray-600">
-                  Get professional, SEO-optimized blog posts tailored to your business and target keywords - without writing anything yourself.
+                  Ontvang professionele, SEO-geoptimaliseerde blogartikelen op maat voor jouw bedrijf en doelzoekwoorden - zonder zelf iets te hoeven schrijven.
                 </p>
               </div>
             </div>
@@ -54,9 +54,9 @@ const Benefits = () => {
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold mb-2">More Visitors and Customers</h3>
+                <h3 className="text-xl font-semibold mb-2">Meer bezoekers en klanten</h3>
                 <p className="text-gray-600">
-                  With better rankings and relevant content, you'll attract more visitors who are genuinely interested in what you have to offer.
+                  Met betere rangschikkingen en relevante content trek je meer bezoekers aan die oprecht geïnteresseerd zijn in wat je te bieden hebt.
                 </p>
               </div>
             </div>
@@ -64,7 +64,7 @@ const Benefits = () => {
             <div className="mt-8">
               <Link to="/how-it-works">
                 <Button variant="outline" className="text-brand-purple border-brand-purple">
-                  Discover how it works <ArrowRight className="ml-2 w-4 h-4" />
+                  Ontdek hoe het werkt <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </Link>
             </div>
@@ -84,7 +84,7 @@ const Benefits = () => {
                 <div className="space-y-5">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex justify-between mb-2">
-                      <span className="font-medium">Website Ranking</span>
+                      <span className="font-medium">Website Rangschikking</span>
                       <span className="text-green-600">+28%</span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full">
@@ -94,7 +94,7 @@ const Benefits = () => {
                   
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex justify-between mb-2">
-                      <span className="font-medium">Organic Traffic</span>
+                      <span className="font-medium">Organisch Verkeer</span>
                       <span className="text-green-600">+64%</span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full">
@@ -104,7 +104,7 @@ const Benefits = () => {
                   
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex justify-between mb-2">
-                      <span className="font-medium">Content Performance</span>
+                      <span className="font-medium">Content Prestatie</span>
                       <span className="text-green-600">+42%</span>
                     </div>
                     <div className="h-2 bg-gray-200 rounded-full">
@@ -115,7 +115,7 @@ const Benefits = () => {
               </div>
               
               <div className="text-center text-sm text-gray-500 bg-gray-50 py-2 rounded-md">
-                Last update: today 10:24
+                Laatste update: vandaag 10:24
               </div>
             </div>
             

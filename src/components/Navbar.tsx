@@ -57,19 +57,19 @@ const Navbar = () => {
             to="/features"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
-            Features
+            Functies
           </Link>
           <Link 
             to="/how-it-works"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
-            How It Works
+            Hoe het Werkt
           </Link>
           <Link 
             to="/pricing"
             className="text-gray-700 hover:text-brand-purple transition-colors"
           >
-            Pricing
+            Prijzen
           </Link>
           <Link 
             to="/demo"
@@ -91,13 +91,13 @@ const Navbar = () => {
                 to="/login"
                 className="text-gray-700 hover:text-brand-purple transition-colors"
               >
-                Login
+                Inloggen
               </Link>
               <Link to="/login">
                 <Button 
                   className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity"
                 >
-                  Get Started
+                  Aan de Slag
                 </Button>
               </Link>
             </>
@@ -125,28 +125,28 @@ const Navbar = () => {
       
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white py-4 border-t">
-          <div className="container mx-auto flex flex-col space-y-4">
+        <div className="md:hidden absolute w-full bg-white shadow-lg z-50">
+          <div className="flex flex-col px-4 py-4 space-y-4">
             <Link 
               to="/features"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
               onClick={closeMobileMenu}
             >
-              Features
+              Functies
             </Link>
             <Link 
               to="/how-it-works"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
               onClick={closeMobileMenu}
             >
-              How It Works
+              Hoe het Werkt
             </Link>
             <Link 
               to="/pricing"
               className="text-gray-700 hover:text-brand-purple transition-colors py-2"
               onClick={closeMobileMenu}
             >
-              Pricing
+              Prijzen
             </Link>
             <Link 
               to="/demo"
@@ -170,13 +170,17 @@ const Navbar = () => {
                   className="text-gray-700 hover:text-brand-purple transition-colors py-2"
                   onClick={closeMobileMenu}
                 >
-                  Login
+                  Inloggen
                 </Link>
-                <Link to="/login" onClick={closeMobileMenu}>
+                <Link 
+                  to="/login" 
+                  className="w-full"
+                  onClick={closeMobileMenu}
+                >
                   <Button 
                     className="bg-gradient-to-r from-brand-purple to-brand-blue text-white hover:opacity-90 transition-opacity w-full"
                   >
-                    Get Started
+                    Aan de Slag
                   </Button>
                 </Link>
               </>

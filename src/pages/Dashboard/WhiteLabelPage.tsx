@@ -43,11 +43,11 @@ const WhiteLabelPage = () => {
           // In a real implementation, you would fetch these from a database
           setWhiteLabelSettings({
             enabled: true,
-            companyName: 'Your Agency Name',
+            companyName: 'Jouw Bedrijfsnaam',
             primaryColor: '#8B5CF6',
             secondaryColor: '#0EA5E9',
             logo: '',
-            emailFooter: 'Powered by Your Agency | www.youragency.com',
+            emailFooter: 'Powered by Jouw Bedrijf | www.jouwbedrijf.nl',
             customDomain: '',
           });
         }
@@ -225,7 +225,7 @@ const WhiteLabelPage = () => {
                         name="emailFooter"
                         value={whiteLabelSettings.emailFooter}
                         onChange={handleInputChange}
-                        placeholder="Powered by Your Agency | www.youragency.com"
+                        placeholder="Powered by Jouw Bedrijf | www.jouwbedrijf.nl"
                       />
                     </div>
                   </CardContent>
@@ -243,7 +243,7 @@ const WhiteLabelPage = () => {
                       <div className="mb-4 p-4 border border-gray-200 rounded-md bg-gray-50 flex justify-center">
                         <img 
                           src={whiteLabelSettings.logo} 
-                          alt="Company Logo" 
+                          alt="Bedrijfslogo" 
                           className="max-h-12"
                         />
                       </div>
@@ -325,7 +325,7 @@ const WhiteLabelPage = () => {
                         name="customDomain"
                         value={whiteLabelSettings.customDomain}
                         onChange={handleInputChange}
-                        placeholder="dashboard.youragency.com"
+                        placeholder="dashboard.jouwbedrijf.nl"
                       />
                       <p className="text-xs text-gray-500">
                         Je moet een CNAME record aanmaken bij je DNS provider.
@@ -414,7 +414,7 @@ const WhiteLabelPage = () => {
                           className="h-8"
                         />
                       ) : (
-                        <h3 className="font-bold text-lg">{whiteLabelSettings.companyName || "Your Agency"}</h3>
+                        <h3 className="font-bold text-lg">{whiteLabelSettings.companyName || "Jouw Bedrijf"}</h3>
                       )}
                       
                       <div className="flex space-x-2">
@@ -435,14 +435,14 @@ const WhiteLabelPage = () => {
                       <div className="grid grid-cols-3 gap-4 mb-6">
                         <div className="p-4 rounded-lg bg-gray-50 border border-gray-100">
                           <h4 className="font-medium text-sm text-gray-500">Totaal bezoekers</h4>
-                          <p className="text-2xl font-bold">1,245</p>
+                          <p className="text-2xl font-bold">1.245</p>
                         </div>
                         <div className="p-4 rounded-lg bg-gray-50 border border-gray-100">
                           <h4 className="font-medium text-sm text-gray-500">Tijd op pagina</h4>
                           <p className="text-2xl font-bold">2:34</p>
                         </div>
                         <div className="p-4 rounded-lg bg-gray-50 border border-gray-100">
-                          <h4 className="font-medium text-sm text-gray-500">Bounce rate</h4>
+                          <h4 className="font-medium text-sm text-gray-500">Bouncepercentage</h4>
                           <p className="text-2xl font-bold">42%</p>
                         </div>
                       </div>
@@ -469,7 +469,7 @@ const WhiteLabelPage = () => {
                       
                       <div className="text-xs text-gray-400 text-center">
                         {whiteLabelSettings.emailFooter || 
-                         `Powered by ${whiteLabelSettings.companyName || "Your Agency"} | www.youragency.com`}
+                         `Powered by ${whiteLabelSettings.companyName || "Jouw Bedrijf"} | www.jouwbedrijf.nl`}
                       </div>
                     </div>
                   </div>

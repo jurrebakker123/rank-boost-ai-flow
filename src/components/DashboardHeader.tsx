@@ -57,18 +57,18 @@ const DashboardHeader = ({ user, subscription, onSignOut }: DashboardHeaderProps
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+            <DropdownMenuLabel>Notificaties</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <div className="flex flex-col">
-                <span className="font-medium">Welcome to SEOHelper.ai!</span>
-                <span className="text-xs text-muted-foreground">Check out your dashboard to get started</span>
+                <span className="font-medium">Welkom bij SEOHelper.ai!</span>
+                <span className="text-xs text-muted-foreground">Bekijk je dashboard om aan de slag te gaan</span>
               </div>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <div className="flex flex-col">
-                <span className="font-medium">New SEO report available</span>
-                <span className="text-xs text-muted-foreground">Your monthly SEO report is ready</span>
+                <span className="font-medium">Nieuw SEO rapport beschikbaar</span>
+                <span className="text-xs text-muted-foreground">Je maandelijkse SEO rapport is klaar</span>
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -81,16 +81,16 @@ const DashboardHeader = ({ user, subscription, onSignOut }: DashboardHeaderProps
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Mijn Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <User className="w-4 h-4 mr-2" />
-              <span>{user?.email || 'Profile'}</span>
+              <span>{user?.email || 'Profiel'}</span>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to="/dashboard/settings">
                 <Settings className="w-4 h-4 mr-2" />
-                <span>Settings</span>
+                <span>Instellingen</span>
               </Link>
             </DropdownMenuItem>
             {subscription?.subscribed ? (
@@ -117,20 +117,20 @@ const DashboardHeader = ({ user, subscription, onSignOut }: DashboardHeaderProps
                 }}
               >
                 <CreditCard className="w-4 h-4 mr-2" />
-                <span>Manage Subscription</span>
+                <span>Abonnement Beheren</span>
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem asChild>
                 <Link to="/pricing">
                   <CreditCard className="w-4 h-4 mr-2" />
-                  <span>Upgrade Plan</span>
+                  <span>Plan Upgraden</span>
                 </Link>
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={onSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
-              <span>Log out</span>
+              <span>Uitloggen</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

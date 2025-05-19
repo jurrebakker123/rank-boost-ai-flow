@@ -28,28 +28,28 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => (
 const Testimonials = () => {
   const testimonials: Testimonial[] = [
     {
-      quote: "SEOHelper.ai has transformed our online presence. We're ranking for keywords we never imagined, and the quality of the blog content is exceptional.",
-      author: "Sarah Thompson",
-      title: "Marketing Director",
-      company: "GreenTech Solutions"
+      quote: "SEOHelper.ai heeft onze online aanwezigheid getransformeerd. We ranken voor zoekwoorden die we nooit hadden gedacht, en de kwaliteit van de blogcontent is uitzonderlijk.",
+      author: "Sarah Jansen",
+      title: "Marketing Directeur",
+      company: "GroenTech Oplossingen"
     },
     {
-      quote: "As a small business owner, I don't have time for SEO. This tool does everything automatically and I've seen my website traffic increase by 85% in just three months.",
-      author: "Michael Chen",
-      title: "Owner",
-      company: "Urban Fitness Studio"
+      quote: "Als kleine bedrijfseigenaar heb ik geen tijd voor SEO. Deze tool doet alles automatisch en ik heb mijn websiteverkeer in slechts drie maanden met 85% zien stijgen.",
+      author: "Michel Chen",
+      title: "Eigenaar",
+      company: "Stedelijke Fitness Studio"
     },
     {
-      quote: "The monthly reports are detailed yet easy to understand. I finally feel like I have control over my website's SEO without needing to become an expert.",
-      author: "Jessica Rivera",
+      quote: "De maandelijkse rapporten zijn gedetailleerd maar toch makkelijk te begrijpen. Ik heb eindelijk het gevoel dat ik controle heb over de SEO van mijn website zonder een expert te hoeven worden.",
+      author: "Jessica de Vries",
       title: "E-commerce Manager",
       company: "Boutique Fashions"
     },
     {
-      quote: "Worth every penny. The blog posts are well-researched and the SEO recommendations have been spot-on. Our organic traffic is up 62% since we started.",
-      author: "David Parker",
+      quote: "Elke cent waard. De blogposts zijn goed onderzocht en de SEO-aanbevelingen zijn spot-on. Ons organische verkeer is met 62% gestegen sinds we zijn begonnen.",
+      author: "David Bakker",
       title: "CEO",
-      company: "Parker Financial Group"
+      company: "Bakker Financiële Groep"
     },
   ];
 
@@ -58,10 +58,10 @@ const Testimonials = () => {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            What Our <span className="gradient-text">Customers Say</span>
+            Wat Onze <span className="gradient-text">Klanten Zeggen</span>
           </h2>
           <p className="text-lg text-gray-600">
-            Join hundreds of businesses already improving their SEO with our automated solution.
+            Sluit je aan bij honderden bedrijven die hun SEO al verbeteren met onze geautomatiseerde oplossing.
           </p>
         </div>
         

@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Users, Settings, Plus, FileText, Tag, MessageSquare } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from "@/components/ui/button"; // Add this import
+import { Button } from "@/components/ui/button";
 
 interface SubscriptionData {
   subscribed: boolean;
@@ -73,7 +73,7 @@ const DashboardSidebar = () => {
           </Link>
           <Link to="/dashboard/blogs" className={getLinkClass('/dashboard/blogs')}>
             <FileText className="w-5 h-5 mr-3" />
-            <span>Blog Posts</span>
+            <span>Blogartikelen</span>
           </Link>
         {subscription?.features?.chatbot && (
           <Link to="/dashboard/chatbot" className={getLinkClass('/dashboard/chatbot')}>
@@ -100,7 +100,7 @@ const DashboardSidebar = () => {
             <Button variant="ghost" className="relative h-8 w-full rounded-md border border-input bg-background px-2 text-sm font-medium ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=open]:bg-popover data-[state=open]:text-foreground">
               <Avatar className="mr-2 h-5 w-5">
                 <AvatarImage src="https://github.com/shadcn.png" alt="Avatar" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarFallback>GN</AvatarFallback>
               </Avatar>
               <span>{user ? user.email : 'Account'}</span>
             </Button>

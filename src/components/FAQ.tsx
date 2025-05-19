@@ -15,36 +15,36 @@ interface FAQItem {
 const FAQ = () => {
   const faqs: FAQItem[] = [
     {
-      question: "How does SEOHelper.ai create blog content?",
-      answer: "Our AI technology analyzes your business, industry, and target keywords to generate unique, SEO-optimized blog posts tailored specifically to your needs. The content is written to be engaging for readers while including the right keywords and structure to help improve search rankings."
+      question: "Hoe creëert SEOHelper.ai blogcontent?",
+      answer: "Onze AI-technologie analyseert je bedrijf, industrie en doelzoekwoorden om unieke, SEO-geoptimaliseerde blogposts te genereren die specifiek op jouw behoeften zijn afgestemd. De content is geschreven om aantrekkelijk te zijn voor lezers en bevat tegelijkertijd de juiste zoekwoorden en structuur om zoekrangschikkingen te verbeteren."
     },
     {
-      question: "Do I need technical SEO knowledge to use this service?",
-      answer: "Not at all! SEOHelper.ai is designed for business owners with no technical SEO expertise. Everything is automated and presented in an easy-to-understand format. You simply provide basic information about your business during setup, and our system handles the rest."
+      question: "Heb ik technische SEO-kennis nodig om deze service te gebruiken?",
+      answer: "Helemaal niet! SEOHelper.ai is ontworpen voor ondernemers zonder technische SEO-expertise. Alles is geautomatiseerd en gepresenteerd in een gemakkelijk te begrijpen formaat. Je verstrekt tijdens de setup eenvoudigweg basisinformatie over je bedrijf, en ons systeem doet de rest."
     },
     {
-      question: "Can I edit the blog posts before publishing them?",
-      answer: "Absolutely! All blog content is delivered through your dashboard where you can preview, download, and modify it before publishing. While the content is ready to use as-is, you always have the option to add your personal touch or specific details."
+      question: "Kan ik de blogartikelen bewerken voordat ik ze publiceer?",
+      answer: "Absoluut! Alle blogcontent wordt geleverd via je dashboard waar je deze kunt bekijken, downloaden en wijzigen voordat je publiceert. Hoewel de content klaar is voor direct gebruik, heb je altijd de mogelijkheid om je persoonlijke touch of specifieke details toe te voegen."
     },
     {
-      question: "How often will I receive new content and reports?",
-      answer: "Content delivery depends on your subscription plan. Basic plan subscribers receive 1 blog post monthly, while higher-tier plans receive multiple posts. SEO reports are delivered monthly to Pro plan subscribers and above. All content and reports are accessible through your dashboard as soon as they're ready."
+      question: "Hoe vaak ontvang ik nieuwe content en rapporten?",
+      answer: "Contentlevering hangt af van je abonnementsplan. Abonnees van het Basis-plan ontvangen 1 blogartikel per maand, terwijl hogere abonnementen meerdere artikelen ontvangen. SEO-rapporten worden maandelijks geleverd aan Pro-abonnees en hoger. Alle content en rapporten zijn toegankelijk via je dashboard zodra ze klaar zijn."
     },
     {
-      question: "Can I change my subscription plan later?",
-      answer: "Yes, you can upgrade, downgrade, or cancel your subscription at any time through your dashboard. Changes to your plan will take effect at the start of your next billing cycle."
+      question: "Kan ik mijn abonnementsplan later wijzigen?",
+      answer: "Ja, je kunt je abonnement op elk moment upgraden, downgraden of annuleren via je dashboard. Wijzigingen aan je plan worden van kracht aan het begin van je volgende factureringsperiode."
     },
     {
-      question: "Is there a minimum contract period?",
-      answer: "No, we don't lock you into long-term contracts. All plans are billed monthly and you can cancel anytime. We also offer a 14-day money-back guarantee if you're not satisfied with our service."
+      question: "Is er een minimale contractperiode?",
+      answer: "Nee, we binden je niet aan langetermijncontracten. Alle plannen worden maandelijks gefactureerd en je kunt op elk moment opzeggen. We bieden ook een 14-dagen geld-terug garantie als je niet tevreden bent met onze service."
     },
     {
-      question: "Will the content be original and unique to my business?",
-      answer: "Yes, all content created by SEOHelper.ai is 100% original and specifically written for your business based on the information you provide during onboarding. Each piece of content is tailored to your industry, target keywords, and brand voice."
+      question: "Zal de content origineel en uniek zijn voor mijn bedrijf?",
+      answer: "Ja, alle content die door SEOHelper.ai wordt gemaakt is 100% origineel en speciaal geschreven voor jouw bedrijf op basis van de informatie die je tijdens de onboarding verstrekt. Elk stuk content is afgestemd op jouw branche, doelzoekwoorden en merkstem."
     },
     {
-      question: "How long does it take to see results from SEO?",
-      answer: "SEO is a long-term strategy that typically shows meaningful results within 3-6 months. While some improvements may be noticeable sooner, consistent content publishing and implementation of our recommendations over several months will yield the best results for your search rankings and traffic."
+      question: "Hoe lang duurt het voordat ik resultaten zie van SEO?",
+      answer: "SEO is een langetermijnstrategie die doorgaans binnen 3-6 maanden betekenisvolle resultaten laat zien. Hoewel sommige verbeteringen eerder merkbaar kunnen zijn, zal consistent publiceren van content en het implementeren van onze aanbevelingen gedurende enkele maanden de beste resultaten opleveren voor je zoekrangschikkingen en verkeer."
     }
   ];
 
@@ -53,10 +53,10 @@ const FAQ = () => {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Frequently Asked <span className="gradient-text">Questions</span>
+            Veelgestelde <span className="gradient-text">Vragen</span>
           </h2>
           <p className="text-lg text-gray-600">
-            Everything you need to know about SEOHelper.ai and how it can help your business.
+            Alles wat je moet weten over SEOHelper.ai en hoe het je bedrijf kan helpen.
           </p>
         </div>
         

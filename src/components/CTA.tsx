@@ -15,7 +15,7 @@ const CTA = () => {
     
     // Basic email validation
     if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-      setError('Please enter a valid email address');
+      setError('Vul alstublieft een geldig e-mailadres in');
       return;
     }
     
@@ -45,10 +45,10 @@ const CTA = () => {
           
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to boost your website's SEO on autopilot?
+              Klaar om de SEO van je website op autopiloot te zetten?
             </h2>
             <p className="text-lg text-white/90 max-w-2xl mx-auto mb-8">
-              Get started with SEOHelper.ai today and receive your first AI-generated blog post and SEO recommendations within 48 hours.
+              Begin vandaag met SEOHelper.ai en ontvang binnen 48 uur je eerste AI-gegenereerde blogpost en SEO-aanbevelingen.
             </p>
             
             <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
@@ -57,7 +57,7 @@ const CTA = () => {
                   <div className="flex-1">
                     <Input 
                       type="email" 
-                      placeholder="Enter your email address" 
+                      placeholder="Vul je e-mailadres in" 
                       className="bg-white text-gray-800 border-0 h-12" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -69,20 +69,20 @@ const CTA = () => {
                     className="bg-white text-brand-purple hover:bg-gray-100 h-12" 
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? 'Sending...' : 'Get Started'}
+                    {isSubmitting ? 'Bezig met verzenden...' : 'Start nu'}
                   </Button>
                 </div>
               ) : (
                 <div className="bg-white/20 rounded-md p-4">
                   <p className="text-white">
-                    Thank you! We've sent more information to your email. Check your inbox to complete your registration.
+                    Bedankt! We hebben meer informatie naar je e-mail gestuurd. Controleer je inbox om je registratie te voltooien.
                   </p>
                 </div>
               )}
             </form>
             
             <p className="text-sm text-white/80 mt-6">
-              No credit card required to get started. 14-day money-back guarantee.
+              Geen creditcard nodig om te beginnen. 14 dagen geld-terug garantie.
             </p>
           </div>
         </div>
