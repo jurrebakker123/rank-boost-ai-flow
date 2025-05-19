@@ -138,8 +138,8 @@ const WhiteLabelPage = () => {
         <div className="container mx-auto py-10">
           <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
             <h1 className="text-2xl font-bold mb-4">White Label</h1>
-            <Alert className="mb-8 border-yellow-300 bg-yellow-50">
-              <Shield className="h-4 w-4 text-yellow-600" />
+            <Alert>
+              <Shield className="h-4 w-4" />
               <AlertTitle>Je hebt geen toegang tot white label functionaliteit</AlertTitle>
               <AlertDescription>
                 Upgrade naar het Power abonnement om white label functionaliteit te gebruiken en 
@@ -148,7 +148,7 @@ const WhiteLabelPage = () => {
             </Alert>
             <Button 
               onClick={() => window.location.href = '/pricing'} 
-              className="bg-gradient-to-r from-brand-purple to-brand-blue text-white"
+              className="bg-gradient-to-r from-brand-purple to-brand-blue text-white mt-4"
             >
               Upgrade naar Power
             </Button>
@@ -521,3 +521,4 @@ const WhiteLabelPage = () => {
 };
 
 export default WhiteLabelPage;
+
