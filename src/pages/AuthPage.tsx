@@ -15,9 +15,9 @@ const AuthPage = () => {
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   
-  // Login form state
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  // Login form state with demo credentials pre-filled
+  const [loginEmail, setLoginEmail] = useState('demo@seohelper.ai');
+  const [loginPassword, setLoginPassword] = useState('demo123');
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -55,6 +55,7 @@ const AuthPage = () => {
       toast({
         title: "Login successful",
         description: "Welcome back to SEOHelper.ai",
+        variant: "success"
       });
       
       // Check if there's a return URL in the query parameters
@@ -69,6 +70,35 @@ const AuthPage = () => {
       
     } catch (error: any) {
       console.error('Login error:', error);
+      
+      // Demo auto-registration feature
+      if (loginEmail === 'demo@seohelper.ai' && loginPassword === 'demo123') {
+        try {
+          // Try to register the demo account if login fails
+          const { data, error: signUpError } = await supabase.auth.signUp({
+            email: loginEmail,
+            password: loginPassword,
+            options: {
+              data: {
+                name: 'Demo User',
+              }
+            }
+          });
+          
+          if (!signUpError) {
+            toast({
+              title: "Demo account created",
+              description: "You've been automatically logged in with a demo account",
+              variant: "success"
+            });
+            navigate('/dashboard');
+            return;
+          }
+        } catch (signUpError) {
+          console.error('Auto-registration error:', signUpError);
+        }
+      }
+      
       toast({
         title: "Login failed",
         description: error.message || "There was a problem with your login",
@@ -108,6 +138,7 @@ const AuthPage = () => {
       toast({
         title: "Registration successful",
         description: "Welcome to SEOHelper.ai",
+        variant: "success"
       });
       
       // Check if there's a return URL in the query parameters
@@ -146,7 +177,7 @@ const AuthPage = () => {
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
                 <CardDescription>
-                  Enter your credentials to access your dashboard
+                  Gebruik de demo gegevens of maak een account aan
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleLogin}>
@@ -156,7 +187,7 @@ const AuthPage = () => {
                     <Input 
                       id="login-email" 
                       type="email" 
-                      placeholder="mail@example.com" 
+                      placeholder="demo@seohelper.ai" 
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
@@ -167,11 +198,18 @@ const AuthPage = () => {
                     <Input 
                       id="login-password" 
                       type="password" 
-                      placeholder="••••••••" 
+                      placeholder="demo123" 
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
                     />
+                  </div>
+                  <div className="bg-blue-50 p-3 rounded-md border border-blue-100">
+                    <p className="text-sm text-blue-700">
+                      <strong>Demo gegevens:</strong><br/>
+                      Email: demo@seohelper.ai<br/>
+                      Wachtwoord: demo123
+                    </p>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-col space-y-4">
@@ -180,11 +218,11 @@ const AuthPage = () => {
                     className="w-full bg-gradient-to-r from-brand-purple to-brand-blue"
                     disabled={isLoading}
                   >
-                    {isLoading ? "Logging in..." : "Login"}
+                    {isLoading ? "Inloggen..." : "Inloggen"}
                   </Button>
                   <div className="text-center text-sm">
                     <Link to="/forgot-password" className="text-brand-purple hover:underline">
-                      Forgot password?
+                      Wachtwoord vergeten?
                     </Link>
                   </div>
                 </CardFooter>
@@ -195,9 +233,9 @@ const AuthPage = () => {
           <TabsContent value="register">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Create Account</CardTitle>
+                <CardTitle className="text-2xl">Account aanmaken</CardTitle>
                 <CardDescription>
-                  Fill in your details to create an SEOHelper.ai account
+                  Vul je gegevens in om een SEOHelper.ai account aan te maken
                 </CardDescription>
               </CardHeader>
               <CardContent>

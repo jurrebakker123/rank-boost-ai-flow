@@ -137,9 +137,11 @@ const WhiteLabelPage = () => {
         <div className="container mx-auto py-10">
           <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
             <h1 className="text-2xl font-bold mb-4">White Label</h1>
-            <Alert className="mb-4">
-              <Shield className="h-4 w-4" />
-              <AlertTitle>Je hebt geen toegang tot white label functionaliteit</AlertTitle>
+            <Alert>
+              <AlertTitle className="flex items-center gap-2">
+                <Shield className="h-4 w-4" />
+                Je hebt geen toegang tot white label functionaliteit
+              </AlertTitle>
               <AlertDescription className="mt-2">
                 Upgrade naar het Power abonnement om white label functionaliteit te gebruiken en 
                 content onder je eigen merk aan klanten te leveren.
@@ -471,9 +473,11 @@ const WhiteLabelPage = () => {
             </TabsContent>
           </Tabs>
         ) : (
-          <Alert className="mb-8">
-            <Shield className="h-4 w-4" />
-            <AlertTitle>White Label staat momenteel uit</AlertTitle>
+          <Alert>
+            <AlertTitle className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              White Label staat momenteel uit
+            </AlertTitle>
             <AlertDescription className="mt-2">
               Schakel White Label in om content onder je eigen merk aan te bieden aan klanten.
             </AlertDescription>
