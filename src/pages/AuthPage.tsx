@@ -9,11 +9,30 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import RegistrationForm from '@/components/RegistrationForm';
 import { supabase } from '@/integrations/supabase/client';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { InfoIcon } from 'lucide-react';
+
+// Function to clean up auth state to prevent issues
+const cleanupAuthState = () => {
+  // Remove all Supabase auth keys from localStorage
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      localStorage.removeItem(key);
+    }
+  });
+  // Remove from sessionStorage if in use
+  Object.keys(sessionStorage || {}).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      sessionStorage.removeItem(key);
+    }
+  });
+};
 
 const AuthPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmailConfirmMessage, setShowEmailConfirmMessage] = useState(false);
   
   // Login form state with demo credentials pre-filled
   const [loginEmail, setLoginEmail] = useState('demo@seohelper.ai');
@@ -45,16 +64,33 @@ const AuthPage = () => {
     setIsLoading(true);
     
     try {
+      // Clean up existing auth state to prevent issues
+      cleanupAuthState();
+
+      // Try to sign out any existing session
+      try {
+        await supabase.auth.signOut({ scope: 'global' });
+      } catch (err) {
+        // Continue even if this fails
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: loginEmail,
         password: loginPassword,
       });
       
-      if (error) throw error;
+      if (error) {
+        // Handle email not confirmed error
+        if (error.message === 'Email not confirmed') {
+          setShowEmailConfirmMessage(true);
+          throw new Error('Email is nog niet bevestigd. Controleer je inbox voor een bevestigingslink.');
+        }
+        throw error;
+      }
       
       toast({
-        title: "Login successful",
-        description: "Welcome back to SEOHelper.ai",
+        title: "Login succesvol",
+        description: "Welkom terug bij SEOHelper.ai",
         variant: "success"
       });
       
@@ -62,10 +98,11 @@ const AuthPage = () => {
       const params = new URLSearchParams(location.search);
       const returnUrl = params.get('returnUrl');
       
+      // Force page reload for a clean state
       if (returnUrl) {
-        navigate(returnUrl);
+        window.location.href = returnUrl;
       } else {
-        navigate('/dashboard');
+        window.location.href = '/dashboard';
       }
       
     } catch (error: any) {
@@ -74,6 +111,9 @@ const AuthPage = () => {
       // Demo auto-registration feature
       if (loginEmail === 'demo@seohelper.ai' && loginPassword === 'demo123') {
         try {
+          // Clean up existing auth state to prevent issues
+          cleanupAuthState();
+          
           // Try to register the demo account if login fails
           const { data, error: signUpError } = await supabase.auth.signUp({
             email: loginEmail,
@@ -87,11 +127,13 @@ const AuthPage = () => {
           
           if (!signUpError) {
             toast({
-              title: "Demo account created",
-              description: "You've been automatically logged in with a demo account",
+              title: "Demo account aangemaakt",
+              description: "Je bent automatisch ingelogd met een demo account",
               variant: "success"
             });
-            navigate('/dashboard');
+            
+            // Force page reload for a clean state
+            window.location.href = '/dashboard';
             return;
           }
         } catch (signUpError) {
@@ -100,8 +142,10 @@ const AuthPage = () => {
       }
       
       toast({
-        title: "Login failed",
-        description: error.message || "There was a problem with your login",
+        title: "Login mislukt",
+        description: error.message === 'Invalid login credentials' 
+          ? 'Ongeldige inloggegevens. Controleer je e-mail en wachtwoord.' 
+          : (error.message || "Er was een probleem met je login"),
         variant: "destructive"
       });
     } finally {
@@ -112,8 +156,8 @@ const AuthPage = () => {
   const handleRegister = async (userData: any) => {
     if (userData.password !== userData.confirmPassword) {
       toast({
-        title: "Passwords don't match",
-        description: "Please make sure your passwords match",
+        title: "Wachtwoorden komen niet overeen",
+        description: "Zorg ervoor dat je wachtwoorden overeenkomen",
         variant: "destructive"
       });
       return;
@@ -122,6 +166,9 @@ const AuthPage = () => {
     setIsLoading(true);
     
     try {
+      // Clean up existing auth state to prevent issues
+      cleanupAuthState();
+      
       // Register user with Supabase
       const { data, error } = await supabase.auth.signUp({
         email: userData.email,
@@ -135,27 +182,19 @@ const AuthPage = () => {
       
       if (error) throw error;
       
+      setShowEmailConfirmMessage(true);
+      
       toast({
-        title: "Registration successful",
-        description: "Welcome to SEOHelper.ai",
+        title: "Registratie succesvol",
+        description: "Er is een bevestigingslink naar je e-mail gestuurd. Controleer je inbox.",
         variant: "success"
       });
-      
-      // Check if there's a return URL in the query parameters
-      const params = new URLSearchParams(location.search);
-      const returnUrl = params.get('returnUrl');
-      
-      if (returnUrl) {
-        navigate(returnUrl);
-      } else {
-        navigate('/dashboard');
-      }
       
     } catch (error: any) {
       console.error('Registration error:', error);
       toast({
-        title: "Registration failed",
-        description: error.message || "There was a problem creating your account",
+        title: "Registratie mislukt",
+        description: error.message || "Er was een probleem bij het aanmaken van je account",
         variant: "destructive"
       });
     } finally {
@@ -168,14 +207,25 @@ const AuthPage = () => {
       <div className="container mx-auto flex-1 flex flex-col items-center justify-center px-2 py-12">
         <Tabs defaultValue="login" className="w-full max-w-4xl">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="register">Register</TabsTrigger>
+            <TabsTrigger value="login">Inloggen</TabsTrigger>
+            <TabsTrigger value="register">Registreren</TabsTrigger>
           </TabsList>
+          
+          {showEmailConfirmMessage && (
+            <Alert className="mb-6 border-blue-200 bg-blue-50 text-blue-800">
+              <InfoIcon className="h-4 w-4" />
+              <AlertTitle>Bevestig je e-mailadres</AlertTitle>
+              <AlertDescription>
+                We hebben een bevestigingslink naar je e-mail gestuurd. Klik op de link in de e-mail om je account te activeren.
+                Voor deze demo is e-mailverificatie niet nodig - gebruik de demo-gegevens om direct in te loggen.
+              </AlertDescription>
+            </Alert>
+          )}
           
           <TabsContent value="login">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Inloggen</CardTitle>
                 <CardDescription>
                   Gebruik de demo gegevens of maak een account aan
                 </CardDescription>
@@ -194,7 +244,7 @@ const AuthPage = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Password</Label>
+                    <Label htmlFor="login-password">Wachtwoord</Label>
                     <Input 
                       id="login-password" 
                       type="password" 
