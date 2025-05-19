@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -274,38 +273,34 @@ const WhiteLabelPage = () => {
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="primaryColor">Primaire kleur</Label>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="w-8 h-8 rounded-full border border-gray-200" 
-                          style={{ backgroundColor: whiteLabelSettings.primaryColor }}
-                        />
-                        <Input
-                          id="primaryColor"
-                          name="primaryColor"
-                          type="color"
-                          value={whiteLabelSettings.primaryColor}
-                          onChange={handleInputChange}
-                          className="w-full"
-                        />
-                      </div>
+                      <div 
+                        className="w-8 h-8 rounded-full border border-gray-200" 
+                        style={{ backgroundColor: whiteLabelSettings.primaryColor }}
+                      />
+                      <Input
+                        id="primaryColor"
+                        name="primaryColor"
+                        type="color"
+                        value={whiteLabelSettings.primaryColor}
+                        onChange={handleInputChange}
+                        className="w-full"
+                      />
                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="secondaryColor">Secundaire kleur</Label>
-                      <div className="flex items-center space-x-2">
-                        <div 
-                          className="w-8 h-8 rounded-full border border-gray-200" 
-                          style={{ backgroundColor: whiteLabelSettings.secondaryColor }}
-                        />
-                        <Input
-                          id="secondaryColor"
-                          name="secondaryColor"
-                          type="color"
-                          value={whiteLabelSettings.secondaryColor}
-                          onChange={handleInputChange}
-                          className="w-full"
-                        />
-                      </div>
+                      <div 
+                        className="w-8 h-8 rounded-full border border-gray-200" 
+                        style={{ backgroundColor: whiteLabelSettings.secondaryColor }}
+                      />
+                      <Input
+                        id="secondaryColor"
+                        name="secondaryColor"
+                        type="color"
+                        value={whiteLabelSettings.secondaryColor}
+                        onChange={handleInputChange}
+                        className="w-full"
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -426,7 +421,7 @@ const WhiteLabelPage = () => {
                     
                     <div className="p-6 bg-white">
                       <div className="mb-6">
-                        <h2 className="text-2xl font-bold mb-2" style={{ color: whiteLabelSettings.primaryColor }}>
+                        <h2 className="text-2xl font-bold" style={{ color: whiteLabelSettings.primaryColor }}>
                           SEO Rapport voor Client Website
                         </h2>
                         <p className="text-sm text-gray-500">Gegenereerd op {new Date().toLocaleDateString()}</p>
