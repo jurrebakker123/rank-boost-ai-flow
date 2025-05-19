@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, MessageSquare, Loader2, AlertCircle } from 'lucide-react';
+import { Check, MessageSquare, Loader2, AlertCircle, Tag } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +21,7 @@ interface PricingPlan {
   popular?: boolean;
   features: PlanFeature[];
   buttonText: string;
+  whiteLabel?: boolean; // New property to indicate white label support
 }
 
 const PricingCard = ({ 
@@ -50,6 +51,12 @@ const PricingCard = ({
       {isCurrentPlan && (
         <div className="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
           JE HUIDIGE PLAN
+        </div>
+      )}
+      {plan.whiteLabel && (
+        <div className="absolute top-0 left-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-br-lg rounded-tl-lg flex items-center">
+          <Tag size={12} className="mr-1" />
+          WHITE LABEL
         </div>
       )}
       <h3 className="text-xl font-bold">{plan.name}</h3>
@@ -203,6 +210,7 @@ const Pricing = () => {
       priceId: "price_power", // Voeg hier je echte Stripe Price ID toe
       description: "Voor bureaus / heavy content",
       blogs: 20,
+      whiteLabel: true, // Enable white labeling for Power plan
       features: [
         { text: "20 SEO Blog Posts", included: true },
         { text: "Advanced SEO Tips", included: true },
@@ -212,6 +220,7 @@ const Pricing = () => {
         { text: "GMB Post Suggestions", included: true },
         { text: "Strategy Tips", included: true },
         { text: "Premium Support Dashboard", included: true },
+        { text: "White Label Reseller Mogelijkheid", included: true }, // New white label feature
       ],
       buttonText: "Choose Power"
     },
@@ -360,6 +369,39 @@ const Pricing = () => {
             />
           ))}
         </div>
+        
+        {/* White Label Feature Highlight (Only shown when any plan has white label enabled) */}
+        {plans.some(plan => plan.whiteLabel) && (
+          <div className="mt-12 p-6 bg-white rounded-xl border border-blue-300 max-w-3xl mx-auto">
+            <div className="flex items-start space-x-4">
+              <div className="bg-blue-500/10 p-3 rounded-full">
+                <Tag className="w-6 h-6 text-blue-500" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold mb-2">White Label voor Agencies</h3>
+                <p className="text-gray-700 mb-4">Perfect voor bureaus die SEO content onder eigen naam willen aanbieden aan klanten. Breid je dienstenpakket uit met een volledig white-label oplossing.</p>
+                <ul className="space-y-2">
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Jouw branding op alle content</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Doorverkoop mogelijkheid aan klanten</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Beheer meerdere eindklanten</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Check className="w-5 h-5 text-green-500 mr-2" />
+                    <span>Aangepaste rapporten met jouw logo</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* AI Chatbot Feature Highlight */}
         {chatbotEnabled && (
