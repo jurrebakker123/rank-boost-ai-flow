@@ -20,9 +20,14 @@ const alertVariants = cva(
   }
 )
 
+interface AlertProps extends React.HTMLAttributes<HTMLDivElement>,
+  VariantProps<typeof alertVariants> {
+  children: React.ReactNode;
+}
+
 const Alert = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
+  AlertProps
 >(({ className, variant, ...props }, ref) => (
   <div
     ref={ref}
@@ -33,9 +38,13 @@ const Alert = React.forwardRef<
 ))
 Alert.displayName = "Alert"
 
+interface AlertTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  children: React.ReactNode;
+}
+
 const AlertTitle = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLHeadingElement>
+  AlertTitleProps
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
@@ -45,9 +54,13 @@ const AlertTitle = React.forwardRef<
 ))
 AlertTitle.displayName = "AlertTitle"
 
+interface AlertDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: React.ReactNode;
+}
+
 const AlertDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  AlertDescriptionProps
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
