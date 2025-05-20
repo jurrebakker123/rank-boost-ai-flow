@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from '@/hooks/use-toast';
 
 const CTA = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +24,15 @@ const CTA = () => {
     
     // Simulate API call
     setTimeout(() => {
+      // In a real implementation, you would send this to an API
       console.log('Submitted email:', email);
+      console.log('Would send to info@seohelperai.com');
+      
+      toast({
+        title: "Aanvraag ontvangen",
+        description: "We hebben je aanvraag ontvangen en nemen spoedig contact met je op",
+      });
+      
       setIsSubmitting(false);
       setIsSubmitted(true);
       setEmail('');
@@ -83,6 +92,9 @@ const CTA = () => {
             
             <p className="text-sm text-white/80 mt-6">
               Geen creditcard nodig om te beginnen. 14 dagen geld-terug garantie.
+            </p>
+            <p className="text-sm text-white/80 mt-2">
+              Neem contact op via <a href="mailto:info@seohelperai.com" className="underline">info@seohelperai.com</a> voor vragen.
             </p>
           </div>
         </div>

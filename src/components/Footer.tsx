@@ -114,7 +114,7 @@ const Footer = () => {
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a>
+                <a href="mailto:info@seohelperai.com" className="text-gray-400 hover:text-white transition-colors">Contact</a>
               </li>
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
@@ -128,7 +128,7 @@ const Footer = () => {
         
         <div className="border-t border-gray-800 pt-8">
           <p className="text-gray-500 text-sm text-center">
-            &copy; {currentYear} SEOHelper.ai. All rights reserved.
+            &copy; {currentYear} SEOHelper.ai. All rights reserved. <a href="mailto:info@seohelperai.com" className="hover:text-white transition-colors">info@seohelperai.com</a>
           </p>
         </div>
       </div>

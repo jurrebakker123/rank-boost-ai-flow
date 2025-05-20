@@ -32,7 +32,7 @@ const CustomDomainCard = ({
             placeholder="dashboard.jouwbedrijf.nl"
           />
           <p className="text-xs text-gray-500">
-            Je moet een CNAME record aanmaken bij je DNS provider.
+            Je moet een CNAME record aanmaken bij je DNS provider. Voor ondersteuning, neem contact op via <a href="mailto:info@seohelperai.com" className="text-brand-purple">info@seohelperai.com</a>
           </p>
         </div>
       </CardContent>

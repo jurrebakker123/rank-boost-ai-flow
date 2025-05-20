@@ -15,6 +15,7 @@ interface WhiteLabelSettings {
   enabled: boolean;
   companyName: string;
   domainName: string;
+  customDomain: string; // Added this missing field
   primaryColor: string;
   secondaryColor: string;
   accentColor: string;
@@ -27,6 +28,7 @@ const initialSettings: WhiteLabelSettings = {
   enabled: false,
   companyName: '',
   domainName: '',
+  customDomain: '', // Added initial value
   primaryColor: '#9b87f5',
   secondaryColor: '#6E59A5',
   accentColor: '#0EA5E9',
@@ -141,7 +143,10 @@ const WhiteLabelPage = () => {
         
         <TabsContent value="domains">
           <div className="grid md:grid-cols-2 gap-8">
-            <CustomDomainCard />
+            <CustomDomainCard
+              customDomain={whiteLabelSettings.customDomain}
+              handleInputChange={handleInputChange}
+            />
           </div>
         </TabsContent>
       </Tabs>

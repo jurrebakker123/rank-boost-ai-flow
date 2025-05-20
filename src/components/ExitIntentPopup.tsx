@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { Mail, X } from 'lucide-react';
 
 const ExitIntentPopup = () => {
   const [showDialog, setShowDialog] = useState(false);
@@ -68,6 +68,7 @@ const ExitIntentPopup = () => {
             <h3 className="text-xl font-bold mb-2">Speciale aanbieding</h3>
             <p>Ontvang 10% korting op uw eerste maand als u nu inschrijft!</p>
             <p className="text-sm mt-2">Gebruik code: <span className="font-bold">COMEBACK10</span></p>
+            <p className="text-xs mt-4">Neem contact op via <a href="mailto:info@seohelperai.com" className="underline">info@seohelperai.com</a></p>
           </div>
         </div>
         <DialogFooter className="flex flex-col sm:flex-row gap-2">
@@ -86,6 +87,15 @@ const ExitIntentPopup = () => {
             }}
           >
             Bekijk de aanbiedingen
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full sm:w-auto"
+            onClick={() => {
+              window.location.href = 'mailto:info@seohelperai.com';
+            }}
+          >
+            <Mail className="mr-2 h-4 w-4" /> Contact
           </Button>
         </DialogFooter>
       </DialogContent>
