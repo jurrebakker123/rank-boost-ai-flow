@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, MessageSquare, Loader2, AlertCircle, Tag } from 'lucide-react';
@@ -22,6 +23,7 @@ interface PricingPlan {
   features: PlanFeature[];
   buttonText: string;
   whiteLabel?: boolean; // New property to indicate white label support
+  target?: string; // Target audience
 }
 
 const PricingCard = ({ 
@@ -89,6 +91,13 @@ const PricingCard = ({
             </span>
           </div>
         ))}
+        {plan.target && (
+          <div className="mt-4 pt-2 border-t border-gray-100">
+            <div className="flex items-center text-brand-purple">
+              <span className="text-sm">➤ {plan.target}</span>
+            </div>
+          </div>
+        )}
       </div>
       <Button 
         onClick={onSelect}
@@ -121,7 +130,7 @@ const Pricing = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentSubscription, setCurrentSubscription] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const chatbotPrice = "€9";
+  const chatbotPrice = "€15";
   const { toast } = useToast();
 
   // Check authentication status
@@ -152,77 +161,77 @@ const Pricing = () => {
   const plans: PricingPlan[] = [
     {
       name: "Basic",
-      price: "$24",
+      price: "€29",
       priceId: "price_basic", // Voeg hier je echte Stripe Price ID toe
       blogs: 1,
+      target: "Perfect instapmodel",
       features: [
-        { text: "1 SEO Blog Post", included: true },
-        { text: "Basic SEO Tips", included: true },
+        { text: "1 AI Blog Post", included: true },
         { text: "SEO Checklist", included: true },
+        { text: "Basic SEO Tips", included: true },
         { text: "Meta Tags Generation", included: false },
-        { text: "Monthly SEO Report", included: false },
-        { text: "GMB Post Suggestions", included: false },
-        { text: "Strategy Tips", included: false },
-        { text: "Premium Support", included: false },
+        { text: "Kleine SEO-optimalisaties", included: false },
+        { text: "Maandelijkse SEO Rapportage", included: false },
+        { text: "Google Mijn Bedrijf Posts", included: false },
+        { text: "Priority Website Scan", included: false },
       ],
-      buttonText: "Choose Basic"
+      buttonText: "Kies Basic"
     },
     {
       name: "Pro",
-      price: "$49",
+      price: "€69",
       priceId: "price_pro", // Voeg hier je echte Stripe Price ID toe
       description: "Voor de actieve ondernemer",
       blogs: 3,
+      popular: true,
+      target: "Populairst voor ZZP'ers",
       features: [
-        { text: "3 SEO Blog Posts", included: true },
+        { text: "3 AI Blog Posts", included: true },
         { text: "Advanced SEO Tips", included: true },
         { text: "SEO Checklist", included: true },
         { text: "Meta Tags Generation", included: true },
-        { text: "Small SEO Fixes", included: true },
-        { text: "GMB Post Suggestions", included: false },
-        { text: "Strategy Tips", included: false },
-        { text: "Premium Support", included: false },
+        { text: "Kleine SEO-optimalisaties", included: true },
+        { text: "Maandelijkse SEO Rapportage", included: false },
+        { text: "Google Mijn Bedrijf Posts", included: false },
+        { text: "Priority Website Scan", included: false },
       ],
-      buttonText: "Choose Pro"
+      buttonText: "Kies Pro"
     },
     {
       name: "Ultimate",
-      price: "$79",
+      price: "€129",
       priceId: "price_ultimate", // Voeg hier je echte Stripe Price ID toe
       description: "Alles wat een klein bedrijf nodig heeft",
       blogs: 9,
-      popular: true,
+      target: "Serieuze bedrijven met groeiambitie",
       features: [
-        { text: "9 SEO Blog Posts", included: true },
-        { text: "Advanced SEO Tips", included: true },
-        { text: "SEO Checklist", included: true },
-        { text: "Meta Tags Generation", included: true },
-        { text: "Monthly SEO Report", included: true },
-        { text: "GMB Post Suggestions", included: true },
+        { text: "9 AI Blog Posts", included: true },
+        { text: "Alles uit Pro", included: true },
+        { text: "Maandelijkse SEO Rapportage", included: true },
+        { text: "Google Mijn Bedrijf Posts", included: true },
         { text: "Priority Website Scan", included: true },
-        { text: "Email Support", included: true },
+        { text: "E-mail Support", included: true },
+        { text: "Strategie Tips", included: false },
+        { text: "White Label Reseller-optie", included: false },
       ],
-      buttonText: "Choose Ultimate"
+      buttonText: "Kies Ultimate"
     },
     {
       name: "Power",
-      price: "$119",
+      price: "€249",
       priceId: "price_power", // Voeg hier je echte Stripe Price ID toe
       description: "Voor bureaus / heavy content",
       blogs: 20,
       whiteLabel: true, // Enable white labeling for Power plan
+      target: "Voor agencies of grotere klanten",
       features: [
-        { text: "20 SEO Blog Posts", included: true },
-        { text: "Advanced SEO Tips", included: true },
-        { text: "SEO Checklist", included: true },
-        { text: "Meta Tags Generation", included: true },
-        { text: "Monthly SEO Report", included: true },
-        { text: "GMB Post Suggestions", included: true },
-        { text: "Strategy Tips", included: true },
-        { text: "Premium Support Dashboard", included: true },
-        { text: "White Label Reseller Mogelijkheid", included: true }, // New white label feature
+        { text: "20 AI Blog Posts", included: true },
+        { text: "Alles uit Ultimate", included: true },
+        { text: "Strategie Tips", included: true },
+        { text: "Premium Dashboard", included: true },
+        { text: "White Label Reseller-optie", included: true },
       ],
-      buttonText: "Choose Power"
+      buttonText: "Kies Power"
     },
   ];
 
