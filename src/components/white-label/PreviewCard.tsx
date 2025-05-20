@@ -10,9 +10,10 @@ interface PreviewCardProps {
     logo: string;
     emailFooter: string;
   };
+  children?: React.ReactNode;
 }
 
-const PreviewCard = ({ whiteLabelSettings }: PreviewCardProps) => {
+const PreviewCard: React.FC<PreviewCardProps> = ({ whiteLabelSettings }) => {
   return (
     <Card>
       <CardHeader>

@@ -4,7 +4,11 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const NoAccessAlert = () => {
+interface NoAccessAlertProps {
+  children?: React.ReactNode;
+}
+
+const NoAccessAlert: React.FC<NoAccessAlertProps> = () => {
   return (
     <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
       <h1 className="text-2xl font-bold mb-4">White Label</h1>

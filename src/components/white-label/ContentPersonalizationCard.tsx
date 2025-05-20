@@ -4,7 +4,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 
-const ContentPersonalizationCard = () => {
+interface ContentPersonalizationCardProps {
+  children?: React.ReactNode;
+}
+
+const ContentPersonalizationCard: React.FC<ContentPersonalizationCardProps> = () => {
   return (
     <Card>
       <CardHeader>

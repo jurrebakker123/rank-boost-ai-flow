@@ -16,13 +16,14 @@ interface BrandingTabContentProps {
   };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleLogoUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  children?: React.ReactNode;
 }
 
-const BrandingTabContent = ({
+const BrandingTabContent: React.FC<BrandingTabContentProps> = ({
   whiteLabelSettings,
   handleInputChange,
   handleLogoUpload
-}: BrandingTabContentProps) => {
+}) => {
   return (
     <div className="grid md:grid-cols-2 gap-8">
       <CompanyDetailsCard 
