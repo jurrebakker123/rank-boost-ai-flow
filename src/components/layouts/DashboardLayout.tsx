@@ -1,11 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import DashboardSidebar from '@/components/DashboardSidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import { toast } from '@/hooks/use-toast';
-import Chatbot from '@/components/Chatbot';
+import DashboardChatbot from '@/components/DashboardChatbot';
 import { supabase } from '@/integrations/supabase/client';
 
 const DashboardLayout = () => {
@@ -117,7 +116,7 @@ const DashboardLayout = () => {
               <Outlet />
             </main>
           </div>
-          <Chatbot />
+          <DashboardChatbot />
         </div>
       </SidebarProvider>
     </div>
