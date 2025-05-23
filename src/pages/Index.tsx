@@ -10,12 +10,16 @@ import CTA from '@/components/CTA';
 import Footer from '@/components/Footer';
 import Clients from '@/components/Clients';
 import Benefits from '@/components/Benefits';
+import Chatbot from '@/components/Chatbot';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
+import FloatingElements from '@/components/FloatingElements';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      <FloatingElements />
       <Navbar />
-      <main className="flex-grow">
+      <main className="flex-grow relative z-10">
         <Hero />
         <Clients />
         <Benefits />
@@ -26,6 +30,8 @@ const Index = () => {
         <CTA />
       </main>
       <Footer />
+      <Chatbot />
+      <ExitIntentPopup />
     </div>
   );
 };
