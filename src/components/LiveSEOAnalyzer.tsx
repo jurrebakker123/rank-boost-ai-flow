@@ -27,8 +27,8 @@ const LiveSEOAnalyzer = () => {
   };
 
   const analyzePageSpeed = async (validatedUrl: string) => {
-    // Use a working PageSpeed Insights API key
-    const API_KEY = 'AIzaSyBqJ5xVNf8ZNBjkQ5xQ8vQ9J5xVNf8ZNBj';
+    // Use the provided Google PageSpeed Insights API key
+    const API_KEY = '5xxd2MoJ9u31emx3fM4SNSGnnhRQjKjj4JGA8HJRwdEK';
     const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(validatedUrl)}&key=${API_KEY}&strategy=desktop&category=performance&category=accessibility&category=best-practices&category=seo`;
 
     console.log('Making PageSpeed API request to:', endpoint);
