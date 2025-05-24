@@ -146,7 +146,7 @@ const Pricing = () => {
   const plans: PricingPlan[] = [
     {
       name: "Basic",
-      price: "€29",
+      price: "€19",
       priceId: "price_basic", // Voeg hier je echte Stripe Price ID toe
       blogs: 1,
       target: "Perfect instapmodel",
@@ -164,7 +164,7 @@ const Pricing = () => {
     },
     {
       name: "Pro",
-      price: "€69",
+      price: "€49",
       priceId: "price_pro", // Voeg hier je echte Stripe Price ID toe
       description: "Voor de actieve ondernemer",
       blogs: 3,
@@ -184,7 +184,7 @@ const Pricing = () => {
     },
     {
       name: "Ultimate",
-      price: "€129",
+      price: "€99",
       priceId: "price_ultimate", // Voeg hier je echte Stripe Price ID toe
       description: "Alles wat een klein bedrijf nodig heeft",
       blogs: 9,
@@ -203,14 +203,14 @@ const Pricing = () => {
     },
     {
       name: "Power",
-      price: "€249",
+      price: "€199",
       priceId: "price_power", // Voeg hier je echte Stripe Price ID toe
       description: "Voor bureaus / heavy content",
-      blogs: 20,
+      blogs: 30,
       whiteLabel: true, // Enable white labeling for Power plan
       target: "Voor agencies of grotere klanten",
       features: [
-        { text: "20 AI Blog Posts", included: true },
+        { text: "30 AI Blog Posts", included: true },
         { text: "Alles uit Ultimate", included: true },
         { text: "Strategie Tips", included: true },
         { text: "Premium Dashboard", included: true },
