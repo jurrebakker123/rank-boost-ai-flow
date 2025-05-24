@@ -74,11 +74,11 @@ const LandingPage = () => {
             </div>
             <div className="bg-gray-50 p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="w-12 h-12 bg-brand-purple/10 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-2xl">🤖</span>
+                <span className="text-2xl">🔧</span>
               </div>
-              <h3 className="text-xl font-semibold mb-3">AI-chatbot</h3>
+              <h3 className="text-xl font-semibold mb-3">SEO-optimalisaties</h3>
               <p className="text-gray-600">
-                Voeg optioneel een slimme AI-chatbot toe aan je website die bezoekersvragen direct beantwoordt.
+                Krijg concrete verbeterpunten en optimalisaties voor je website om hoger te ranken in Google.
               </p>
             </div>
           </div>
