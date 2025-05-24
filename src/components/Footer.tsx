@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -16,10 +17,10 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div>
-            <a href="#" className="font-bold text-xl flex items-center gap-2 mb-6">
+            <Link to="/" className="font-bold text-xl flex items-center gap-2 mb-6">
               <span className="text-brand-purple-light font-extrabold">SEO</span>
               <span>Helper.ai</span>
-            </a>
+            </Link>
             <p className="text-gray-400 mb-6">
               AI-powered SEO automation that helps businesses rank higher on Google without any technical expertise.
             </p>
@@ -51,34 +52,29 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-6">Product</h3>
             <ul className="space-y-3">
               <li>
-                <button 
-                  onClick={() => scrollToSection('features')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
+                <Link to="/features" className="text-gray-400 hover:text-white transition-colors">
                   Features
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection('pricing')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
+                <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors">
                   Pricing
-                </button>
+                </Link>
               </li>
               <li>
-                <button 
-                  onClick={() => scrollToSection('demo')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
+                <Link to="/demo" className="text-gray-400 hover:text-white transition-colors">
                   Demo
-                </button>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Login</a>
+                <Link to="/login" className="text-gray-400 hover:text-white transition-colors">
+                  Login
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Sign Up</a>
+                <Link to="/login" className="text-gray-400 hover:text-white transition-colors">
+                  Sign Up
+                </Link>
               </li>
             </ul>
           </div>
@@ -87,19 +83,29 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-6">Resources</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a>
+                <Link to="/blog" className="text-gray-400 hover:text-white transition-colors">
+                  Blog
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</a>
+                <Link to="/help-center" className="text-gray-400 hover:text-white transition-colors">
+                  Help Center
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Guides</a>
+                <Link to="/guides" className="text-gray-400 hover:text-white transition-colors">
+                  Guides
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">API Documentation</a>
+                <Link to="/api-documentation" className="text-gray-400 hover:text-white transition-colors">
+                  API Documentation
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Community</a>
+                <Link to="/community" className="text-gray-400 hover:text-white transition-colors">
+                  Community
+                </Link>
               </li>
             </ul>
           </div>
@@ -108,19 +114,29 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-6">Company</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a>
+                <Link to="/about-us" className="text-gray-400 hover:text-white transition-colors">
+                  About Us
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Careers</a>
+                <Link to="/careers" className="text-gray-400 hover:text-white transition-colors">
+                  Careers
+                </Link>
               </li>
               <li>
-                <a href="mailto:info@seohelperai.com" className="text-gray-400 hover:text-white transition-colors">Contact</a>
+                <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
+                  Contact
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+                <Link to="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+                <Link to="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
               </li>
             </ul>
           </div>
@@ -128,7 +144,10 @@ const Footer = () => {
         
         <div className="border-t border-gray-800 pt-8">
           <p className="text-gray-500 text-sm text-center">
-            &copy; {currentYear} SEOHelper.ai. All rights reserved. <a href="mailto:info@seohelperai.com" className="hover:text-white transition-colors">info@seohelperai.com</a>
+            &copy; {currentYear} SEOHelper.ai. All rights reserved.{' '}
+            <a href="mailto:info@seohelperai.com" className="hover:text-white transition-colors">
+              info@seohelperai.com
+            </a>
           </p>
         </div>
       </div>

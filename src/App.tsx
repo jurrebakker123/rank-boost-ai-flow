@@ -17,6 +17,18 @@ import LandingPage from "./pages/LandingPage";
 import WhiteLabelPage from "./pages/Dashboard/WhiteLabelPage";
 import ExitIntentPopup from "./components/ExitIntentPopup";
 
+// New pages
+import BlogPage from "./pages/BlogPage";
+import HelpCenterPage from "./pages/HelpCenterPage";
+import GuidesPage from "./pages/GuidesPage";
+import APIDocumentationPage from "./pages/APIDocumentationPage";
+import CommunityPage from "./pages/CommunityPage";
+import AboutUsPage from "./pages/AboutUsPage";
+import CareersPage from "./pages/CareersPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+
 // Dashboard
 import DashboardLayout from "./components/layouts/DashboardLayout";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
@@ -45,6 +57,18 @@ const App = () => (
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/ad-campagne" element={<LandingPage />} />
+          
+          {/* New content pages */}
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/help-center" element={<HelpCenterPage />} />
+          <Route path="/guides" element={<GuidesPage />} />
+          <Route path="/api-documentation" element={<APIDocumentationPage />} />
+          <Route path="/community" element={<CommunityPage />} />
+          <Route path="/about-us" element={<AboutUsPage />} />
+          <Route path="/careers" element={<CareersPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           
           {/* Dashboard Routes */}
           <Route path="/dashboard" element={<DashboardLayout />}>
