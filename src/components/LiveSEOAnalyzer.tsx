@@ -6,45 +6,177 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, XCircle, AlertCircle, Globe, Search, Zap } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const LiveSEOAnalyzer = () => {
   const [url, setUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const { toast } = useToast();
+
+  const validateUrl = (inputUrl: string) => {
+    try {
+      const urlObj = new URL(inputUrl.startsWith('http') ? inputUrl : `https://${inputUrl}`);
+      return urlObj.href;
+    } catch {
+      return null;
+    }
+  };
+
+  const analyzePageSpeed = async (validatedUrl: string) => {
+    const API_KEY = 'AIzaSyBqJ5xVNf8ZNBjkQ5xQ8vQ9J5xVNf8ZNBj'; // Your PageSpeed Insights API key
+    const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(validatedUrl)}&key=${API_KEY}&strategy=desktop&category=performance&category=accessibility&category=best-practices&category=seo`;
+
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('PageSpeed API Error:', error);
+      throw error;
+    }
+  };
+
+  const extractSEOData = (pageSpeedData: any, validatedUrl: string) => {
+    const lighthouse = pageSpeedData.lighthouseResult;
+    const audits = lighthouse.audits;
+    
+    // Calculate overall SEO score
+    const seoScore = Math.round((lighthouse.categories.seo?.score || 0) * 100);
+    const performanceScore = Math.round((lighthouse.categories.performance?.score || 0) * 100);
+    const accessibilityScore = Math.round((lighthouse.categories.accessibility?.score || 0) * 100);
+    const bestPracticesScore = Math.round((lighthouse.categories['best-practices']?.score || 0) * 100);
+
+    // Extract SEO issues
+    const issues = [];
+    
+    if (audits['meta-description']?.score !== 1) {
+      issues.push({
+        type: 'warning',
+        text: audits['meta-description']?.displayValue || 'Meta description ontbreekt of is niet optimaal',
+        impact: 'Hoog'
+      });
+    }
+
+    if (audits['document-title']?.score !== 1) {
+      issues.push({
+        type: 'critical',
+        text: 'Title tag ontbreekt of is niet optimaal',
+        impact: 'Hoog'
+      });
+    }
+
+    if (audits['image-alt']?.score !== 1) {
+      issues.push({
+        type: 'warning',
+        text: `${audits['image-alt']?.details?.items?.length || 0} afbeeldingen missen alt tekst`,
+        impact: 'Gemiddeld'
+      });
+    }
+
+    if (audits['heading-order']?.score !== 1) {
+      issues.push({
+        type: 'info',
+        text: 'Heading structuur kan worden verbeterd',
+        impact: 'Laag'
+      });
+    }
+
+    if (audits['link-text']?.score !== 1) {
+      issues.push({
+        type: 'info',
+        text: 'Link teksten kunnen beschrijvender zijn',
+        impact: 'Laag'
+      });
+    }
+
+    // Generate recommendations based on failed audits
+    const recommendations = [];
+    
+    if (audits['meta-description']?.score !== 1) {
+      recommendations.push('Voeg een unieke meta description toe (150-160 karakters)');
+    }
+    
+    if (audits['document-title']?.score !== 1) {
+      recommendations.push('Optimaliseer je title tag (50-60 karakters)');
+    }
+    
+    if (audits['image-alt']?.score !== 1) {
+      recommendations.push('Voeg beschrijvende alt teksten toe aan alle afbeeldingen');
+    }
+    
+    if (performanceScore < 90) {
+      recommendations.push('Verbeter je pagina snelheid voor betere SEO');
+    }
+    
+    if (audits['heading-order']?.score !== 1) {
+      recommendations.push('Gebruik een logische heading structuur (H1, H2, H3)');
+    }
+
+    if (recommendations.length === 0) {
+      recommendations.push('Je website scoort goed! Monitor regelmatig voor verdere optimalisaties');
+    }
+
+    return {
+      overallScore: Math.round((seoScore + performanceScore + accessibilityScore + bestPracticesScore) / 4),
+      issues,
+      metrics: {
+        seoScore,
+        performanceScore,
+        accessibilityScore,
+        bestPracticesScore,
+        pageSpeed: performanceScore
+      },
+      recommendations,
+      loadTime: audits['speed-index']?.displayValue || 'Onbekend',
+      pageSize: audits['total-byte-weight']?.displayValue || 'Onbekend'
+    };
+  };
 
   const handleAnalyze = async () => {
     if (!url) return;
     
-    setIsAnalyzing(true);
+    const validatedUrl = validateUrl(url);
+    if (!validatedUrl) {
+      toast({
+        title: "Ongeldige URL",
+        description: "Voer een geldige website URL in (bijv. example.com)",
+        variant: "destructive"
+      });
+      return;
+    }
     
-    // Simulate API call with realistic delay
-    setTimeout(() => {
-      // Generate realistic mock data
-      const mockResult = {
-        overallScore: Math.floor(Math.random() * 30) + 65, // 65-95
-        issues: [
-          { type: 'critical', text: 'Meta description ontbreekt op 3 pagina\'s', impact: 'Hoog' },
-          { type: 'warning', text: 'Title tags zijn te lang op 2 pagina\'s', impact: 'Gemiddeld' },
-          { type: 'info', text: 'Alt teksten kunnen worden verbeterd', impact: 'Laag' }
-        ],
-        metrics: {
-          titleTags: Math.floor(Math.random() * 20) + 75,
-          metaDescriptions: Math.floor(Math.random() * 25) + 70,
-          headingStructure: Math.floor(Math.random() * 15) + 80,
-          imageOptimization: Math.floor(Math.random() * 30) + 60,
-          pageSpeed: Math.floor(Math.random() * 20) + 75
-        },
-        recommendations: [
-          'Voeg ontbrekende meta descriptions toe',
-          'Optimaliseer je title tags voor betere leesbaarheid',
-          'Verbeter je heading structuur (H1, H2, H3)',
-          'Comprimeer je afbeeldingen voor snellere laadtijden'
-        ]
-      };
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    
+    try {
+      console.log('Starting PageSpeed analysis for:', validatedUrl);
+      const pageSpeedData = await analyzePageSpeed(validatedUrl);
+      console.log('PageSpeed data received:', pageSpeedData);
       
-      setAnalysisResult(mockResult);
+      const analysisData = extractSEOData(pageSpeedData, validatedUrl);
+      console.log('Extracted analysis data:', analysisData);
+      
+      setAnalysisResult(analysisData);
+      
+      toast({
+        title: "Analyse voltooid!",
+        description: `Je website scoort ${analysisData.overallScore}/100`,
+        variant: "success"
+      });
+      
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      toast({
+        title: "Analyse mislukt",
+        description: "Er ging iets mis bij het analyseren van je website. Probeer het opnieuw.",
+        variant: "destructive"
+      });
+    } finally {
       setIsAnalyzing(false);
-    }, 3000);
+    }
   };
 
   const getScoreColor = (score: number) => {
@@ -95,6 +227,7 @@ const LiveSEOAnalyzer = () => {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   className="flex-1 text-lg py-3"
+                  onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
                 />
                 <Button 
                   onClick={handleAnalyze}
@@ -110,7 +243,7 @@ const LiveSEOAnalyzer = () => {
                 <div className="text-center py-8">
                   <div className="animate-spin w-12 h-12 border-4 border-brand-purple border-t-transparent rounded-full mx-auto mb-4"></div>
                   <p className="text-gray-600">We analyseren je website...</p>
-                  <p className="text-sm text-gray-500 mt-2">Dit duurt ongeveer 30 seconden</p>
+                  <p className="text-sm text-gray-500 mt-2">Dit kan tot 30 seconden duren</p>
                 </div>
               )}
 
@@ -126,35 +259,64 @@ const LiveSEOAnalyzer = () => {
                   </div>
 
                   {/* Metrics */}
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {Object.entries(analysisResult.metrics).map(([key, value]: [string, any]) => (
-                      <div key={key} className="p-4 bg-white rounded-lg border">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium capitalize">{key.replace(/([A-Z])/g, ' $1')}</span>
-                          <span className={`font-bold ${getScoreColor(value)}`}>{value}%</span>
-                        </div>
-                        <Progress value={value} className="h-2" />
+                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="p-4 bg-white rounded-lg border">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium">SEO Score</span>
+                        <span className={`font-bold ${getScoreColor(analysisResult.metrics.seoScore)}`}>
+                          {analysisResult.metrics.seoScore}%
+                        </span>
                       </div>
-                    ))}
+                      <Progress value={analysisResult.metrics.seoScore} className="h-2" />
+                    </div>
+                    <div className="p-4 bg-white rounded-lg border">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium">Performance</span>
+                        <span className={`font-bold ${getScoreColor(analysisResult.metrics.performanceScore)}`}>
+                          {analysisResult.metrics.performanceScore}%
+                        </span>
+                      </div>
+                      <Progress value={analysisResult.metrics.performanceScore} className="h-2" />
+                    </div>
+                    <div className="p-4 bg-white rounded-lg border">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium">Accessibility</span>
+                        <span className={`font-bold ${getScoreColor(analysisResult.metrics.accessibilityScore)}`}>
+                          {analysisResult.metrics.accessibilityScore}%
+                        </span>
+                      </div>
+                      <Progress value={analysisResult.metrics.accessibilityScore} className="h-2" />
+                    </div>
+                    <div className="p-4 bg-white rounded-lg border">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium">Best Practices</span>
+                        <span className={`font-bold ${getScoreColor(analysisResult.metrics.bestPracticesScore)}`}>
+                          {analysisResult.metrics.bestPracticesScore}%
+                        </span>
+                      </div>
+                      <Progress value={analysisResult.metrics.bestPracticesScore} className="h-2" />
+                    </div>
                   </div>
 
                   {/* Issues */}
-                  <div>
-                    <h4 className="text-xl font-bold mb-4">Gevonden Problemen</h4>
-                    <div className="space-y-3">
-                      {analysisResult.issues.map((issue: any, index: number) => (
-                        <div key={index} className="flex items-start gap-3 p-4 bg-white rounded-lg border">
-                          {getIssueIcon(issue.type)}
-                          <div className="flex-1">
-                            <p className="font-medium">{issue.text}</p>
-                            <Badge variant="outline" className="mt-1">
-                              Impact: {issue.impact}
-                            </Badge>
+                  {analysisResult.issues.length > 0 && (
+                    <div>
+                      <h4 className="text-xl font-bold mb-4">Gevonden Problemen</h4>
+                      <div className="space-y-3">
+                        {analysisResult.issues.map((issue: any, index: number) => (
+                          <div key={index} className="flex items-start gap-3 p-4 bg-white rounded-lg border">
+                            {getIssueIcon(issue.type)}
+                            <div className="flex-1">
+                              <p className="font-medium">{issue.text}</p>
+                              <Badge variant="outline" className="mt-1">
+                                Impact: {issue.impact}
+                              </Badge>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Recommendations */}
                   <div>
@@ -166,6 +328,18 @@ const LiveSEOAnalyzer = () => {
                           <span>{rec}</span>
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Technical Details */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-white rounded-lg border">
+                      <h5 className="font-semibold mb-2">Laadtijd</h5>
+                      <p className="text-2xl font-bold text-blue-600">{analysisResult.loadTime}</p>
+                    </div>
+                    <div className="p-4 bg-white rounded-lg border">
+                      <h5 className="font-semibold mb-2">Pagina Grootte</h5>
+                      <p className="text-2xl font-bold text-purple-600">{analysisResult.pageSize}</p>
                     </div>
                   </div>
 
