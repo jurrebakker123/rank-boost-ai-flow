@@ -13,6 +13,8 @@ import Benefits from '@/components/Benefits';
 import Chatbot from '@/components/Chatbot';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
 import FloatingElements from '@/components/FloatingElements';
+import LiveSEOAnalyzer from '@/components/LiveSEOAnalyzer';
+import AIContentDemo from '@/components/AIContentDemo';
 
 const Index = () => {
   return (
@@ -22,6 +24,8 @@ const Index = () => {
       <main className="flex-grow relative z-10">
         <Hero />
         <Clients />
+        <LiveSEOAnalyzer />
+        <AIContentDemo />
         <Benefits />
         <Features />
         <HowItWorks />
