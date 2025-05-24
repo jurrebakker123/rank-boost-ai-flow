@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,8 +26,8 @@ const LiveSEOAnalyzer = () => {
   };
 
   const analyzePageSpeed = async (validatedUrl: string) => {
-    // Use the provided Google PageSpeed Insights API key
-    const API_KEY = '5xxd2MoJ9u31emx3fM4SNSGnnhRQjKjj4JGA8HJRwdEK';
+    // Use the updated Google PageSpeed Insights API key
+    const API_KEY = 'AIzaSyDLEbqqWb2uxio1yoyARx-PzrvbzbGvCpg';
     const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(validatedUrl)}&key=${API_KEY}&strategy=desktop&category=performance&category=accessibility&category=best-practices&category=seo`;
 
     console.log('Making PageSpeed API request to:', endpoint);
