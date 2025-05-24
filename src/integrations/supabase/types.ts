@@ -9,7 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      subscription_limits: {
+        Row: {
+          chatbot_access: boolean
+          created_at: string
+          email_support: boolean
+          google_my_business_posts: boolean
+          id: string
+          meta_tags_generation: boolean
+          monthly_blogs: number
+          monthly_seo_report: boolean
+          priority_website_scan: boolean
+          seo_checklist: boolean
+          seo_optimizations: boolean
+          strategy_tips: boolean
+          tier: string
+          white_label: boolean
+        }
+        Insert: {
+          chatbot_access?: boolean
+          created_at?: string
+          email_support?: boolean
+          google_my_business_posts?: boolean
+          id?: string
+          meta_tags_generation?: boolean
+          monthly_blogs: number
+          monthly_seo_report?: boolean
+          priority_website_scan?: boolean
+          seo_checklist?: boolean
+          seo_optimizations?: boolean
+          strategy_tips?: boolean
+          tier: string
+          white_label?: boolean
+        }
+        Update: {
+          chatbot_access?: boolean
+          created_at?: string
+          email_support?: boolean
+          google_my_business_posts?: boolean
+          id?: string
+          meta_tags_generation?: boolean
+          monthly_blogs?: number
+          monthly_seo_report?: boolean
+          priority_website_scan?: boolean
+          seo_checklist?: boolean
+          seo_optimizations?: boolean
+          strategy_tips?: boolean
+          tier?: string
+          white_label?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
