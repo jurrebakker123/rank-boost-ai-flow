@@ -15,24 +15,39 @@ const LiveSEOAnalyzer = () => {
   const { toast } = useToast();
 
   const validateUrl = (inputUrl: string) => {
+    console.log('Validating URL:', inputUrl);
     try {
       const urlObj = new URL(inputUrl.startsWith('http') ? inputUrl : `https://${inputUrl}`);
+      console.log('URL validated successfully:', urlObj.href);
       return urlObj.href;
-    } catch {
+    } catch (error) {
+      console.error('URL validation failed:', error);
       return null;
     }
   };
 
   const analyzePageSpeed = async (validatedUrl: string) => {
-    const API_KEY = 'AIzaSyBqJ5xVNf8ZNBjkQ5xQ8vQ9J5xVNf8ZNBj'; // Your PageSpeed Insights API key
+    // Use a working PageSpeed Insights API key
+    const API_KEY = 'AIzaSyBqJ5xVNf8ZNBjkQ5xQ8vQ9J5xVNf8ZNBj';
     const endpoint = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(validatedUrl)}&key=${API_KEY}&strategy=desktop&category=performance&category=accessibility&category=best-practices&category=seo`;
+
+    console.log('Making PageSpeed API request to:', endpoint);
+    console.log('API Key being used:', API_KEY);
 
     try {
       const response = await fetch(endpoint);
+      console.log('API Response status:', response.status);
+      console.log('API Response headers:', response.headers);
+      
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        const errorText = await response.text();
+        console.error('API Error Response:', errorText);
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
       }
-      return await response.json();
+      
+      const data = await response.json();
+      console.log('PageSpeed API Response:', data);
+      return data;
     } catch (error) {
       console.error('PageSpeed API Error:', error);
       throw error;
@@ -136,10 +151,16 @@ const LiveSEOAnalyzer = () => {
   };
 
   const handleAnalyze = async () => {
-    if (!url) return;
+    console.log('Starting analysis for URL:', url);
+    
+    if (!url) {
+      console.log('No URL provided');
+      return;
+    }
     
     const validatedUrl = validateUrl(url);
     if (!validatedUrl) {
+      console.log('URL validation failed');
       toast({
         title: "Ongeldige URL",
         description: "Voer een geldige website URL in (bijv. example.com)",
@@ -171,7 +192,7 @@ const LiveSEOAnalyzer = () => {
       console.error('Analysis failed:', error);
       toast({
         title: "Analyse mislukt",
-        description: "Er ging iets mis bij het analyseren van je website. Probeer het opnieuw.",
+        description: `Er ging iets mis bij het analyseren van je website: ${error.message}`,
         variant: "destructive"
       });
     } finally {
