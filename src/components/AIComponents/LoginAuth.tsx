@@ -66,10 +66,8 @@ const Authentication1: React.FC = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          // Specify the URL where Supabase should redirect the user after Google authentication
-          // This URL MUST be added to your "Redirect URLs" in the Supabase dashboard
-          redirectTo: 'https://rank-boost-ai-flow.lovable.app/dashboard', // Ensure this URL is configured in Supabase
-          // Or '/auth/callback'
+          // --- UPDATED: Ensure this matches your current app URL for Google OAuth ---
+          redirectTo: 'https://rank-boost-ai-flow.lovable.app/dashboard', 
         },
       });
       if (error) throw error;
@@ -91,7 +89,8 @@ const Authentication1: React.FC = () => {
     try {
       // Calls Supabase to send a password reset email
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:8080/update-password', // URL where the user will be redirected after clicking the link in the email
+        // --- UPDATED: Ensure this matches your current app URL for password resets ---
+        redirectTo: 'https://rank-boost-ai-flow.lovable.app/update-password', 
       });
 
       if (error) throw error;
