@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'; // Import useState and useEffect
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '@/components/superbaseClient'; // Import your Supabase client
+import { supabase } from '@/integrations/supabase/client'; // Updated import path
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 import LiveSEOAnalyzer from '../LiveSEOAnalyzer';
