@@ -1,24 +1,59 @@
+// src/components/ProtectedRoute.jsx (or .tsx)
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client'; // Adjust path if different
+import { Loader2 } from 'lucide-react';
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Image } from 'lucide-react';
+const ProtectedRoute = ({ children }) => {
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
+  const navigate = useNavigate();
 
-const AIImageOptimizer = () => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Image className="w-5 h-5" />
-          AI Image Optimizer
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-600">
-          Optimize images for better web performance
-        </p>
-      </CardContent>
-    </Card>
-  );
+  useEffect(() => {
+    let mounted = true;
+
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (mounted) {
+        setSession(session);
+        setLoading(false);
+        if (!session) {
+          navigate('/login'); // Redirect to your login page
+        }
+      }
+    };
+
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, currentSession) => {
+        if (mounted) {
+          setSession(currentSession);
+          setLoading(false);
+          if (!currentSession) {
+            navigate('/dashboard'); // Redirect to your login page
+          }
+        }
+      }
+    );
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-foreground
+                      bg-gradient-to-br from-white via-brand-purple-light/5 to-brand-blue-light/10">
+        <Loader2 className="mr-2 h-6 w-6 animate-spin text-brand-purple" />
+        <p className="text-xl font-semibold">Loading...</p>
+      </div>
+    );
+  }
+
+  return session ? <>{children}</> : null;
 };
 
-export default AIImageOptimizer;
+export default ProtectedRoute;
