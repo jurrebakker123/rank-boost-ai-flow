@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/components/superbaseClient'; // Adjust path if your supabaseClient is elsewhere
