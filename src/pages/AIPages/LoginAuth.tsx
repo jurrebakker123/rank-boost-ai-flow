@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Session } from '@supabase/supabase-js';
-import { supabase } from '@/components/superbaseClient'; // Adjust path if your supabaseClient is elsewhere
+import { supabase } from '@/integrations/supabase/client'; // Updated import path
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

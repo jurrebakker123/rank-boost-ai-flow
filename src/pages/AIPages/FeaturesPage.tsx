@@ -1,8 +1,9 @@
+
 // src/components/MyProtectedPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
-import { supabase } from '@/components/superbaseClient'; // Ensure this path is correct
+import { supabase } from '@/integrations/supabase/client'; // Updated import path
 import { useNavigate } from 'react-router-dom';
 import Chatbot from '@/components/Chatbot';
 import Clients from '@/components/Clients';
